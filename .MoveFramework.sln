@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = ".CalibrationTool", ".CalibrationTool\.CalibrationTool.vcxproj", "{31829C19-35B1-48C5-ABE2-FD0A9BBBB93C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B755AD10-0F2C-4363-A9FE-70BAB6BF9350} = {B755AD10-0F2C-4363-A9FE-70BAB6BF9350}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = ".MoveFramework", ".MoveFramework\.MoveFramework.vcxproj", "{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31829C19-35B1-48C5-ABE2-FD0A9BBBB93C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31829C19-35B1-48C5-ABE2-FD0A9BBBB93C}.Debug|Win32.Build.0 = Debug|Win32
+		{31829C19-35B1-48C5-ABE2-FD0A9BBBB93C}.Release|Win32.ActiveCfg = Release|Win32
+		{31829C19-35B1-48C5-ABE2-FD0A9BBBB93C}.Release|Win32.Build.0 = Release|Win32
+		{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}.Debug|Win32.Build.0 = Debug|Win32
+		{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}.Release|Win32.ActiveCfg = Release|Win32
+		{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
