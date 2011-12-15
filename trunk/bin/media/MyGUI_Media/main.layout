@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+    <Widget type="StaticImage" skin="StaticImage" position="0 24 320 240" layer="Back" name="Eye Image"/>
+    <Widget type="StaticText" skin="StaticText" position="336 72 648 72" layer="Back" name="Info">
+        <Property key="Widget_Caption" value="Szia"/>
+    </Widget>
+</MyGUI>

@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="include\MoveFactory.h" />
+    <ClInclude Include="include\EyeInterface.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EyeImage.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveOrientation.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveCalibration.h">
+      <Filter>PS Move\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IniFile.h">
+      <Filter>ConfigFile</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MovePrecompiled.h" />
+    <ClInclude Include="include\MoveRawCalibration.h">
+      <Filter>PS Move\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IMoveObserver.h" />
+    <ClInclude Include="include\IMoveCalibrationObserver.h" />
+    <ClInclude Include="include\ConfigMath.h" />
+    <ClInclude Include="include\IMoveManager.h" />
+    <ClInclude Include="include\MoveManager.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveController.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveData.h" />
+    <ClInclude Include="include\MoveExceptions.h" />
+    <ClInclude Include="include\simplex.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Helpers.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\kalman.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\hidapi.h">
+      <Filter>PS Move\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MoveDevice.h">
+      <Filter>PS Move\Device</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\MoveFactory.cpp" />
+    <ClCompile Include="src\EyeImage.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EyeInterface.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveOrientation.cpp">
+      <Filter>PS Move</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveCalibration.cpp">
+      <Filter>PS Move\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveRawCalibration.cpp">
+      <Filter>PS Move\Calibration</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MovePrecompiled.cpp" />
+    <ClCompile Include="src\MoveManager.cpp">
+      <Filter>PS Move</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveController.cpp">
+      <Filter>PS Move</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveDevice.cpp">
+      <Filter>PS Move\Device</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ConfigFile">
+      <UniqueIdentifier>{645caa5a-f23f-4053-86b7-bf874ec00c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move">
+      <UniqueIdentifier>{aa3c2f25-0016-48b5-b2e3-b1ed52012af7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move\Calibration">
+      <UniqueIdentifier>{440d582b-2fbe-4d56-8c78-db2dff34e4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move\Eye">
+      <UniqueIdentifier>{f64a3d10-5d7d-4f36-bcc1-d22008ee1a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move\Device">
+      <UniqueIdentifier>{ac066d77-a909-41e6-af3c-6500ff80702e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{e1eba316-a2d5-4feb-a7f8-274b5452adba}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
