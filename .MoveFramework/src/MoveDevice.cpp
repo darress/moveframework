@@ -17,6 +17,10 @@
 #include "MoveDevice.h"
 #include "hidapi.h"
 
+#include <bthsdpdef.h>
+#include <BluetoothAPIs.h>
+#pragma comment ( lib, "Irprops.lib")
+
 namespace MoveDevice
 {
 	hid_device* MoveHandles[MAXMOVES] = {0};
@@ -47,6 +51,66 @@ namespace MoveDevice
 		hid_free_enumeration(devs);
 
 	  return MoveCount;
+	}
+
+	void getHostBtAddress(unsigned char* addr)
+	{
+		HANDLE hRadio;
+		BLUETOOTH_FIND_RADIO_PARAMS btfrp = { sizeof(btfrp) };
+		HBLUETOOTH_RADIO_FIND hFind = BluetoothFindFirstRadio( &btfrp, &hRadio );
+		if ( NULL != hFind )
+		{
+			BLUETOOTH_RADIO_INFO radioInfo;
+
+			radioInfo.dwSize = sizeof(radioInfo);
+
+			if (ERROR_SUCCESS == BluetoothGetRadioInfo(hRadio, &radioInfo))
+			{
+				memcpy(addr,radioInfo.address.rgBytes,6);
+			}
+			CloseHandle( hRadio );
+			BluetoothFindRadioClose( hFind );
+		}
+		else
+			throw MoveNoBTDongleFound();
+	}
+
+	int PairMoves() {
+		int numBtMacSet=0;
+		int res;
+		struct hid_device_info *devs, *cur_dev;
+
+		unsigned char buf[49];
+		hid_device *handle;
+		unsigned char hostAddr[6];
+		unsigned char curAddr[6];
+		getHostBtAddress(hostAddr);
+		devs = hid_enumerate(0x054c, 0x03d5);
+		cur_dev = devs;	
+		while (cur_dev) {
+			handle = hid_open_path(cur_dev->path);
+			memset(buf,0,49);
+			//get the current host mac address
+			buf[0]=0x04;
+			if (hid_get_feature_report(handle, buf, 49)>1)
+			{
+				memcpy(curAddr,&buf[10],6);
+				//if not the same, set the new
+				if (memcmp(curAddr,hostAddr,6)!=0)
+				{
+				buf[0]=0x05;
+				memcpy(&buf[1],hostAddr,6);
+				//TODO set the mac in buf
+				if (hid_send_feature_report(handle, buf, 49)>1)
+					numBtMacSet++;
+				}
+			}
+			hid_close(handle);
+			cur_dev = cur_dev->next;
+		}
+		hid_free_enumeration(devs);
+
+	  return numBtMacSet;
 	}
 
 	int GetMoveCount() {

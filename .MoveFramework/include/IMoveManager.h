@@ -31,21 +31,17 @@ namespace Move
 		virtual bool getButtonState(int id, int buttonId)=0;
 		virtual bool pointingToDisplay(int id)=0;
 		virtual Vector3 displayPosition(int id)=0;
-		virtual int getFrameRate(){return 0;}
-		virtual PBYTE getEyeBuffer(){return 0;}
-		virtual void getEyeDimensions(int &x, int &y){}
+		virtual int getFrameRate()=0;
+		virtual PBYTE getEyeBuffer()=0;
+		virtual void getEyeDimensions(int &x, int &y)=0;
+
+		//misc
+		virtual int pairMoves()=0;
+		virtual void useMagnetometer(int id, bool value)=0;
 
 		//move calibration
 		virtual bool isCalibrated(int id)=0;
-		virtual bool pairMoves(){return false;}
-		virtual bool startCalibration(int id){return false;}
-		virtual void endCalibration(int id){}
-
-		//events for emulator
-		virtual void processKeyInput(int key){}
-		//virtual void PassKeyPressed(const OIS::KeyEvent &arg){}
-		//virtual void PassKeyReleased(const OIS::KeyEvent &arg){}
-		virtual void passMouseMoved( float x, float y, float z ){}
-		//virtual void PassWindowParam(int width, int height){}
+		virtual bool startCalibration(int id)=0;
+		virtual void endCalibration(int id)=0;
 	};
 }

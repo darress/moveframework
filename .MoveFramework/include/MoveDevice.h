@@ -24,30 +24,15 @@ namespace MoveDevice
 {
 	enum MoveButton
 	{
-		B_L2=        0x1,
-		B_R2=        0x2,
-		B_L1=        0x4,
-		B_R1=        0x8,
 		B_TRIANGLE= 0x10,
 		B_CIRCLE=   0x20,
 		B_CROSS=    0x40,
 		B_SQUARE=   0x80,
 		B_SELECT=  0x100,
-		B_L3=      0x200,
-		B_R3=      0x400,
 		B_START=   0x800,
-		B_UP=     0x1000,
-		B_RIGHT=  0x2000,
-		B_DOWN=   0x4000,
-		B_LEFT=   0x8000,
 		B_PS=    0x10000,
-		B_UNK1=  0x20000,
-		B_UNK2=  0x40000,
 		B_MOVE=  0x80000,
-		B_T=    0x100000,
-		B_UNK3= 0x200000,
-		B_UNK4= 0x400000,
-		B_UNK5= 0x800000
+		B_T=    0x100000
 	};
 
 
@@ -90,6 +75,7 @@ namespace MoveDevice
 	int OpenMoves();
 	int GetMoveCount();
 	void CloseMoves();
+	int PairMoves();
 
 	bool SetMoveColour(int index, int r, int g, int b);
 	bool SetMoveRumble(int index, int rumble);

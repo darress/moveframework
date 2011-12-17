@@ -28,9 +28,13 @@ namespace Move
 	int MoveManager::initMoves()
 	{
 		//if already initialized or there is no moves found, return -1
-		if (moveCount!=-1 || !MoveDevice::OpenMoves())
+		if (moveCount!=-1)
 		{
-			return -1;
+			return moveCount;
+		}
+		if (!MoveDevice::OpenMoves())
+		{
+			return 0;
 		}
 		moveCount = MoveDevice::GetMoveCount();
 
@@ -129,10 +133,14 @@ namespace Move
 		return moves[id]->data.displayPos;
 	}
 
-	bool MoveManager::pairMoves()
+	int MoveManager::pairMoves()
 	{
-		//TODO: pair code
-		return false;
+		return MoveDevice::PairMoves();
+	}
+
+	void MoveManager::useMagnetometer(int id, bool value)
+	{
+		moves[id]->UseMagnetometer(value);
 	}
 
 	bool MoveManager::isCalibrated(int id)

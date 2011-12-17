@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept> 
+
 using std::runtime_error;
 class MoveOutOfImageRangeException : public runtime_error
 {
@@ -18,4 +19,10 @@ class MoveConfigFileRecordNotFoundException : public runtime_error
 {
 public:
 	MoveConfigFileRecordNotFoundException::MoveConfigFileRecordNotFoundException(): runtime_error( "the requested record doesnt exist" ) {}
+}; 
+
+class MoveNoBTDongleFound : public runtime_error
+{
+public:
+	MoveNoBTDongleFound::MoveNoBTDongleFound(): runtime_error( "no bluetooth dongle is found" ) {}
 }; 
