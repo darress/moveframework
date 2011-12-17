@@ -56,7 +56,8 @@ namespace Move
 		void getEyeDimensions(int &x, int &y);
 
 		//move calibration
-		bool pairMoves();
+		int pairMoves();
+		void useMagnetometer(int id, bool value);
 
 		bool isCalibrated(int id);
 		bool startCalibration(int id);

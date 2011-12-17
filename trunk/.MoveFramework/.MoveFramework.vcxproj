@@ -21,6 +21,7 @@
     <ClInclude Include="include\IMoveObserver.h" />
     <ClInclude Include="include\IniFile.h" />
     <ClInclude Include="include\kalman.h" />
+    <ClInclude Include="include\MadgwickAHRS.h" />
     <ClInclude Include="include\MoveCalibration.h" />
     <ClInclude Include="include\MoveController.h" />
     <ClInclude Include="include\MoveData.h" />
@@ -36,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="src\EyeImage.cpp" />
     <ClCompile Include="src\EyeInterface.cpp" />
+    <ClCompile Include="src\MadgwickAHRS.cpp" />
     <ClCompile Include="src\MoveDevice.cpp" />
     <ClCompile Include="src\MoveCalibration.cpp" />
     <ClCompile Include="src\MoveController.cpp" />
@@ -119,7 +121,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>CLEyeMulticam.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>CLEyeMulticam.lib;hidapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

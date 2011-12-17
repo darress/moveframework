@@ -13,12 +13,6 @@ namespace Move
 
 		lastSeqNumber=-1;
 		firstPackage=true;
-
-		packageGot=0;
-		missingPackage=0;
-
-		estimatedVelocity=Vector3(0,0,0);
-		estimatedPosition=Vector3(0,0,0);
 	}
 
 
@@ -44,9 +38,6 @@ namespace Move
 
 			if (m.SeqNumber == lastSeqNumber)
 				continue;
-			if (lastSeqNumber!=m.SeqNumber-1 && lastSeqNumber!=m.SeqNumber+15 && packageGot>200)
-				missingPackage++;
-			packageGot++;
 			int ticksEllapsed =m.Timestamp-lastTimestamp;
 			if (ticksEllapsed<0)
 				ticksEllapsed+=65536;
@@ -60,7 +51,9 @@ namespace Move
 			MoveMag = Vector3(old.RawMagnetX,old.RawMagnetY,old.RawMagnetZ);
 
 			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
-			orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
+
+			if (calibration->isCalibrated())
+				orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
 			MoveAcc = Vector3(m.RawForceX,m.RawForceY,m.RawForceZ);
 			MoveGyro = Vector3(-m.RawGyroPitch,m.RawGyroYaw,-m.RawGyroRoll);
@@ -76,34 +69,14 @@ namespace Move
 				data.angularVelocity=orientation->GetAngularVelocity();
 				data.angularAcceleration=orientation->GetAngularAcceleration();
 			}
-
-			if (m.Buttons & MoveDevice::B_SQUARE && !(data.buttons & MoveDevice::B_SQUARE))
+			for (int i=0; i<17; i++)
 			{
-				orientation->HighGains();
-			}
-			if (m.Buttons & MoveDevice::B_CROSS && !(data.buttons & MoveDevice::B_CROSS))
-			{
-				orientation->Reset();
-			}
-			if ((m.Buttons & MoveDevice::B_CIRCLE) && !(data.buttons & MoveDevice::B_CIRCLE))
-			{
-				estimatedVelocity=Vector3(0,0,0);
-				estimatedPosition=Vector3(0,0,0);
-			}
-			if (m.Buttons & MoveDevice::B_TRIANGLE)
-			{
-
-			}
-			if (m.Buttons & MoveDevice::B_PS)
-			{
-				//device->closeDevice();
-			}
-			for (int i=0; i<24; i++)
-			{
-				int key=(int)pow(2.0,i);
+				int key=0x10<<i;
 				if ((m.Buttons & key) && !(data.buttons & key))
 				{
 					manager->moveKeyPressed(id, key);
+					if (key==MoveDevice::B_PS)
+						orientation->Reset();
 				}
 				if (!(m.Buttons & key) && (data.buttons & key))
 				{
@@ -111,12 +84,6 @@ namespace Move
 				}
 			}
 			data.buttons = m.Buttons;
-
-			////estimated acceleration from accelerometer
-			//Vector3 estimatedAcceleration = orientation->GetEstimatedAcceleration();
-			//estimatedVelocity += estimatedAcceleration * timeEllapsed;
-			//estimatedPosition += estimatedVelocity* timeEllapsed;
-			//data.position=estimatedPosition*20.0f;
 
 			//if camera is capturing
 			if (manager->getEye())
@@ -147,6 +114,11 @@ namespace Move
 			}
 			manager->moveUpdated(id, data);
 		}
+	}
+
+	void MoveController::UseMagnetometer(bool value)
+	{
+		orientation->UseMagnetometer(value);
 	}
 
 	bool MoveController::isCalibrated()

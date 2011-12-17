@@ -4,7 +4,7 @@
 
 namespace Move
 {
-	struct MoveData
+	struct MOVE_EXPORT MoveData
 	{
 		Quaternion orientation;
 		Vector3 angularVelocity;

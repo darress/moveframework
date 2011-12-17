@@ -20,14 +20,8 @@ namespace Move
 		MoveOrientation* orientation;
 		MoveCalibration* calibration;
 
-		Vector3 estimatedVelocity;
-		Vector3 estimatedPosition;
-
 		int lastSeqNumber;
 		int lastTimestamp;
-
-		int packageGot;
-		int missingPackage;
 
 		bool firstPackage;
 
@@ -41,5 +35,6 @@ namespace Move
 		bool isCalibrated();
 		bool StartCalibration();
 		void EndCalibration();
+		void UseMagnetometer(bool value);
 	};
 }

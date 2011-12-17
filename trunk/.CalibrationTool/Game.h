@@ -35,6 +35,9 @@ class Game : public BaseApplication, Move::IMoveObserver, Move::IMoveCalibration
 	Move::IMoveManager* move;
 	GameState state;
 	int numMoves;
+	bool useMagnetometers;
+
+	bool guiInitialized;
 
 public:
     Game(void);
@@ -44,6 +47,7 @@ protected:
     virtual void createScene(void);
 	virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 	virtual bool configure();
+	bool keyPressed( const OIS::KeyEvent &arg );
 
 	bool initMove();
 	void copyCameraImageToTexture(Ogre::TexturePtr texture);
@@ -59,6 +63,7 @@ public:
 
 	void moveKeyPressed(int moveId, int keyCode);
 	void moveKeyReleased(int moveId, int keyCode);
+	void moveUpdated(int moveId, Move::MoveData data);
 };
 
 

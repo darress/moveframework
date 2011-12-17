@@ -8,9 +8,6 @@
     <ClInclude Include="include\EyeImage.h">
       <Filter>PS Move\Eye</Filter>
     </ClInclude>
-    <ClInclude Include="include\MoveOrientation.h">
-      <Filter>PS Move</Filter>
-    </ClInclude>
     <ClInclude Include="include\MoveCalibration.h">
       <Filter>PS Move\Calibration</Filter>
     </ClInclude>
@@ -48,6 +45,12 @@
     <ClInclude Include="include\MoveDevice.h">
       <Filter>PS Move\Device</Filter>
     </ClInclude>
+    <ClInclude Include="include\MoveOrientation.h">
+      <Filter>PS Move\Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MadgwickAHRS.h">
+      <Filter>PS Move\Orientation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MoveFactory.cpp" />
@@ -56,9 +59,6 @@
     </ClCompile>
     <ClCompile Include="src\EyeInterface.cpp">
       <Filter>PS Move\Eye</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MoveOrientation.cpp">
-      <Filter>PS Move</Filter>
     </ClCompile>
     <ClCompile Include="src\MoveCalibration.cpp">
       <Filter>PS Move\Calibration</Filter>
@@ -75,6 +75,12 @@
     </ClCompile>
     <ClCompile Include="src\MoveDevice.cpp">
       <Filter>PS Move\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveOrientation.cpp">
+      <Filter>PS Move\Orientation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MadgwickAHRS.cpp">
+      <Filter>PS Move\Orientation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +101,9 @@
     </Filter>
     <Filter Include="Helpers">
       <UniqueIdentifier>{e1eba316-a2d5-4feb-a7f8-274b5452adba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move\Orientation">
+      <UniqueIdentifier>{e5dc733e-294e-44ee-866e-8c3eb89ac047}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
