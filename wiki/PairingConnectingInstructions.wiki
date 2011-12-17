@@ -1,0 +1,33 @@
+#summary Instructions to pair and connect the Moves to a Windows based computer
+
+=Instructions to pair and connect the Moves to a Windows based computer=
+
+==Seting the Bluetooth address of your dongle in the Move's memory (pairing)==
+The Move connects always to the host address, that is stored in the it's memory. So if you pair it with a host, several other hosts can be around, the Move will ignore them.
+  # Make sure MotionInJoy is not installed (or removed properly)
+  # Connect your Move to the PC via USB (you can connect more at once, all will be paired)
+  # Start the Calibration Tool, and press P to pair all devices.
+    * If you have more BT dongles, all Moves will be paired to the first dongle found.
+
+
+==Connecting the paired Moves to your PC the first time==
+*Only tested with Windows 8, please comment if it works or not with other versions!*
+  # Make sure MotionInJoy is not installed!
+  # Open your Bluetooth settings, and make sure "Allow devices to find this computer" is checked
+  # Click "Add a Bluetooth device"
+  # Press the PS button on your Move
+  # Pair the Move without a oode
+  # Open the Properties window of the Move
+  # Click the Services tab
+  # Check the HID service checkbox, click apply and ok
+  # Open the Properties window again
+  # Click the Services tab and immediately press the PS button on your Move
+  # If the led on your Move is on and not blinking, you successfully connected your Move to your PC
+  # If this is not the case, you have to play around with the HID checkbox and the PS button. Please let me know, if you found an other method to pair (on Windows 8 or other versions)!
+
+  
+==Connecting the paired Moves to your PC (not the first time)==
+*Only tested with Windows 8, please comment if it works or not with other versions!*
+  # Open the Properties window of your Move
+  # Click the Services tab and immediately press the PS button on your Move
+  # If the led on your Move is on and not blinking, you successfully connected your Move to your PC
