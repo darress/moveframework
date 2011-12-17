@@ -38,7 +38,7 @@ namespace Move
 		acc=calib.accGain*(acc-calib.accBias);
 		gyro=calib.gyroGain*gyro;
 
-		if (useMagnetometer)
+		if (useMagnetometer && (mag.x!=0 || mag.y!=0 || mag.z!=0))
 		{
 			mag=calib.magGain*(mag-calib.magBias);
 			Madgwick::MadgwickAHRSupdate(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,mag.x,mag.y,mag.z,deltat);
