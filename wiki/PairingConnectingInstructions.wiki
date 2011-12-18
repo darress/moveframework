@@ -31,3 +31,4 @@ The Move connects always to the host address, that is stored in the it's memory.
   # Open the Properties window of your Move
   # Click the Services tab and immediately press the PS button on your Move
   # If the led on your Move is on and not blinking, you successfully connected your Move to your PC
+*You have to repeat these steps for each device. It's better you memorize which Move has which BT address. (You can see the BT address on the last tab.) You can only pair the device, if you press the PS button of the devices, that has it's properties window open (and not an other Move's window).)*
