@@ -19,7 +19,7 @@ The Move connects always to the host address, that is stored in the it's memory.
   # Pair the Move without a oode
   # Open the Properties window of the Move
   # Click the Services tab
-  # Check the HID service checkbox, click apply and ok
+  # Check the HID service checkbox, click apply and ok (if the checkbox does not appear, try to press the PS button immediately after clicking the services tab)
   # Open the Properties window again
   # Click the Services tab and immediately press the PS button on your Move
   # If the led on your Move is on and not blinking, you successfully connected your Move to your PC
