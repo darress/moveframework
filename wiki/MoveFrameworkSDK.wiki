@@ -1,0 +1,82 @@
+#summary Move Framework SDK
+
+= Setting up your project =
+
+ * Download and unzip the latest release of the SDK
+
+*If you want to add the framework to an existing project:*
+ * add the SDK's include folder to the additional include libraries (C/C++/General)
+ * add the SDK's lib folder to the additional library directories (linker/general)
+ * add MoveManager.lib to the additional depedencies (linker/input)
+ * set $(TargetDir) for the working directory (debugging) (or if you want to use a custom working directory, use that folder to copy the .cfg file to)
+ * copy the DLL-s to your tartget directory from the SDK's debug folder
+
+*Or use the SDK's project for reference*
+
+ * *Use the Calibration Tool to get the accurate calibration in the settings.cfg file*
+ * *Copy that file to your working directory*
+
+= Using the SDK =
+
+You can find an example in the example project.
+
+= API =
+API comming later, but here are the most important interfaces:
+
+*IMoveManager*
+{{{
+//initialization
+virtual int initMoves()=0;
+virtual void initCamera(int numMoves)=0;
+
+//observers
+virtual void subsribeMove(IMoveObserver* observer)=0;
+virtual void unsubsribeMove(IMoveObserver* observer)=0;
+
+//move data
+virtual Quaternion getOrientation(int id)=0;
+virtual Vector3 getAngularVelocity(int id)=0;
+virtual Vector3 getAngularAcceleration(int id)=0;
+virtual Vector3 getPosition(int id)=0;
+virtual Vector3 getVelocity(int id)=0;
+virtual Vector3 getAcceleration(int id)=0;
+virtual bool getButtonState(int id, int buttonId)=0;
+virtual int getTriggerValue(int id)=0;
+virtual void setRumble(int id, int value)=0;
+
+//not yet working
+virtual bool pointingToDisplay(int id)=0;
+//not yet working
+virtual Vector3 displayPosition(int id)=0;
+virtual int getFrameRate()=0;
+virtual PBYTE getEyeBuffer()=0;
+virtual void getEyeDimensions(int &x, int &y)=0;
+
+//misc
+virtual int pairMoves()=0;
+virtual void useMagnetometer(int id, bool value)=0;
+}}}
+
+*MoveData*
+{{{
+Quaternion orientation;
+Vector3 angularVelocity;
+Vector3 angularAcceleration;
+
+Vector3 position;
+Vector3 velocity;
+Vector3 acceleration;
+
+bool isOnDisplay;
+Vector3 displayPos;
+
+int buttons;
+int trigger;
+}}}
+
+*IMoveObserver*
+{{{
+virtual void moveUpdated(int moveId, MoveData data){}
+virtual void moveKeyPressed(int moveId, int keyCode){}
+virtual void moveKeyReleased(int moveId, int keyCode){}
+}}}
