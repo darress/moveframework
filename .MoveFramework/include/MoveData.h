@@ -18,6 +18,7 @@ namespace Move
 		Vector3 displayPos;
 
 		int buttons;
+		int trigger;
 
 		MoveData()
 		{

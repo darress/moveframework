@@ -48,7 +48,7 @@ namespace Move
 			Vector3 MoveAcc, MoveGyro, MoveMag;
 			MoveAcc = Vector3(old.RawForceX,old.RawForceY,old.RawForceZ);
 			MoveGyro = Vector3(-old.RawGyroPitch,old.RawGyroYaw,-old.RawGyroRoll);
-			MoveMag = Vector3(old.RawMagnetX,old.RawMagnetY,old.RawMagnetZ);
+			MoveMag = Vector3(0,0,0);
 
 			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
@@ -84,6 +84,7 @@ namespace Move
 				}
 			}
 			data.buttons = m.Buttons;
+			data.trigger = m.TAnalog;
 
 			//if camera is capturing
 			if (manager->getEye())
@@ -136,4 +137,8 @@ namespace Move
 		calibration->endCalibration();
 	}
 
+	void MoveController::setRumble(int value)
+	{
+		MoveDevice::SetMoveRumble(id, value);
+	}
 }

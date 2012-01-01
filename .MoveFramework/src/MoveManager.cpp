@@ -97,6 +97,15 @@ namespace Move
 		return 0;
 	}
 
+	int MoveManager::getTriggerValue(int id)
+	{
+		return moves[id]->data.trigger;
+	}
+
+	void MoveManager::setRumble(int id, int value)
+	{
+		moves[id]->setRumble(value);
+	}
 
 	Vector3 MoveManager::getAngularVelocity(int id)
 	{

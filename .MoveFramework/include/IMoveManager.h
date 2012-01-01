@@ -29,6 +29,8 @@ namespace Move
 		virtual Vector3 getVelocity(int id)=0;
 		virtual Vector3 getAcceleration(int id)=0;
 		virtual bool getButtonState(int id, int buttonId)=0;
+		virtual int getTriggerValue(int id)=0;
+		virtual void setRumble(int id, int value)=0;
 		virtual bool pointingToDisplay(int id)=0;
 		virtual Vector3 displayPosition(int id)=0;
 		virtual int getFrameRate()=0;
