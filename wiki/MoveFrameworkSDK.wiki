@@ -4,14 +4,14 @@
 
  * Download and unzip the latest release of the SDK
 
-*If you want to add the framework to an existing project:*
- * add the SDK's include folder to the additional include libraries (C/C++/General)
- * add the SDK's lib folder to the additional library directories (linker/general)
- * add MoveManager.lib to the additional depedencies (linker/input)
- * set $(TargetDir) for the working directory (debugging) (or if you want to use a custom working directory, use that folder to copy the .cfg file to)
- * copy the DLL-s to your tartget directory from the SDK's debug folder
+ * If you want to add the framework to an existing project:
+   * add the SDK's include folder to the additional include libraries (C/C++/General)
+   * add the SDK's lib folder to the additional library directories (linker/general)
+   * add MoveManager.lib to the additional depedencies (linker/input)
+   * set $(TargetDir) for the working directory (debugging) (or if you want to use a custom working directory, use that folder to copy the .cfg file to)
+   * copy the DLL-s to your tartget directory from the SDK's debug folder
 
-*Or use the SDK's project for reference*
+ * Or use the SDK's project for reference
 
  * *Use the Calibration Tool to get the accurate calibration in the settings.cfg file*
  * *Copy that file to your working directory*
