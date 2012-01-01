@@ -36,5 +36,6 @@ namespace Move
 		bool StartCalibration();
 		void EndCalibration();
 		void UseMagnetometer(bool value);
+		void setRumble(int value);
 	};
 }

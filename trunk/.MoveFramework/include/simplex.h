@@ -181,7 +181,7 @@ namespace BT{
     }//optimization is finished
 
     if(cnt==iterations){//max number of iteration achieves before tol is satisfied
-      std::cout<<"Iteration limit achieves, result may not be optimal"<<std::endl;
+      //std::cout<<"Iteration limit achieves, result may not be optimal"<<std::endl;
     }
     return x[x1];
   }

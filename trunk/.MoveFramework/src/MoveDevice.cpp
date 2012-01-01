@@ -222,7 +222,6 @@ namespace MoveDevice
 		data->RawMagnetY = -TwelveBits((report[41] & 15)*256+report[42]);
   
 		if (old) {
-			old->Buttons = report[2] | (report[1] << 8) | (report[3] << 16);
 			old->TAnalog = report[5];
 			old->RawForceX = report[14]*256 + report[13] - 32768; // same as 6 bytes earlier
 			old->RawForceZ = report[16]*256 + report[15] - 32768;

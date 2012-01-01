@@ -55,6 +55,9 @@ namespace Move
 		PBYTE getEyeBuffer();
 		void getEyeDimensions(int &x, int &y);
 
+		int getTriggerValue(int id);
+		void setRumble(int id, int value);
+
 		//move calibration
 		int pairMoves();
 		void useMagnetometer(int id, bool value);
