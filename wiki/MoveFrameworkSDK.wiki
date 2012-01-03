@@ -19,6 +19,8 @@
 = Using the SDK =
 
 You can find an example in the example project.
+Everything is in the "Move" namespace!
+(Except the low-level device code.)
 
 = API =
 API comming later, but here are the most important interfaces:
