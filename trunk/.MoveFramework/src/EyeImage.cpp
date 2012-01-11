@@ -183,7 +183,7 @@ namespace Eye
 
 		Vector2 min, max;
 		min=max=current;
-		while(true)
+		for (int i=0;i<10000;i++)
 		{
 			ball->ballContour.push_back(current);
 			setPixel(current,ColorRgb(255,0,0));

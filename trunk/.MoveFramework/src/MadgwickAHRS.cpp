@@ -26,10 +26,11 @@ namespace Madgwick
 
 	//---------------------------------------------------------------------------------------------------
 	// Variable definitions
-
-	float beta = 0.5f;								// 2 * proportional gain (Kp)
-	float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// quaternion of sensor frame relative to auxiliary frame
-
+	AHRS::AHRS()
+	{
+		beta = 0.5f;								// 2 * proportional gain (Kp)
+		q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// quaternion of sensor frame relative to auxiliary frame
+	}
 	//---------------------------------------------------------------------------------------------------
 	// Function declarations
 
@@ -41,7 +42,7 @@ namespace Madgwick
 	//---------------------------------------------------------------------------------------------------
 	// AHRS algorithm update
 
-	void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float dt) {
+	void AHRS::MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float dt) {
 		float recipNorm;
 		float s0, s1, s2, s3;
 		float qDot1, qDot2, qDot3, qDot4;
@@ -134,7 +135,7 @@ namespace Madgwick
 	//---------------------------------------------------------------------------------------------------
 	// IMU algorithm update
 
-	void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az, float dt) {
+	void AHRS::MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az, float dt) {
 		float recipNorm;
 		float s0, s1, s2, s3;
 		float qDot1, qDot2, qDot3, qDot4;
