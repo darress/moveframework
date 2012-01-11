@@ -15,18 +15,21 @@
 
 namespace Madgwick
 {
+	class AHRS
+	{
+	public:
+		//----------------------------------------------------------------------------------------------------
+		// Variable declaration
 
-	//----------------------------------------------------------------------------------------------------
-	// Variable declaration
+		float beta;				// algorithm gain
+		float q0, q1, q2, q3;	// quaternion of sensor frame relative to auxiliary frame
 
-	extern float beta;				// algorithm gain
-	extern float q0, q1, q2, q3;	// quaternion of sensor frame relative to auxiliary frame
-
-	//---------------------------------------------------------------------------------------------------
-	// Function declarations
-
-	void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float dt);
-	void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az, float dt);
+		//---------------------------------------------------------------------------------------------------
+		// Function declarations
+		AHRS();
+		void MadgwickAHRSupdate(float gx, float gy, float gz, float ax, float ay, float az, float mx, float my, float mz, float dt);
+		void MadgwickAHRSupdateIMU(float gx, float gy, float gz, float ax, float ay, float az, float dt);
+	};
 }
 
 #endif

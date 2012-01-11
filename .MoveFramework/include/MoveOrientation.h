@@ -2,6 +2,7 @@
 
 #include "MovePrecompiled.h"
 #include "MoveCalibration.h"
+#include "MadgwickAHRS.h"
 
 namespace Move
 {
@@ -16,6 +17,8 @@ namespace Move
 		MoveCalibration* calibration;
 
 		bool useMagnetometer;
+
+		Madgwick::AHRS ahrs;
 
 		CRITICAL_SECTION criticalSection;
 

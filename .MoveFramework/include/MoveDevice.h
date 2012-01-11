@@ -24,6 +24,7 @@ namespace MoveDevice
 {
 	enum MoveButton
 	{
+		B_NONE=0x0,
 		B_TRIANGLE= 0x10,
 		B_CIRCLE=   0x20,
 		B_CROSS=    0x40,

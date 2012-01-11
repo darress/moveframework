@@ -1,6 +1,5 @@
 #include "MovePrecompiled.h"
 #include "MoveOrientation.h"
-#include "MadgwickAHRS.h"
 
 namespace Move
 {
@@ -41,20 +40,20 @@ namespace Move
 		if (useMagnetometer && (mag.x!=0 || mag.y!=0 || mag.z!=0))
 		{
 			mag=calib.magGain*(mag-calib.magBias);
-			Madgwick::MadgwickAHRSupdate(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,mag.x,mag.y,mag.z,deltat);
+			ahrs.MadgwickAHRSupdate(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,mag.x,mag.y,mag.z,deltat);
 		}
 		else
 		{
-			Madgwick::MadgwickAHRSupdateIMU(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,deltat);
+			ahrs.MadgwickAHRSupdateIMU(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,deltat);
 		}
 
 		float ESq_1, ESq_2, ESq_3, ESq_4;                              // quaternion describing orientation of sensor relative to earth
 
 		// compute the quaternion conjugate
-		ESq_1 = Madgwick::q0;
-		ESq_2 = -Madgwick::q1;
-		ESq_3 = -Madgwick::q2;
-		ESq_4 = -Madgwick::q3;
+		ESq_1 = ahrs.q0;
+		ESq_2 = -ahrs.q1;
+		ESq_3 = -ahrs.q2;
+		ESq_4 = -ahrs.q3;
 
 		float ASq_1, ASq_2, ASq_3, ASq_4;
 
@@ -95,13 +94,13 @@ namespace Move
 	//only for testing
 	void MoveOrientation::HighGains()
 	{
-		Madgwick::beta = 0.5f;
+		ahrs.beta = 0.5f;
 		useMagnetometer=false;
 		// store orientation of auxiliary frame
-		AEq_1 = Madgwick::q0;                                                              
-		AEq_2 = Madgwick::q1;
-		AEq_3 = Madgwick::q2;
-		AEq_4 = Madgwick::q3;
+		AEq_1 = ahrs.q0;                                                              
+		AEq_2 = ahrs.q1;
+		AEq_3 = ahrs.q2;
+		AEq_4 = ahrs.q3;
 
 	}
 
@@ -110,9 +109,9 @@ namespace Move
 		//Madgwick::beta = 0.5f;
 		//useMagnetometer=true;
 		// store orientation of auxiliary frame
-		AEq_1 = Madgwick::q0;                                                              
-		AEq_2 = Madgwick::q1;
-		AEq_3 = Madgwick::q2;
-		AEq_4 = Madgwick::q3;
+		AEq_1 = ahrs.q0;                                                              
+		AEq_2 = ahrs.q1;
+		AEq_3 = ahrs.q2;
+		AEq_4 = ahrs.q3;
 	}
 }
