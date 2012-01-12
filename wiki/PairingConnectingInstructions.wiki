@@ -1,5 +1,7 @@
 #summary Instructions to pair and connect the Moves to a Windows based computer
 
+*A played a bit around with a win7 x64 system, and I could manage it too. So it seems that all windows version will work. Also tested with internal BT adapter, and it worked too.)
+
 =Instructions to pair and connect the Moves to a Windows based computer=
 
 ==Seting the Bluetooth address of your dongle in the Move's memory (pairing)==
@@ -11,20 +13,26 @@ The Move connects always to the host address, that is stored in the it's memory.
 
 
 ==Connecting the paired Moves to you PC for the first time==
-*Only tested with Windows 8, please comment if it works or not with other versions!*
+*Only tested with Windows 7 and Windows 8, please comment if it works or not with other versions!*
   # Make sure MotionInJoy is not installed!
   # Open your Bluetooth settings, and make sure "Allow devices to find this computer" is checked
   # Click "Add a Bluetooth device"
   # Press the PS button on your Move
   # Pair the Move without a oode (if the Move device doesnt appear while searching, my framework will probably not work with your OS, and there are some win7-64 that can add the device, some cannot)
+    * Sometimes it is necessary to press the PS button just after clicking the "pair without code", and also try to press it if you stuck at some step.
   # Open the Properties window of the Move (if you are here, you will probably able to pair the device, dont give up, play around a little, and report how you could manage it! :))
-  # Click the Services tab
-  # Open the properties of the device, go to the "Services" tab and tick the checkbox for the HID service - don't hit Apply or OK yet! (if the checkbox does not appear, try to press the PS button immediately after clicking the services tab)
-  # Press the PS button and immediately hit Apply
-  # If the led on your Move is on and not blinking, you successfully connected your Move to your PC
-  # If this is not the case, you have to play around with the HID checkbox and the PS button. Please let me know, if you found an other method to pair (on Windows 8 or other versions)!
+  # Open the properties of the device, go to the "Services" tab and you have to see the checkbox for the HID service! 
+    *If the checkbox does not appear, try to press the PS button a bit before clicking the services tab. If it appeared once, it will not desappear any more.
+  # Now you have 2 methods to try
+    * Method 1: Tick the checkbox, press the PS button and immediately hit Apply.
+    * Method 2: Make sure the checkbox is not checked. Close the window. Open it again, but don't click on the services tab yet. Press the PS button, and immediately click the services tab.
+  # If the led on your Move is on and not blinking, you successfully connected your Move to your PC, and you will be able to pair it very fast every other time by simple pushing the PS button.
+  # If you could not manage to connect the Move to the PC, please play around a bit, and if you found a 3. method, let me know!
 
   
 ==Connecting the paired Moves to your PC (not the first time)==
-*Only tested with Windows 8, please comment if it works or not with other versions!*
+*Only tested with Windows 7 and Windows 8, please comment if it works or not with other versions!*
   # Press the PS button on your Move, and it will be paired
+
+==Disconnecting your Move==
+  # Press and hold the PS button until the LED goes out.
