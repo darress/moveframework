@@ -5,3 +5,6 @@
 = Requests =
  * Navigation controller support
     * I don't have a navigation controller. If I get one from somebody, I will get it work with the framework. Otherwise I can't test.
+ * Support for other webcams
+    * I can make it work, but the PS Eye is a very good webcam, the accuracy may be not this good with other webcams
+    * This is not my priority, there is more important changes first
