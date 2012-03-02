@@ -26,7 +26,7 @@ The Move connects always to the host address, that is stored in the it's memory.
   # Now you have 3 methods to try
     * Method 1: Tick the checkbox, press the PS button and immediately hit Apply. If it doesn't work for first, uncheck the checkbox, close the window, open it again, and repeat this step.
     * Method 2: Make sure the checkbox is not checked. Close the window. Open it again, but don't click on the services tab yet. Press the PS button, and immediately click the services tab. If it doesn't work, repeat it.
-    * Method 3: During HID device installation stage, press PS button immediately after led goes off, just to keep the installation going. Then when that's done, the led will light up on its own, and don't press PS button any more, or Move goes into pairing mode again and have to start all over.
+    * Method 3: During HID device installation stage, press PS button immediately after led goes off, just to keep the installation going. Then when that's done, the led will light up on its own, and don't press PS button any more, or Move goes into pairing mode again and have to start all over. (Comment: During HID device installation stage, every time the Move LED goes off, press PS button immediately so the LED starts blinking again, this is just to keep the installation going. Also make sure you fully charge the Move, it will greatly prolong the blinking period.)
   # If the led on your Move is on and not blinking, you successfully connected your Move to your PC, and you will be able to pair it very fast every other time by simple pushing the PS button.
   # If you could not manage to connect the Move to the PC, please play around a bit, and if you found a 3. method, let me know!
 
