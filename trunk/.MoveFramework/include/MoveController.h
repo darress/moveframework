@@ -24,7 +24,9 @@ namespace Move
 		int lastTimestamp;
 
 		bool firstPackage;
+		float resetTimer;
 
+		static float offsetX,offsetY,offsetZ;
 	public:
 		MoveData data;
 

@@ -3,6 +3,7 @@
 
 namespace Move
 {
+	float MoveController::offsetX, MoveController::offsetY, MoveController::offsetZ;
 	MoveController::MoveController(int id, MoveManager* manager)
 	{
 		this->id=id;
@@ -13,6 +14,7 @@ namespace Move
 
 		lastSeqNumber=-1;
 		firstPackage=true;
+		resetTimer=0;
 	}
 
 
@@ -75,8 +77,6 @@ namespace Move
 				if ((m.Buttons & key) && !(data.buttons & key))
 				{
 					manager->moveKeyPressed(id, key);
-					if (key==MoveDevice::B_PS)
-						orientation->Reset();
 				}
 				if (!(m.Buttons & key) && (data.buttons & key))
 				{
@@ -86,18 +86,37 @@ namespace Move
 			data.buttons = m.Buttons;
 			data.trigger = m.TAnalog;
 
+			//handle resets
+			if (m.Buttons & MoveDevice::B_PS)
+			{
+				resetTimer+=timeEllapsed;
+				orientation->Reset();
+				if (resetTimer>2.0f && manager->getEye())
+				{
+					Eye::Ball* ball=&(manager->getEye()->balls[id]);
+					offsetX=ball->ballX;
+					offsetY=ball->ballY;
+					offsetZ=ball->ballZ;
+					resetTimer=0;
+				}
+			}
+			else
+			{
+				resetTimer=0;
+			}
+
 			//if camera is capturing
 			if (manager->getEye())
 			{
-				//TODO: initial solution
 				data.isOnDisplay=false;
 				if (manager->getEye()->balls[id].ballFoundOut)
 				{
 					Vector3 previousPosition=data.position;
 					Vector3 previousVelocity=data.velocity;
-					data.position.x=manager->getEye()->balls[id].ballX;
-					data.position.y=manager->getEye()->balls[id].ballY;
-					data.position.z=manager->getEye()->balls[id].ballZ;
+					Eye::Ball* ball=&(manager->getEye()->balls[id]);
+					data.position.x=ball->ballX - offsetX;
+					data.position.y=ball->ballY - offsetY;
+					data.position.z=ball->ballZ - offsetZ;
 					data.velocity=(data.position-previousPosition)/timeEllapsed;
 					data.acceleration=(data.velocity-previousVelocity)/timeEllapsed;
 

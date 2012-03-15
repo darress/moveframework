@@ -28,7 +28,7 @@ namespace Madgwick
 	// Variable definitions
 	AHRS::AHRS()
 	{
-		beta = 0.5f;								// 2 * proportional gain (Kp)
+		beta = 0.1f;								// 2 * proportional gain (Kp)
 		q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// quaternion of sensor frame relative to auxiliary frame
 	}
 	//---------------------------------------------------------------------------------------------------

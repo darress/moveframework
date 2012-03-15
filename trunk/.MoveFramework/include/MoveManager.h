@@ -34,6 +34,12 @@ namespace Move
 		int initMoves();
 		void initCamera(int numMoves);
 
+		//move count
+		int getMoveCount()
+		{
+			return moveCount;
+		}
+
 		//observers
 		void subsribeMove(IMoveObserver* observer);
 		void unsubsribeMove(IMoveObserver* observer);
