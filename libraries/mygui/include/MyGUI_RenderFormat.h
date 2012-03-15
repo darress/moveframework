@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		04/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -30,6 +29,7 @@ namespace MyGUI
 
 	struct MYGUI_EXPORT VertexColourType
 	{
+	public:
 		enum Enum
 		{
 			ColourARGB, // D3D style compact colour
@@ -37,10 +37,20 @@ namespace MyGUI
 			MAX
 		};
 
-		VertexColourType(Enum _value = MAX) : value(_value) { }
+		VertexColourType(Enum _value = MAX) :
+			value(_value)
+		{
+		}
 
-		friend bool operator == (VertexColourType const& a, VertexColourType const& b) { return a.value == b.value; }
-		friend bool operator != (VertexColourType const& a, VertexColourType const& b) { return a.value != b.value; }
+		friend bool operator == (VertexColourType const& a, VertexColourType const& b)
+		{
+			return a.value == b.value;
+		}
+
+		friend bool operator != (VertexColourType const& a, VertexColourType const& b)
+		{
+			return a.value != b.value;
+		}
 
 	private:
 		Enum value;
@@ -57,10 +67,20 @@ namespace MyGUI
 			R8G8B8A8 // 32-bit pixel format, 8 bits for red, green, blue and alpha.
 		};
 
-		PixelFormat(Enum _value = Unknow) : value(_value) { }
+		PixelFormat(Enum _value = Unknow) :
+			value(_value)
+		{
+		}
 
-		friend bool operator == (PixelFormat const& a, PixelFormat const& b) { return a.value == b.value; }
-		friend bool operator != (PixelFormat const& a, PixelFormat const& b) { return a.value != b.value; }
+		friend bool operator == (PixelFormat const& a, PixelFormat const& b)
+		{
+			return a.value == b.value;
+		}
+
+		friend bool operator != (PixelFormat const& a, PixelFormat const& b)
+		{
+			return a.value != b.value;
+		}
 
 	private:
 		Enum value;
@@ -79,16 +99,41 @@ namespace MyGUI
 			RenderTarget = MYGUI_FLAG(5)
 		};
 
-		TextureUsage(Enum _value = Default) : value(_value) { }
+		TextureUsage(Enum _value = Default) :
+			value(_value)
+		{
+		}
 
-		friend bool operator == (TextureUsage const& a, TextureUsage const& b) { return a.value == b.value; }
-		friend bool operator != (TextureUsage const& a, TextureUsage const& b) { return a.value != b.value; }
+		friend bool operator == (TextureUsage const& a, TextureUsage const& b)
+		{
+			return a.value == b.value;
+		}
 
-		TextureUsage& operator |= (TextureUsage const& _other) { value = Enum(int(value) | int(_other.value)); return *this; }
-		friend TextureUsage operator | (Enum const& a, Enum const& b) { return TextureUsage(Enum(int(a) | int(b))); }
-		friend TextureUsage operator | (TextureUsage const& a, TextureUsage const& b) { return TextureUsage(Enum(int(a.value) | int(b.value))); }
+		friend bool operator != (TextureUsage const& a, TextureUsage const& b)
+		{
+			return a.value != b.value;
+		}
 
-		bool isValue(Enum _value) { return 0 != (value & _value); }
+		TextureUsage& operator |= (TextureUsage const& _other)
+		{
+			value = Enum(int(value) | int(_other.value));
+			return *this;
+		}
+
+		friend TextureUsage operator | (Enum const& a, Enum const& b)
+		{
+			return TextureUsage(Enum(int(a) | int(b)));
+		}
+
+		friend TextureUsage operator | (TextureUsage const& a, TextureUsage const& b)
+		{
+			return TextureUsage(Enum(int(a.value) | int(b.value)));
+		}
+
+		bool isValue(Enum _value) const
+		{
+			return 0 != (value & _value);
+		}
 
 	private:
 		Enum value;

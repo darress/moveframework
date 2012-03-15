@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,31 +23,18 @@
 #define __MYGUI_MENU_BAR_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_MenuCtrl.h"
+#include "MyGUI_MenuControl.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT MenuBar :
-		public MenuCtrl
+		public MenuControl
 	{
 		MYGUI_RTTI_DERIVED( MenuBar )
 
 	public:
 		MenuBar();
-
-	/*internal:*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
-
-	protected:
-		virtual ~MenuBar();
-
-		void baseChangeWidgetSkin(ResourceSkin* _info);
-
-	private:
-		void initialiseWidgetSkin(ResourceSkin* _info);
-		void shutdownWidgetSkin();
-
 	};
 
 } // namespace MyGUI

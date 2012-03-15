@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		07/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -25,7 +24,6 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Types.h"
-#include "MyGUI_WidgetToolTip.h"
 
 namespace MyGUI
 {
@@ -36,14 +34,22 @@ namespace MyGUI
 		enum ToolTipType
 		{
 			Hide,
-			Show
+			Show,
+			Move
 		};
 
 		ToolTipInfo(ToolTipType _type) :
-			type(_type), index(ITEM_NONE) { }
+			type(_type),
+			index(ITEM_NONE)
+		{
+		}
 
 		ToolTipInfo(ToolTipType _type, size_t _index, const IntPoint& _point) :
-			type(_type), index(_index), point(_point) { }
+			type(_type),
+			index(_index),
+			point(_point)
+		{
+		}
 
 		ToolTipType type;
 		size_t index;

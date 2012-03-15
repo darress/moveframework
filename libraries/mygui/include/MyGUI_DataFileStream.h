@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,12 +28,13 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT DataFileStream : public DataStream
+	class MYGUI_EXPORT DataFileStream :
+		public DataStream
 	{
 	public:
 		DataFileStream();
 		DataFileStream(std::ifstream* _stream);
-		~DataFileStream();
+		virtual ~DataFileStream();
 
 	private:
 		std::ifstream* mFileStream;

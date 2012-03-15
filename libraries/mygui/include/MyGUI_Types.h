@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,7 +28,6 @@
 #include <map>
 #include <string>
 
-#include "MyGUI_Utility.h"
 #include "MyGUI_Align.h"
 #include "MyGUI_TPoint.h"
 #include "MyGUI_TSize.h"
@@ -54,6 +52,8 @@ namespace MyGUI
 
 	typedef std::map<std::string, std::string> MapString;
 	typedef std::vector<std::string> VectorString;
+	typedef std::pair<std::string, std::string> PairString;
+	typedef std::vector<PairString> VectorStringPairs;
 
 	typedef char int8;
 	typedef short int16;

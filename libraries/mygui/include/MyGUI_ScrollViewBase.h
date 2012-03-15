@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		10/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,34 +28,36 @@
 namespace MyGUI
 {
 
-	class ScrollViewBase
+	class MYGUI_EXPORT ScrollViewBase
 	{
-
 	protected:
 		ScrollViewBase();
-		virtual ~ScrollViewBase() { }
+		virtual ~ScrollViewBase();
 
 		void updateScrollSize();
 		void updateScrollPosition();
 
-		// размер данных
-		virtual IntSize getContentSize() { return IntSize(); }
-		// смещение данных
-		virtual IntPoint getContentPosition() { return IntPoint(); }
-		virtual void setContentPosition(const IntPoint& _value) { }
-		// размер окна, через которые видно данные
-		virtual IntSize getViewSize() const { return IntSize(); }
-		// размер на который прокручиваются данные при щелчке по скролу
-		virtual size_t getHScrollPage() { return 1; }
-		virtual size_t getVScrollPage() { return 1; }
+		// СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С…
+		virtual IntSize getContentSize();
 
-		virtual Align getContentAlign() { return Align::Center; }
+		// СЃРјРµС‰РµРЅРёРµ РґР°РЅРЅС‹С…
+		virtual IntPoint getContentPosition();
+		virtual void setContentPosition(const IntPoint& _value);
 
-		virtual void eraseContent() { }
+		// СЂР°Р·РјРµСЂ РѕРєРЅР°, С‡РµСЂРµР· РєРѕС‚РѕСЂС‹Рµ РІРёРґРЅРѕ РґР°РЅРЅС‹Рµ
+		virtual IntSize getViewSize();
+
+		// СЂР°Р·РјРµСЂ РЅР° РєРѕС‚РѕСЂС‹Р№ РїСЂРѕРєСЂСѓС‡РёРІР°СЋС‚СЃСЏ РґР°РЅРЅС‹Рµ РїСЂРё С‰РµР»С‡РєРµ РїРѕ СЃРєСЂРѕР»Сѓ
+		virtual size_t getHScrollPage();
+		virtual size_t getVScrollPage();
+
+		virtual Align getContentAlign();
+
+		virtual void eraseContent();
 
 	protected:
-		VScroll* mVScroll;
-		HScroll* mHScroll;
+		ScrollBar* mVScroll;
+		ScrollBar* mHScroll;
 		Widget* mClient;
 
 		bool mVisibleHScroll;
@@ -65,9 +66,8 @@ namespace MyGUI
 		size_t mVRange;
 		size_t mHRange;
 
-		// изменяется ли содержимое при ресайзе
+		// РёР·РјРµРЅСЏРµС‚СЃСЏ Р»Рё СЃРѕРґРµСЂР¶РёРјРѕРµ РїСЂРё СЂРµСЃР°Р№Р·Рµ
 		bool mChangeContentByResize;
-
 	};
 
 } // namespace MyGUI

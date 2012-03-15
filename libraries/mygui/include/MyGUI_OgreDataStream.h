@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		08/2009
-	@module
 */
 
 #ifndef __MYGUI_OGRE_DATA_STREAM_H__
@@ -18,11 +17,12 @@
 namespace MyGUI
 {
 
-	class OgreDataStream : public IDataStream
+	class OgreDataStream :
+		public IDataStream
 	{
 	public:
 		OgreDataStream(Ogre::DataStreamPtr _stream);
-		~OgreDataStream();
+		virtual ~OgreDataStream();
 
 		virtual bool eof();
 		virtual size_t size();

@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -33,14 +32,14 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT LayerItem : public ILayerItem
+	class MYGUI_EXPORT LayerItem :
+		public ILayerItem
 	{
 	public:
 		LayerItem();
-		virtual ~LayerItem() { }
+		virtual ~LayerItem();
 
-	public:
-		ILayer* getLayer() { return mLayer; }
+		ILayer* getLayer() const;
 
 		virtual void attachItemToNode(ILayer* _layer, ILayerNode* _node);
 		virtual void detachFromLayer();
@@ -68,8 +67,8 @@ namespace MyGUI
 		// актуально для рутового виджета
 		ILayer* mLayer;
 		// конкретный айтем находящийся в слое
-		ILayerNode * mLayerNode;
-		ILayerNode * mSaveLayerNode;
+		ILayerNode* mLayerNode;
+		ILayerNode* mSaveLayerNode;
 
 		typedef std::vector<LayerItem*> VectorLayerItem;
 		// список наших детей айтемов

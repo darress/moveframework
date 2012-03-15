@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -34,8 +33,8 @@ namespace MyGUI
 		MYGUI_RTTI_BASE( IObject )
 
 	public:
+		IObject() { }
 		virtual ~IObject() { }
-
 	};
 
 } // namespace MyGUI

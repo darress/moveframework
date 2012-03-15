@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		01/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -25,62 +24,68 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_LogStream.h"
-#include <map>
+#include "MyGUI_LogSource.h"
+#include "MyGUI_Diagnostic.h"
+#include <vector>
 
 namespace MyGUI
 {
 
 	#define MYGUI_LOGGING(section, level, text) \
-		MyGUI::LogManager::out(section, MyGUI::LogManager::level) \
-		<< text \
-		<< MyGUI::LogManager::info(__FILE__, __LINE__) \
-		<< MyGUI::LogManager::end()
+		MyGUI::LogManager::getInstance().log(section, MyGUI::LogLevel::level, MyGUI::LogStream() << text << MyGUI::LogStream::End(), __FILE__, __LINE__)
+
+	class ConsoleLogListener;
+	class FileLogListener;
+	class LevelLogFilter;
 
 	class MYGUI_EXPORT LogManager
 	{
-
 	public:
-		enum LogLevel
-		{
-			Info,
-			Warning,
-			Error,
-			Critical,
-			EndLogLevel
-		};
-
-	public:
-		static void shutdown();
-		static void initialise();
-
-		static void registerSection(const std::string& _section, const std::string& _file);
-		static void unregisterSection(const std::string& _section);
-
-		static LogStream& out(const std::string& _section, LogLevel _level);
-		static const std::string& info(const char * _file /* = __FILE__*/, int _line /* = __LINE__*/);
-
-		static const LogStream::LogStreamEnd& end();
-
-		// set logging enabled on std output device
-		static void setSTDOutputEnabled(bool _enable);
-		static bool getSTDOutputEnabled();
-
-	private:
 		LogManager();
 		~LogManager();
 
-	public:
-		static const std::string General;
-		static const std::string separator;
+		static LogManager& getInstance();
+		static LogManager* getInstancePtr();
 
-		static LogStream::LogStreamEnd endl;
-		static const std::string LevelsName[EndLogLevel];
+		/** Call LogSource::flush() for all log sources. */
+		void flush();
+		/** Call LogSource::log for all log sources. */
+		void log(const std::string& _section, LogLevel _level, const std::string& _message, const char* _file, int _line);
+
+		/** Create default LevelLogFilter, FileLogListener and ConsoleLogListener. */
+		void createDefaultSource(const std::string& _logname);
+
+		/** Enable or disable default ConsoleLogListener that writes log into std::cout.\n
+			Enabled (true) by default.
+		*/
+		void setSTDOutputEnabled(bool _value);
+		/** Is disable ConsoleLogListener enabled. */
+		bool getSTDOutputEnabled() const;
+
+		/** Set default LevelLogFilter level. */
+		void setLoggingLevel(LogLevel _value);
+		/** Get default LevelLogFilter level. */
+		LogLevel getLoggingLevel() const;
+
+		/** Add log source. */
+		void addLogSource(LogSource* _source);
 
 	private:
-		static LogManager * msInstance;
-		typedef std::map<std::string, LogStream*>  MapLogStream;
-		MapLogStream mMapSectionFileName;
-		bool mSTDOut;
+		void close();
+
+	private:
+		static LogManager* msInstance;
+
+		typedef std::vector<LogSource*> VectorLogSource;
+		VectorLogSource mSources;
+
+		ConsoleLogListener* mConsole;
+		FileLogListener* mFile;
+		LevelLogFilter* mFilter;
+		LogSource* mDefaultSource;
+
+		LogLevel mLevel;
+		bool mConsoleEnable;
 	};
 
 } // namespace MyGUI

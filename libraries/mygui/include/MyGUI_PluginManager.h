@@ -2,7 +2,6 @@
 	@file
 	@author		Denis Koronchik
 	@date		09/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,39 +23,34 @@
 #define __MYGUI_PLUGIN_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_Plugin.h"
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_Version.h"
+#include "MyGUI_DynLib.h"
 #include <set>
+#include "MyGUI_BackwardCompatibility.h"
 
 namespace MyGUI
 {
 
 	/*!	\brief Plugin manager. Load/unload and register plugins.
 	*/
-	class MYGUI_EXPORT PluginManager
+	class MYGUI_EXPORT PluginManager :
+		public Singleton<PluginManager>,
+		public MemberObsolete<PluginManager>
 	{
-		MYGUI_INSTANCE_HEADER( PluginManager )
-
 	public:
-		typedef void (*DLL_START_PLUGIN)(void);
-		typedef void (*DLL_STOP_PLUGIN)(void);
+		PluginManager();
 
-	public:
 		void initialise();
 		void shutdown();
 
-	public:
 		//!	Load plugin
 		bool loadPlugin(const std::string& _file);
 
 		//!	Unload plugin
 		void unloadPlugin(const std::string& _file);
-
-		/** Load additional MyGUI *_plugin.xml file */
-		bool load(const std::string& _file);
-		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
 
 		/*!	Install plugin
 			@remarks Calls from plugin
@@ -72,6 +66,9 @@ namespace MyGUI
 		void unloadAllPlugins();
 
 	private:
+		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
+
+	private:
 		//!	List of dynamic libraries
 		typedef std::map <std::string, DynLib*> DynLibList;
 
@@ -84,8 +81,9 @@ namespace MyGUI
 		//!	Installed plugins
 		PluginList mPlugins;
 
+		bool mIsInitialise;
 	};
 
-}
+} // namespace MyGUI
 
 #endif // __MYGUI_PLUGIN_MANAGER_H__

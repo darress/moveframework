@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -46,21 +45,25 @@ namespace MyGUI
 		void setTexture(ITexture* _value);
 		ITexture* getTexture();
 
+		void setManualRender(bool _value);
+		bool getManualRender() const;
+
 		void addDrawItem(ISubWidget* _item, size_t _count);
 		void removeDrawItem(ISubWidget* _item);
 		void reallockDrawItem(ISubWidget* _item, size_t _count);
 
-		void outOfDate() { mOutDate = true; }
+		void outOfDate();
+		bool isOutOfDate() const;
 
-		size_t getNeedVertexCount() const { return mNeedVertexCount; }
-		size_t getVertexCount() const { return mCountVertex; }
+		size_t getNeedVertexCount() const;
+		size_t getVertexCount() const;
 
-		bool getCurrentUpdate() const { return mCurrentUpdate; }
-		Vertex* getCurrentVertextBuffer() const { return mCurrentVertext; }
+		bool getCurrentUpdate() const;
+		Vertex* getCurrentVertexBuffer() const;
 
-		void setLastVertexCount(size_t _count) { mLastVertextCount = _count; }
+		void setLastVertexCount(size_t _count);
 
-		IRenderTarget* getRenderTarget() { return mRenderTarget; }
+		IRenderTarget* getRenderTarget();
 
 		bool getCompression();
 
@@ -73,20 +76,21 @@ namespace MyGUI
 
 		size_t mNeedVertexCount;
 
-		bool mOutDate;
+		bool mOutOfDate;
 		VectorDrawItem mDrawItems;
 
-		// колличество отрендренных реально вершин
+		// РєРѕР»Р»РёС‡РµСЃС‚РІРѕ РѕС‚СЂРµРЅРґСЂРµРЅРЅС‹С… СЂРµР°Р»СЊРЅРѕ РІРµСЂС€РёРЅ
 		size_t mCountVertex;
 
 		bool mCurrentUpdate;
-		Vertex* mCurrentVertext;
-		size_t mLastVertextCount;
+		Vertex* mCurrentVertex;
+		size_t mLastVertexCount;
 
 		IVertexBuffer* mVertexBuffer;
 		IRenderTarget* mRenderTarget;
 
 		bool mCompression;
+		bool mManualRender;
 	};
 
 } // namespace MyGUI

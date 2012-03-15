@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -31,7 +30,8 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT ISerializable : public IObject
+	class MYGUI_EXPORT ISerializable :
+		public IObject
 	{
 		MYGUI_RTTI_DERIVED( ISerializable )
 
@@ -41,7 +41,6 @@ namespace MyGUI
 
 		virtual void serialization(xml::ElementPtr _node, Version _version) { }
 		virtual void deserialization(xml::ElementPtr _node, Version _version) { }
-
 	};
 
 } // namespace MyGUI

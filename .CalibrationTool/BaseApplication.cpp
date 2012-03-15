@@ -13,17 +13,26 @@ BaseApplication::BaseApplication(void)
     mMouse(0),
     mKeyboard(0)
 {
+	mGUI = 0;  
+	mPlatform = 0;
 }
 
 //-------------------------------------------------------------------------------------
 BaseApplication::~BaseApplication(void)
 {
-	mGUI->shutdown();
-	delete mGUI;
-	mGUI = 0;   
-	mPlatform->shutdown();
-	delete mPlatform;
-	mPlatform = 0;
+	if (mGUI)
+	{
+		mGUI->shutdown();
+		delete mGUI;
+		mGUI = 0; 
+	}
+	 
+	if (mPlatform)
+	{
+		mPlatform->shutdown();
+		delete mPlatform;
+		mPlatform = 0;
+	}
 
     //Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
@@ -255,31 +264,31 @@ bool BaseApplication::keyPressed( const OIS::KeyEvent &arg )
         mShutDown = true;
     }
 
-    mGUI->injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
+    MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(arg.key), arg.text);
     return true;
 }
 
 bool BaseApplication::keyReleased( const OIS::KeyEvent &arg )
 {
-	mGUI->injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
+	MyGUI::InputManager::getInstance().injectKeyRelease(MyGUI::KeyCode::Enum(arg.key));
     return true;
 }
 
 bool BaseApplication::mouseMoved( const OIS::MouseEvent &arg )
 {
-	mGUI->injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
+	MyGUI::InputManager::getInstance().injectMouseMove(arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs);
     return true;
 }
 
 bool BaseApplication::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-	mGUI->injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+	MyGUI::InputManager::getInstance().injectMousePress(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
     return true;
 }
 
 bool BaseApplication::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
-	mGUI->injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
+	MyGUI::InputManager::getInstance().injectMouseRelease(arg.state.X.abs, arg.state.Y.abs, MyGUI::MouseButton::Enum(id));
     return true;
 }
 

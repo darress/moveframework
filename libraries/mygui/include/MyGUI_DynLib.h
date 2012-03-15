@@ -3,7 +3,6 @@
 	@author		Denis Koronchik
 	@author		Georgiy Evmenov
 	@date		09/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -66,7 +65,7 @@ namespace MyGUI
 		friend class DynLibManager;
 
 	protected:
-		DynLib(const std::string &name);
+		DynLib(const std::string& name);
 
 		~DynLib();
 
@@ -81,7 +80,7 @@ namespace MyGUI
 		void unload();
 
 		//! Get the name of the library
-		std::string getName(void) const { return mName; }
+		std::string getName(void) const;
 
 		/**
 			Returns the address of the given symbol from the loaded library.
@@ -95,8 +94,7 @@ namespace MyGUI
 
 	protected:
 		//! Gets the last loading error
-		std::string dynlibError(void);
-
+		std::string dynlibError() const;
 
 	protected:
 		//!	Name of library
@@ -106,6 +104,6 @@ namespace MyGUI
 		MYGUI_DYNLIB_HANDLE mInstance;
 	};
 
-}
+} // namespace MyGUI
 
 #endif // __MYGUI_DYNLIB_H__

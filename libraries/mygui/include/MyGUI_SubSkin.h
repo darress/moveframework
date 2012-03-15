@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -28,6 +27,7 @@
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_ISubWidgetRect.h"
 #include "MyGUI_ResourceSkin.h"
+#include "MyGUI_RenderFormat.h"
 #include "MyGUI_IStateInfo.h"
 
 namespace MyGUI
@@ -44,24 +44,23 @@ namespace MyGUI
 		SubSkin();
 		virtual ~SubSkin();
 
-		void setAlpha(float _alpha);
+		virtual void setAlpha(float _alpha);
 
 		virtual void setVisible(bool _visible);
 
 		virtual void setStateData(IStateInfo* _data);
 
-		virtual void createDrawItem(ITexture* _texture, ILayerNode * _node);
+		virtual void createDrawItem(ITexture* _texture, ILayerNode* _node);
 		virtual void destroyDrawItem();
 
 		// метод для отрисовки себя
 		virtual void doRender();
 
-	/*internal:*/
-		void _updateView();
-		void _correctView();
+		/*internal:*/
+		virtual void _updateView();
+		virtual void _correctView();
 
-		void _setAlign(const IntSize& _oldsize, bool _update);
-		void _setAlign(const IntCoord& _oldcoord, bool _update);
+		virtual void _setAlign(const IntSize& _oldsize);
 
 		virtual void _setUVSet(const FloatRect& _rect);
 		virtual void _setColour(const Colour& _value);
@@ -70,6 +69,7 @@ namespace MyGUI
 		FloatRect mRectTexture;
 		bool mEmptyView;
 
+		VertexColourType mVertexFormat;
 		uint32 mCurrentColour;
 
 		FloatRect mCurrentTexture;
@@ -77,6 +77,8 @@ namespace MyGUI
 
 		ILayerNode* mNode;
 		RenderItem* mRenderItem;
+
+		bool mSeparate;
 	};
 
 } // namespace MyGUI

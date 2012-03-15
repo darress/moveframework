@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,34 +23,24 @@
 #define __MYGUI_BUTTON_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_StaticText.h"
+#include "MyGUI_TextBox.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT Button :
-		public StaticText
+		public TextBox,
+		public MemberObsolete<Button>
 	{
 		MYGUI_RTTI_DERIVED( Button )
 
 	public:
 		Button();
 
-		//! OLD Set button check state
-		void setButtonPressed(bool _value) { setStateCheck(_value); }
-		//! OLD Get buton check
-		bool getButtonPressed() { return getStateCheck(); }
-
-		//! Set button check state
-		void setStateCheck(bool _value);
-
-		//! Get buton check
-		bool getStateCheck() { return mIsStateCheck; }
-
-		//! Set image index (image should be defined in skin)
-		void setImageIndex(size_t _value);
-		//! Get image index
-		size_t getImageIndex();
+		//! Set button selected state
+		void setStateSelected(bool _value);
+		//! Get buton selected
+		bool getStateSelected() const;
 
 		/** Enable or disable Image mode\n
 			Image mode: when button state changed Image on button also change it's picture.\n
@@ -59,23 +48,22 @@ namespace MyGUI
 		*/
 		void setModeImage(bool _value);
 		/** Get Image mode flag */
-		bool getModeImage() { return mModeImage; }
+		bool getModeImage() const;
 
-		/** Get pointer to glyph image for this button (if it exist in button skin) */
-		StaticImage* getStaticImage() { return mImage; }
+		void setImageResource(const std::string& _name);
 
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
+		void setImageGroup(const std::string& _name);
 
-	/*internal:*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
+		void setImageName(const std::string& _name);
 
+		/*internal:*/
 		void _setMouseFocus(bool _focus);
 
-	protected:
-		virtual ~Button();
+		ImageBox* _getImageBox();
 
-		virtual void baseChangeWidgetSkin(ResourceSkin* _info);
+	protected:
+		virtual void initialiseOverride();
+		virtual void shutdownOverride();
 
 		virtual void onMouseLostFocus(Widget* _new);
 		virtual void onMouseSetFocus(Widget* _old);
@@ -85,13 +73,11 @@ namespace MyGUI
 		virtual void baseUpdateEnable();
 
 		bool _setState(const std::string& _value);
-		void setImageResource(const std::string& _name);
+
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 
 	private:
 		void updateButtonState();
-
-		void shutdownWidgetSkin();
-		void initialiseWidgetSkin(ResourceSkin* _info);
 
 	private:
 		// нажата ли кнопка
@@ -99,11 +85,10 @@ namespace MyGUI
 		// в фокусе ли кнопка
 		bool mIsMouseFocus;
 		// статус кнопки нажата или нет
-		bool mIsStateCheck;
+		bool mStateSelected;
 
-		StaticImage* mImage;
+		ImageBox* mImage;
 		bool mModeImage;
-
 	};
 
 } // namespace MyGUI

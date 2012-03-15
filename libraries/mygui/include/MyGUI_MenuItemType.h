@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -38,45 +37,59 @@ namespace MyGUI
 			MAX
 		};
 
+		MenuItemType(Enum _value = MAX) :
+			value(_value)
+		{
+		}
+
 		static MenuItemType parse(const std::string& _value)
 		{
 			MenuItemType type;
 			int value = 0;
 			while (true)
 			{
-				const char * name = type.getValueName(value);
-				if (strcmp(name, "") == 0 || name == _value) break;
+				const char* name = type.getValueName(value);
+				if (strcmp(name, "") == 0 || name == _value)
+					break;
 				value++;
 			}
-			type.value = MenuItemType::Enum(value);
+			type.value = Enum(value);
 			return type;
 		}
 
-		MenuItemType(Enum _value = MAX) : value(_value) { }
+		friend bool operator == (MenuItemType const& a, MenuItemType const& b)
+		{
+			return a.value == b.value;
+		}
 
-		friend bool operator == (MenuItemType const& a, MenuItemType const& b) { return a.value == b.value; }
-		friend bool operator != (MenuItemType const& a, MenuItemType const& b) { return a.value != b.value; }
+		friend bool operator != (MenuItemType const& a, MenuItemType const& b)
+		{
+			return a.value != b.value;
+		}
 
-		friend std::ostream& operator << ( std::ostream& _stream, const MenuItemType&  _value )
+		friend std::ostream& operator << (std::ostream& _stream, const MenuItemType&  _value)
 		{
 			_stream << _value.getValueName(_value.value);
 			return _stream;
 		}
 
-		friend std::istream& operator >> ( std::istream& _stream, MenuItemType&  _value )
+		friend std::istream& operator >> (std::istream& _stream, MenuItemType&  _value)
 		{
 			std::string value;
 			_stream >> value;
-			_value = MenuItemType::parse(value);
+			_value = parse(value);
 			return _stream;
 		}
 
-		std::string print() const { return getValueName(value); }
+		std::string print() const
+		{
+			return getValueName(value);
+		}
 
 	private:
-		const char * getValueName(int _index) const
+		const char* getValueName(int _index) const
 		{
-			static const char * values[MAX + 1] = { "Normal", "Popup", "Separator", "" };
+			static const char* values[MAX + 1] = { "Normal", "Popup", "Separator", "" };
 			return values[(_index < MAX && _index >= 0) ? _index : MAX];
 		}
 

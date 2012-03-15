@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -26,33 +25,43 @@
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Enumerator.h"
 #include "MyGUI_IFont.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_ResourceManager.h"
+#include "MyGUI_BackwardCompatibility.h"
 
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT FontManager
+	class MYGUI_EXPORT FontManager :
+		public Singleton<FontManager>,
+		public MemberObsolete<FontManager>
 	{
-		MYGUI_INSTANCE_HEADER( FontManager )
-
 	public:
+		FontManager();
+
 		void initialise();
 		void shutdown();
 
-		/** Load additional MyGUI *_font.xml file */
-		bool load(const std::string& _file);
-		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
-
-		const std::string& getDefaultFont() const { return mDefaultName; }
+		/** Get default font name.
+			Default skin also used when creating widget with skin that doesn't exist.
+		*/
+		const std::string& getDefaultFont() const;
+		/** Get default font name.
+			Default skin also used when creating widget with skin that doesn't exist.
+		*/
 		void setDefaultFont(const std::string& _value);
 
 		/** Get font resource */
 		IFont* getByName(const std::string& _name) const;
 
 	private:
+		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
+
+	private:
 		std::string mDefaultName;
+
+		bool mIsInitialise;
 	};
 
 } // namespace MyGUI

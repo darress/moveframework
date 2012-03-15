@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		10/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -34,7 +33,10 @@
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Diagnostic.h"
 #include <algorithm>
+
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
 #include <typeinfo>
+#endif
 
 namespace MyGUI
 {
@@ -68,100 +70,70 @@ namespace MyGUI
 		any = &data;
 		// RU: копия указателя на класс Data и конкретно на объект data
 		// EN: copy of pointer on class Data and on object data
-		Data * copy_ptr = *any.castType<Data*>();
+		Data* copy_ptr = *any.castType<Data*>();
 		// RU: теперь data.value == 0
 		// EN: now value == 0
 		copy_ptr->value = 0;
-
 	}
 	@endcode
 	*/
 
 	class MYGUI_EXPORT Any
 	{
-
-	private:
-		struct AnyEmpty { };
-
 	public:
+		struct AnyEmpty { };
 		static AnyEmpty Null;
 
-	public:
-		Any() :
-			mContent(nullptr)
-		{
-		}
+		Any();
+		Any(const Any::AnyEmpty& value);
+		Any(const Any& other);
 
-		template<typename ValueType> Any(const ValueType& value) :
+		template<typename ValueType>
+		Any(const ValueType& value) :
 			mContent(new Holder<ValueType>(value))
 		{
 		}
 
-		Any(const Any::AnyEmpty& value) :
-			mContent(nullptr)
-		{
-		}
+		~Any();
 
-		Any(const Any& other) :
-			mContent(other.mContent ? other.mContent->clone() : nullptr)
-		{
-		}
-
-		~Any()
-		{
-			delete mContent;
-		}
-
-		Any& swap(Any& rhs)
-		{
-			std::swap(mContent, rhs.mContent);
-			return *this;
-		}
-
-		template<typename ValueType> Any& operator = (const ValueType& rhs)
-		{
-			Any(rhs).swap(*this);
-			return *this;
-		}
-
-		Any& operator = (const Any::AnyEmpty& rhs)
-		{
-			delete mContent;
-			mContent = nullptr;
-			return *this;
-		}
-
-		Any& operator = (const Any& rhs)
-		{
-			Any(rhs).swap(*this);
-			return *this;
-		}
-
-		bool empty() const
-		{
-			return !mContent;
-		}
-
-		const std::type_info& getType() const
-		{
-			return mContent ? mContent->getType() : typeid(void);
-		}
+		Any& swap(Any& rhs);
 
 		template<typename ValueType>
-		ValueType * castType(bool _throw = true) const
+		Any& operator = (const ValueType& rhs)
+		{
+			Any(rhs).swap(*this);
+			return *this;
+		}
+
+		Any& operator = (const Any::AnyEmpty& rhs);
+		Any& operator = (const Any& rhs);
+
+		bool empty() const;
+
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
+		const std::type_info& getType() const;
+
+		template<typename ValueType>
+		ValueType* castType(bool _throw = true) const
 		{
 			if (this->getType() == typeid(ValueType))
-			{
 				return &static_cast<Any::Holder<ValueType> *>(this->mContent)->held;
-			}
 			MYGUI_ASSERT(!_throw, "Bad cast from type '" << getType().name() << "' to '" << typeid(ValueType).name() << "'");
 			return nullptr;
 		}
-
-		void * castUnsafe() const
+#else
+		template<typename ValueType>
+		ValueType* castType(bool _throw = true) const
 		{
-			return mContent ? static_cast<Any::Holder<void *> *>(this->mContent)->held : nullptr;
+			Any::Holder<ValueType>* data = dynamic_cast<Any::Holder<ValueType> *>(this->mContent);
+			if (data != nullptr)
+				return &data->held;
+			MYGUI_ASSERT(!_throw, "Bad cast any");
+			return nullptr;
 		}
+#endif
+
+		void* castUnsafe() const;
 
 	private:
 		class Placeholder
@@ -170,12 +142,15 @@ namespace MyGUI
 			virtual ~Placeholder() { }
 
 		public:
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
 			virtual const std::type_info& getType() const = 0;
-			virtual Placeholder * clone() const = 0;
-
+#endif
+			virtual Placeholder* clone() const = 0;
 		};
 
-		template<typename ValueType> class Holder : public Placeholder
+		template<typename ValueType>
+		class Holder :
+			public Placeholder
 		{
 		public:
 			Holder(const ValueType& value) :
@@ -184,12 +159,14 @@ namespace MyGUI
 			}
 
 		public:
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
 			virtual const std::type_info& getType() const
 			{
 				return typeid(ValueType);
 			}
+#endif
 
-			virtual Placeholder * clone() const
+			virtual Placeholder* clone() const
 			{
 				return new Holder(held);
 			}
@@ -198,14 +175,11 @@ namespace MyGUI
 			ValueType held;
 
 		private:
-			Holder& operator=(const Holder &);
-
+			Holder& operator=(const Holder&);
 		};
 
-
-		private: // representation
-			Placeholder * mContent;
-
+	private:
+		Placeholder* mContent;
 	};
 
 } // namespace MyGUI

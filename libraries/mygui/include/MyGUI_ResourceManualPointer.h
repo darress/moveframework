@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -35,18 +34,18 @@ namespace MyGUI
 		MYGUI_RTTI_DERIVED( ResourceManualPointer )
 
 	public:
-		ResourceManualPointer() { }
-		virtual ~ResourceManualPointer() { }
+		ResourceManualPointer();
+		virtual ~ResourceManualPointer();
 
 		virtual void deserialization(xml::ElementPtr _node, Version _version);
 
-		virtual void setImage(StaticImage* _image);
-		virtual void setPosition(StaticImage* _image, const IntPoint& _point);
+		virtual void setImage(ImageBox* _image);
+		virtual void setPosition(ImageBox* _image, const IntPoint& _point);
 
 	private:
 		IntPoint mPoint;
 		IntSize mSize;
-		FloatRect mOffset;
+		IntCoord mTextureCoord;
 		std::string mTexture;
 	};
 

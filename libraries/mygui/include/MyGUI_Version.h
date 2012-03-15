@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		12/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -25,7 +24,7 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Types.h"
-#include "MyGUI_Utility.h"
+#include "MyGUI_StringUtility.h"
 
 namespace MyGUI
 {
@@ -33,62 +32,97 @@ namespace MyGUI
 	class MYGUI_EXPORT Version
 	{
 	public:
-		Version() : value(0) { }
-		Version(uint8 _major, uint8 _minor, uint16 _patch) : value((uint32(_major) << 24) + (uint32(_minor) << 16) + uint32(_patch)) { }
-		Version(uint8 _major, uint8 _minor) : value((uint32(_major) << 24) + (uint32(_minor) << 16)) { }
-		explicit Version(const std::string& _value) : value(parse(_value).value) { }
 
-		friend bool operator < (Version const& a, Version const& b) { return a.getPoorVersion() < b.getPoorVersion(); }
-		friend bool operator >= (Version const& a, Version const& b) { return !(a < b); }
-		friend bool operator > (Version const& a, Version const& b) { return (b < a); }
-		friend bool operator <= (Version const& a, Version const& b) { return !(a > b); }
+		Version(unsigned int _major = 0, unsigned int _minor = 0, unsigned int _patch = 0) :
+			mMajor(_major),
+			mMinor(_minor),
+			mPatch(_patch)
+		{
+		}
 
-		friend bool operator == (Version const& a, Version const& b) { return !(a < b) && !(a > b); }
-		friend bool operator != (Version const& a, Version const& b) { return !(a == b); }
+		friend bool operator < (Version const& a, Version const& b)
+		{
+			return (a.mMajor < b.mMajor) ? true : (a.mMinor < b.mMinor);
+		}
 
-		friend std::ostream& operator << ( std::ostream& _stream, const Version&  _value )
+		friend bool operator >= (Version const& a, Version const& b)
+		{
+			return !(a < b);
+		}
+
+		friend bool operator > (Version const& a, Version const& b)
+		{
+			return (b < a);
+		}
+
+		friend bool operator <= (Version const& a, Version const& b)
+		{
+			return !(a > b);
+		}
+
+		friend bool operator == (Version const& a, Version const& b)
+		{
+			return !(a < b) && !(a > b);
+		}
+
+		friend bool operator != (Version const& a, Version const& b)
+		{
+			return !(a == b);
+		}
+
+		friend std::ostream& operator << (std::ostream& _stream, const Version&  _value)
 		{
 			_stream << _value.print();
 			return _stream;
 		}
 
-		friend std::istream& operator >> ( std::istream& _stream, Version&  _value )
+		friend std::istream& operator >> (std::istream& _stream, Version&  _value)
 		{
 			std::string value;
 			_stream >> value;
-			_value = Version::parse(value);
+			_value = parse(value);
 			return _stream;
 		}
 
-		uint8 getMajor() const { return uint8((value & 0xFF000000) >> 24); }
-		uint8 getMinor() const { return uint8((value & 0x00FF0000) >> 16); }
-		uint16 getPatch() const { return uint16(value & 0x0000FFFF); }
+		unsigned int getMajor() const
+		{
+			return mMajor;
+		}
 
-		uint32 getPoorVersion() const { return value & 0xFFFF0000; }
-		uint32 getFullVersion() const { return value; }
+		unsigned int getMinor() const
+		{
+			return mMinor;
+		}
+
+		unsigned int getPatch() const
+		{
+			return mPatch;
+		}
 
 		std::string print() const
 		{
-			if (getPatch() == 0) return utility::toString(getMajor(), ".", getMinor());
-			return utility::toString(getMajor(), ".", getMinor(), ".", getPatch());
+			if (mPatch == 0)
+				return utility::toString(mMajor, ".", mMinor);
+			return utility::toString(mMajor, ".", mMinor, ".", mPatch);
 		}
 
 		static Version parse(const std::string& _value)
 		{
 			const std::vector<std::string>& vec = utility::split(_value, ".");
-			if (vec.empty()) return Version();
-			uint8 major = (uint8)utility::parseValue<int>(vec[0]);
-			uint8 minor = vec.size() > 1 ? (uint8)utility::parseValue<int>(vec[1]) : uint8(0);
-			uint16 patch = vec.size() > 2 ? (uint16)utility::parseValue<int>(vec[2]) : uint16(0);
+			if (vec.empty())
+				return Version();
+
+			unsigned int major = utility::parseValue<unsigned int>(vec[0]);
+			unsigned int minor = vec.size() > 1 ? utility::parseValue<unsigned int>(vec[1]) : 0;
+			unsigned int patch = vec.size() > 2 ? utility::parseValue<unsigned int>(vec[2]) : 0;
+
 			return Version(major, minor, patch);
 		}
 
 	private:
-		union
-		{
-			uint32 value;
-			uint8 value_data[4];
-		};
+		unsigned mMajor : 8;
+		unsigned mMinor : 8;
+		unsigned mPatch : 16;
 	};
 
 } // namespace MyGUI

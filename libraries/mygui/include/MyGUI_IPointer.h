@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,7 +28,8 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT IPointer : public IResource
+	class MYGUI_EXPORT IPointer :
+		public IResource
 	{
 		MYGUI_RTTI_DERIVED( IPointer )
 
@@ -37,9 +37,8 @@ namespace MyGUI
 		IPointer() { }
 		virtual ~IPointer() { }
 
-		virtual void setImage(StaticImage* _image) = 0;
-		virtual void setPosition(StaticImage* _image, const IntPoint& _point) = 0;
-
+		virtual void setImage(ImageBox* _image) = 0;
+		virtual void setPosition(ImageBox* _image, const IntPoint& _point) = 0;
 	};
 
 } // namespace MyGUI

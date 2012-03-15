@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		04/2009
-	@module
 */
 
 #ifndef __MYGUI_OGRE_VERTEX_BUFFER_H__
@@ -24,19 +23,23 @@
 namespace MyGUI
 {
 
-	class OgreVertexBuffer : public IVertexBuffer
+	class OgreVertexBuffer :
+		public IVertexBuffer
 	{
 	public:
 		OgreVertexBuffer();
 		virtual ~OgreVertexBuffer();
 
-		virtual void setVertextCount(size_t _count);
-		virtual size_t getVertextCount();
+		virtual void setVertexCount(size_t _count);
+		virtual size_t getVertexCount();
 
 		virtual Vertex* lock();
 		virtual void unlock();
 
-		Ogre::RenderOperation* getRenderOperation() { return &mRenderOperation; }
+		Ogre::RenderOperation* getRenderOperation()
+		{
+			return &mRenderOperation;
+		}
 
 	private:
 		void createVertexBuffer();

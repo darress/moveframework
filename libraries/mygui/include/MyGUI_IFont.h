@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -33,7 +32,8 @@ namespace MyGUI
 
 	class ITexture;
 
-	class MYGUI_EXPORT IFont : public IResource
+	class MYGUI_EXPORT IFont :
+		public IResource
 	{
 		MYGUI_RTTI_DERIVED( IFont )
 
@@ -46,7 +46,6 @@ namespace MyGUI
 		virtual ITexture* getTextureFont() = 0;
 
 		virtual int getDefaultHeight() = 0;
-
 	};
 
 } // namespace MyGUI

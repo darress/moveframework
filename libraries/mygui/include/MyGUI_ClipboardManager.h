@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,18 +23,19 @@
 #define __MYGUI_CLIPBOARD_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_Types.h"
 #include "MyGUI_UString.h"
 
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT ClipboardManager
+	class MYGUI_EXPORT ClipboardManager :
+		public Singleton<ClipboardManager>
 	{
-		MYGUI_INSTANCE_HEADER( ClipboardManager )
-
 	public:
+		ClipboardManager();
+
 		void initialise();
 		void shutdown();
 
@@ -57,14 +57,15 @@ namespace MyGUI
 		MapString mClipboardData;
 
 #if MYGUI_PLATFORM == MYGUI_PLATFORM_WIN32
-	// дискриптор нашего главного окна
-	size_t mHwnd;
-	// строка, которую мы положили в буфер обмена винды
-	UString mPutTextInClipboard;
+		// дескриптор нашего главного окна
+		size_t mHwnd;
+		// строка, которую мы положили в буфер обмена винды
+		UString mPutTextInClipboard;
 #endif
 
+		bool mIsInitialise;
 	};
 
-}
+} // namespace MyGUI
 
 #endif // __MYGUI_CLIPBOARD_MANAGER_H__

@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -30,6 +29,7 @@ namespace MyGUI
 
 	struct MYGUI_EXPORT RenderTargetInfo
 	{
+	public:
 		RenderTargetInfo() :
 			maximumDepth(0),
 			pixScaleX(1),
@@ -48,6 +48,7 @@ namespace MyGUI
 			topOffset = _top;
 		}
 
+	public:
 		float maximumDepth;
 		float pixScaleX;
 		float pixScaleY;

@@ -40,7 +40,7 @@ namespace Eye
 		GUID _cameraGUID;
 
 		_cameraGUID = CLEyeGetCameraUUID(0);
-		_cam = CLEyeCreateCamera(_cameraGUID, CLEYE_COLOR, CLEYE_VGA, 75);
+		_cam = CLEyeCreateCamera(_cameraGUID, CLEYE_COLOR_PROCESSED, CLEYE_VGA, 75);
 		CLEyeCameraGetFrameDimensions(_cam, width, height);
 
 		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
@@ -60,7 +60,7 @@ namespace Eye
 
 		while(true)
 		{
-			CLEyeCameraGetFrame(_cam, pCapBuffer);
+			bool ret = CLEyeCameraGetFrame(_cam, pCapBuffer);
 
 			float x,y,size;
 			img->findBalls(balls, numMoves);
@@ -77,8 +77,8 @@ namespace Eye
 					balls[i].ballZ=kballz[i].update(2500/size);
 					balls[i].ballX=(x-(width/2))*balls[i].ballZ/400;
 					balls[i].ballY=(y-(height/2))*balls[i].ballZ/400;
-					balls[i].ballFoundOut=balls[i].ballFound;
 				}
+				balls[i].ballFoundOut=balls[i].ballFound;
 			}
 		}
 	}

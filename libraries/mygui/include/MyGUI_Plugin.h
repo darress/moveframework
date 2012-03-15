@@ -2,7 +2,6 @@
 	@file
 	@author		Denis Koronchik
 	@date		09/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -35,7 +34,6 @@ namespace MyGUI
 	{
 	public:
 		IPlugin() { }
-
 		virtual ~IPlugin() { }
 
 		/*!	Get the name of the plugin.
@@ -62,6 +60,6 @@ namespace MyGUI
 		virtual void uninstall() = 0;
 	};
 
-}
+} // namespace MyGUI
 
 #endif // __MYGUI_PLUGIN_H__

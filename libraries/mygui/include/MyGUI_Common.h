@@ -3,7 +3,6 @@
 	@author		Albert Semenov
 	@author		baho_is
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -41,14 +40,22 @@
 #    include "MyGUI_Allocator.h"
 #endif // MYGUI_CUSTOM_ALLOCATOR
 
+// этот дефайн для того чтобы в самом гуе показывалось имя файла где вызывается new
+#if MYGUI_COMPILER == MYGUI_COMPILER_MSVC
+#	ifdef MYGUI_CHECK_MEMORY_LEAKS
+#		define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
+#		define new DEBUG_NEW
+#	endif
+#endif
+
 #include "MyGUI_Macros.h"
 #include "MyGUI_Diagnostic.h"
 #include "MyGUI_LogManager.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_Types.h"
-#include "MyGUI_RenderOut.h"
-#include "MyGUI_Utility.h"
-#include "MyGUI_InputDefine.h"
+#include "MyGUI_StringUtility.h"
+#include "MyGUI_MouseButton.h"
+#include "MyGUI_KeyCode.h"
 #include "MyGUI_Version.h"
 #include "MyGUI_WidgetStyle.h"
 #include "MyGUI_UString.h"

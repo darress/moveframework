@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,28 +23,26 @@
 #define __MYGUI_LAYOUT_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_WidgetDefines.h"
-#include "MyGUI_Gui.h"
+#include "MyGUI_ResourceLayout.h"
+#include "MyGUI_BackwardCompatibility.h"
 
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT LayoutManager
-	{
-		MYGUI_INSTANCE_HEADER( LayoutManager )
+	typedef delegates::CMultiDelegate3<Widget*, const std::string&, const std::string&> EventHandle_AddUserStringDelegate;
 
+	class MYGUI_EXPORT LayoutManager :
+		public Singleton<LayoutManager>,
+		public MemberObsolete<LayoutManager>
+	{
 	public:
+		LayoutManager();
+
 		void initialise();
 		void shutdown();
-
-		/** Load layout file
-			@param _file name of layout
-			@return Return vector of pointers of loaded root widgets (root == without parents)
-		*/
-		VectorWidgetPtr& load(const std::string& _file);
-		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
 
 		/** Load layout file
 			@param _file name of layout
@@ -53,24 +50,35 @@ namespace MyGUI
 			@param _parent widget to load on
 			@return Return vector of pointers of loaded root widgets (root == without parents)
 		*/
-		VectorWidgetPtr& loadLayout(const std::string& _file, const std::string& _prefix = "", Widget* _parent = nullptr);
+		VectorWidgetPtr loadLayout(const std::string& _file, const std::string& _prefix = "", Widget* _parent = nullptr);
 
-		/** Unload layout file */
+		/** Unload layout (actually deletes vector of widgets returned by loadLayout) */
 		void unloadLayout(VectorWidgetPtr& _widgets);
 
-	private:
-		void parseLayout(VectorWidgetPtr& _widgets, xml::ElementPtr _root);
-		void parseWidget(VectorWidgetPtr& _widgets, xml::ElementEnumerator& _widget, Widget* _parent);
+		/** Get ResourceLayout by name */
+		ResourceLayout* getByName(const std::string& _name, bool _throw = true) const;
+
+		/** Check if skin with specified name exist */
+		bool isExist(const std::string& _name) const;
+
+		/** Event : Multidelegate. UserString was added from layout.\n
+			signature : void method(MyGUI::Widget* _widget, const std::string& _key, const std::string& _value)
+			@param _widget Widget that got new UserString.
+			@param _key UserString key.
+			@param _key UserString value.
+			@note Happens only when UserString was loaded from layout, but not when it was added in code.
+		*/
+		EventHandle_AddUserStringDelegate
+			eventAddUserString;
+
+		const std::string& getCurrentLayout() const;
 
 	private:
-		// для возврата последней загрузки
-		VectorWidgetPtr mVectorWidgetPtr;
+		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
 
-		// префикс при загрузке лейаута
-		std::string layoutPrefix;
-		// префикс при загрузке лейаута
-		Widget* layoutParent;
-
+	private:
+		bool mIsInitialise;
+		std::string mCurrentLayoutName;
 	};
 
 } // namespace MyGUI

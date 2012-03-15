@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -60,7 +59,7 @@ namespace MyGUI
 
 	inline void convertWidgetCoord(IntCoord& _coord, bool _vert)
 	{
-		if ( ! _vert )
+		if (!_vert)
 		{
 			std::swap(_coord.left, _coord.top);
 			std::swap(_coord.width, _coord.height);

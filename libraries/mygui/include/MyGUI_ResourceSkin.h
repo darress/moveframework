@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -41,24 +40,23 @@ namespace MyGUI
 
 	public:
 		ResourceSkin();
+		virtual ~ResourceSkin();
 
 		virtual void deserialization(xml::ElementPtr _node, Version _version);
 
-		const IntSize& getSize() const { return mSize; }
-		const std::string& getTextureName() const { return mTexture; }
-		const VectorSubWidgetInfo& getBasisInfo() const { return mBasis; }
-		const MapWidgetStateInfo& getStateInfo() const { return mStates; }
-		const MapString& getProperties() const { return mProperties; }
-		const VectorChildSkinInfo& getChild() const { return mChilds; }
-		MaskPickInfo const * getMask() const { return &mMaskPeek; }
-		const std::string& getSkinName() { return mSkinName; }
+		const IntSize& getSize() const;
+		const std::string& getTextureName() const;
+		const VectorSubWidgetInfo& getBasisInfo() const;
+		const MapWidgetStateInfo& getStateInfo() const;
+		const MapString& getProperties() const;
+		const VectorChildSkinInfo& getChild() const;
+		const std::string& getSkinName() const;
 
 	private:
-		void setInfo(const IntSize& _size, const std::string &_texture);
+		void setInfo(const IntSize& _size, const std::string& _texture);
 		void addInfo(const SubWidgetBinding& _bind);
-		void addProperty(const std::string &_key, const std::string &_value);
+		void addProperty(const std::string& _key, const std::string& _value);
 		void addChild(const ChildSkinInfo& _child);
-		bool loadMask(const std::string& _file);
 		void clear();
 
 		void checkState(const MapStateInfo& _states);
@@ -75,10 +73,7 @@ namespace MyGUI
 		MapString mProperties;
 		// дети скина
 		VectorChildSkinInfo mChilds;
-		// маска для этого скина для пикинга
-		MaskPickInfo mMaskPeek;
 		std::string mSkinName;
-
 	};
 
 } // namespace MyGUI
