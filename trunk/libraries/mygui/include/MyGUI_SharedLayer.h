@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -42,32 +41,36 @@ namespace MyGUI
 
 		virtual void deserialization(xml::ElementPtr _node, Version _version);
 
-		// создаем дочерний нод
+		// СЃРѕР·РґР°РµРј РґРѕС‡РµСЂРЅРёР№ РЅРѕРґ
 		virtual ILayerNode* createChildItemNode();
-		// удаляем дочерний нод
+		// СѓРґР°Р»СЏРµРј РґРѕС‡РµСЂРЅРёР№ РЅРѕРґ
 		virtual void destroyChildItemNode(ILayerNode* _node);
 
-		// поднимаем дочерний нод
+		// РїРѕРґРЅРёРјР°РµРј РґРѕС‡РµСЂРЅРёР№ РЅРѕРґ
 		virtual void upChildItemNode(ILayerNode* _node);
 
-		// список детей
-		virtual EnumeratorILayerNode getEnumerator();
+		// СЃРїРёСЃРѕРє РґРµС‚РµР№
+		virtual EnumeratorILayerNode getEnumerator() const;
 
-		// возвращает виджет по позиции
-		virtual ILayerItem* getLayerItemByPoint(int _left, int _top);
+		// РІРѕР·РІСЂР°С‰Р°РµС‚ РІРёРґР¶РµС‚ РїРѕ РїРѕР·РёС†РёРё
+		virtual ILayerItem* getLayerItemByPoint(int _left, int _top) const;
 
 		virtual IntPoint getPosition(int _left, int _top) const;
 
 		virtual const IntSize& getSize() const;
 
-		// рисует леер
+		// СЂРёСЃСѓРµС‚ Р»РµРµСЂ
 		virtual void renderToTarget(IRenderTarget* _target, bool _update);
 
-		virtual void dumpStatisticToLog();
+		virtual void resizeView(const IntSize& _viewSize);
+
+		bool isOutOfDate() const;
 
 	protected:
 		bool mIsPick;
 		SharedLayerNode* mChildItem;
+		bool mOutOfDate;
+		IntSize mViewSize;
 	};
 
 } // namespace MyGUI

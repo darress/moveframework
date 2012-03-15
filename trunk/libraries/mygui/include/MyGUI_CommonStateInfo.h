@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -40,14 +39,17 @@ namespace MyGUI
 	public:
 		virtual ~SubSkinStateInfo() { }
 
-		const FloatRect& getRect() { return mRect; }
+		const FloatRect& getRect() const
+		{
+			return mRect;
+		}
 
 	private:
 		virtual void deserialization(xml::ElementPtr _node, Version _version)
 		{
 			std::string texture = _node->getParent()->getParent()->findAttribute("texture");
 
-			// ïîääåðæêà çàìåíû òåãîâ â ñêèíàõ
+			// Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÐ° Ð·Ð°Ð¼ÐµÐ½Ñ‹ Ñ‚ÐµÐ³Ð¾Ð² Ð² ÑÐºÐ¸Ð½Ð°Ñ…
 			if (_version >= Version(1, 1))
 			{
 				texture = LanguageManager::getInstance().replaceTags(texture);
@@ -68,20 +70,40 @@ namespace MyGUI
 		MYGUI_RTTI_DERIVED( TileRectStateInfo )
 
 	public:
-		TileRectStateInfo() : mTileH(true), mTileV(true) { }
+		TileRectStateInfo() :
+			mTileH(true),
+			mTileV(true)
+		{
+		}
+
 		virtual ~TileRectStateInfo() { }
 
-		const FloatRect& getRect() { return mRect; }
-		const IntSize& getTileSize() { return mTileSize; }
-		bool getTileH() { return mTileH; }
-		bool getTileV() { return mTileV; }
+		const FloatRect& getRect() const
+		{
+			return mRect;
+		}
+
+		const IntSize& getTileSize() const
+		{
+			return mTileSize;
+		}
+
+		bool getTileH() const
+		{
+			return mTileH;
+		}
+
+		bool getTileV() const
+		{
+			return mTileV;
+		}
 
 	private:
 		virtual void deserialization(xml::ElementPtr _node, Version _version)
 		{
 			std::string texture = _node->getParent()->getParent()->findAttribute("texture");
 
-			// ïîääåðæêà çàìåíû òåãîâ â ñêèíàõ
+			// Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÐ° Ð·Ð°Ð¼ÐµÐ½Ñ‹ Ñ‚ÐµÐ³Ð¾Ð² Ð² ÑÐºÐ¸Ð½Ð°Ñ…
 			if (_version >= Version(1, 1))
 			{
 				texture = LanguageManager::getInstance().replaceTags(texture);
@@ -115,11 +137,23 @@ namespace MyGUI
 		MYGUI_RTTI_DERIVED( EditTextStateInfo )
 
 	public:
-		EditTextStateInfo() : mColour(Colour::White), mShift(false) { }
+		EditTextStateInfo() :
+			mColour(Colour::White),
+			mShift(false)
+		{
+		}
+
 		virtual ~EditTextStateInfo() { }
 
-		const Colour& getColour() { return mColour; }
-		bool getShift() { return mShift; }
+		const Colour& getColour() const
+		{
+			return mColour;
+		}
+
+		bool getShift() const
+		{
+			return mShift;
+		}
 
 	private:
 		virtual void deserialization(xml::ElementPtr _node, Version _version)

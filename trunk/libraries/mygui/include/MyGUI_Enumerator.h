@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		08/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -64,7 +63,9 @@ namespace MyGUI
 	class Enumerator
 	{
 	private:
-		Enumerator() { }
+		Enumerator()
+		{
+		}
 
 	public:
 		explicit Enumerator(const T& _container) :
@@ -83,19 +84,30 @@ namespace MyGUI
 
 		bool next()
 		{
-			if (m_current == m_end) return false;
+			if (m_current == m_end)
+				return false;
 			else if (m_first)
 			{
 				m_first = false;
 				return true;
 			}
 			++ m_current;
-			if (m_current == m_end) return false;
+			if (m_current == m_end)
+				return false;
 			return true;
 		}
 
-		typename T::const_reference operator->() const { assert(m_current != m_end); return (*m_current); }
-		typename T::const_reference current() { assert(m_current != m_end); return (*m_current); }
+		typename T::const_reference operator->() const
+		{
+			assert(m_current != m_end);
+			return (*m_current);
+		}
+
+		typename T::const_reference current()
+		{
+			assert(m_current != m_end);
+			return (*m_current);
+		}
 
 	private:
 		bool m_first;

@@ -3,7 +3,6 @@
 	@author		Alexander Buryak - Rageous
 	@author		Albert Semenov
 	@date		09/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -26,43 +25,53 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Diagnostic.h"
-#include <typeinfo>
 #include <string>
+
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
+#include <typeinfo>
+#endif
 
 namespace MyGUI
 {
+#ifndef MYGUI_RTTI_DISABLE_TYPE_INFO
+	#define MYGUI_RTTI_TYPE const std::type_info&
+	#define MYGUI_RTTI_GET_TYPE(type) typeid(type)
+#else
+	#define MYGUI_RTTI_TYPE const std::string&
+	#define MYGUI_RTTI_GET_TYPE(type) type::getClassTypeName()
+#endif
 
 	//VC++ 7.1
-	#if MYGUI_COMPILER == MYGUI_COMPILER_MSVC && MYGUI_COMP_VER == 1310
-		#define MYGUI_DECLARE_TYPE_NAME( Type ) \
+	#if MYGUI_COMPILER == MYGUI_COMPILER_MSVC && MYGUI_COMP_VER <= 1310
+		#define MYGUI_DECLARE_TYPE_NAME(Type) \
 		private: \
 			struct TypeNameHolder { const std::string& getClassTypeName() { static std::string type = #Type; return type; } }; \
 		public: \
 			static const std::string& getClassTypeName() { TypeNameHolder type; return type.getClassTypeName(); } \
 			/** Get type name as string */ \
-			virtual const std::string& getTypeName() const { return Type::getClassTypeName(); }
+			virtual const std::string& getTypeName() const { return getClassTypeName(); }
 	#else
-		#define MYGUI_DECLARE_TYPE_NAME( Type ) \
+		#define MYGUI_DECLARE_TYPE_NAME(Type) \
 		public: \
 			static const std::string& getClassTypeName() { static std::string type = #Type; return type; } \
 			/** Get type name as string */ \
-			virtual const std::string& getTypeName() const { return Type::getClassTypeName(); }
+			virtual const std::string& getTypeName() const { return getClassTypeName(); }
 	#endif
 
-	#define MYGUI_RTTI_BASE( BaseType ) \
+	#define MYGUI_RTTI_BASE(BaseType) \
 		public: \
 			typedef BaseType RTTIBase; \
-			MYGUI_DECLARE_TYPE_NAME( BaseType ) \
+			MYGUI_DECLARE_TYPE_NAME(BaseType) \
 			/** Compare with selected type */ \
-			virtual bool isType( const std::type_info& _type) const { return typeid( BaseType ) == _type; } \
+			virtual bool isType(MYGUI_RTTI_TYPE _type) const { return MYGUI_RTTI_GET_TYPE(BaseType) == _type; } \
 			/** Compare with selected type */ \
-			template<typename Type> bool isType() const { return isType( typeid( Type )); } \
+			template<typename Type> bool isType() const { return isType(MYGUI_RTTI_GET_TYPE(Type)); } \
 			/** Try to cast pointer to selected type. \
 				@param _throw If true throw exception when casting in wrong type, else return nullptr \
 			*/ \
 			template<typename Type> Type* castType(bool _throw = true) \
 			{ \
-				if (this->isType<Type>()) return static_cast<Type*>( this ); \
+				if (this->isType<Type>()) return static_cast<Type*>(this); \
 				MYGUI_ASSERT(!_throw, "Error cast type '" << this->getTypeName() << "' to type '" << Type::getClassTypeName() << "' .") \
 				return nullptr; \
 			} \
@@ -71,33 +80,20 @@ namespace MyGUI
 			*/ \
 			template<typename Type> const Type* castType(bool _throw = true) const \
 			{ \
-				if (this->isType<Type>()) return static_cast<Type*>( this ); \
+				if (this->isType<Type>()) return static_cast<Type*>(this); \
 				MYGUI_ASSERT(!_throw, "Error cast type '" << this->getTypeName() << "' to type '" << Type::getClassTypeName() << "' .") \
 				return nullptr; \
 			}
 
-	#define MYGUI_RTTI_DERIVED( DerivedType ) \
+	#define MYGUI_RTTI_DERIVED(DerivedType) \
 		public: \
-			MYGUI_DECLARE_TYPE_NAME( DerivedType ) \
+			MYGUI_DECLARE_TYPE_NAME(DerivedType) \
 			typedef RTTIBase Base; \
 			typedef DerivedType RTTIBase; \
 			/** Compare with selected type */ \
-			virtual bool isType( const std::type_info& _type ) const { return typeid( DerivedType ) == _type || Base::isType( _type ); } \
+			virtual bool isType(MYGUI_RTTI_TYPE _type) const { return MYGUI_RTTI_GET_TYPE(DerivedType) == _type || Base::isType(_type); } \
 			/** Compare with selected type */ \
-			template<typename Type> bool isType() const { return isType( typeid( DerivedType )); }
-
-	//OBSOLETE
-	#define MYGUI_RTTI_CHILD_HEADER( DerivedType, BaseType ) \
-		public: \
-			MYGUI_DECLARE_TYPE_NAME( DerivedType ) \
-			typedef BaseType Base; \
-			typedef DerivedType RTTIBase; \
-			/** Compare with selected type */ \
-			virtual bool isType( const std::type_info& _type ) const { return typeid( DerivedType ) == _type || BaseType::isType( _type ); }
-
-
-	//OBSOLETE
-	#define MYGUI_RTTI_BASE_HEADER( BaseType ) MYGUI_RTTI_BASE( BaseType )
+			template<typename Type> bool isType() const { return isType(MYGUI_RTTI_GET_TYPE(Type)); }
 
 } // namespace MyGUI
 

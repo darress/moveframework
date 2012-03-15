@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		08/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -32,7 +31,8 @@ namespace MyGUI
 
 	class MYGUI_EXPORT ScrollView :
 		public Widget,
-		protected ScrollViewBase
+		protected ScrollViewBase,
+		public MemberObsolete<ScrollView>
 	{
 		MYGUI_RTTI_DERIVED( ScrollView )
 
@@ -47,108 +47,75 @@ namespace MyGUI
 		virtual void setCoord(const IntCoord& _value);
 
 		/** @copydoc Widget::setPosition(int _left, int _top) */
-		void setPosition(int _left, int _top) { setPosition(IntPoint(_left, _top)); }
+		void setPosition(int _left, int _top);
 		/** @copydoc Widget::setSize(int _width, int _height) */
-		void setSize(int _width, int _height) { setSize(IntSize(_width, _height)); }
+		void setSize(int _width, int _height);
 		/** @copydoc Widget::setCoord(int _left, int _top, int _width, int _height) */
-		void setCoord(int _left, int _top, int _width, int _height) { setCoord(IntCoord(_left, _top, _width, _height)); }
+		void setCoord(int _left, int _top, int _width, int _height);
 
 		/** Show VScroll when text size larger than Edit */
 		void setVisibleVScroll(bool _value);
 		/** Get Show VScroll flag */
-		bool isVisibleVScroll() { return mVisibleVScroll; }
+		bool isVisibleVScroll() const;
 
 		/** Show HScroll when text size larger than Edit */
 		void setVisibleHScroll(bool _value);
 		/** Get Show HScroll flag */
-		bool isVisibleHScroll() { return mVisibleHScroll; }
+		bool isVisibleHScroll() const;
 
 		/** Set canvas align */
 		void setCanvasAlign(Align _value);
 		/** Get canvas align */
-		Align getCanvasAlign() { return mContentAlign; }
+		Align getCanvasAlign() const;
 
 		/** Set canvas size */
 		void setCanvasSize(const IntSize& _value);
 		/** Set canvas size */
-		void setCanvasSize(int _width, int _height) { setCanvasSize(IntSize(_width, _height)); }
+		void setCanvasSize(int _width, int _height);
 		/** Get canvas size */
 		IntSize getCanvasSize();
 
-		/** Get rect where child widgets placed */
-		const IntCoord& getClientCoord();
+		/** Get view area coordinates. */
+		IntCoord getViewCoord() const;
 
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
-
-	/*internal:*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
-
-	/*obsolete:*/
-#ifndef MYGUI_DONT_USE_OBSOLETE
-
-		MYGUI_OBSOLETE("use : void Widget::setCoord(const IntCoord& _coord)")
-		void setPosition(const IntCoord& _coord) { setCoord(_coord); }
-		MYGUI_OBSOLETE("use : void Widget::setCoord(int _left, int _top, int _width, int _height)")
-		void setPosition(int _left, int _top, int _width, int _height) { setCoord(_left, _top, _width, _height); }
-
-		MYGUI_OBSOLETE("use : void ScrollView::setVisibleVScroll(bool _visible)")
-		void showVScroll(bool _visible) { setVisibleVScroll(_visible); }
-		MYGUI_OBSOLETE("use : bool ScrollView::isVisibleVScroll()")
-		bool isShowVScroll() { return isVisibleVScroll(); }
-		MYGUI_OBSOLETE("use : void ScrollView::setVisibleHScroll(bool _visible)")
-		void showHScroll(bool _visible) { setVisibleHScroll(_visible); }
-		MYGUI_OBSOLETE("use : bool ScrollView::isVisibleHScroll()")
-		bool isShowHScroll() { return isVisibleHScroll(); }
-
-#endif // MYGUI_DONT_USE_OBSOLETE
+		/** Set view area offset. */
+		void setViewOffset(const IntPoint& _value);
+		/** Get view area offset. */
+		IntPoint getViewOffset() const;
 
 	protected:
-		virtual ~ScrollView();
+		virtual void initialiseOverride();
+		virtual void shutdownOverride();
 
-		void baseChangeWidgetSkin(ResourceSkin* _info);
-
-		// переопределяем для присвоению холста
-		virtual Widget* baseCreateWidget(WidgetStyle _style, const std::string& _type, const std::string& _skin, const IntCoord& _coord, Align _align, const std::string& _layer, const std::string& _name);
-
-		void notifyMouseSetFocus(Widget* _sender, Widget* _old);
-		void notifyMouseLostFocus(Widget* _sender, Widget* _new);
 		void notifyMousePressed(Widget* _sender, int _left, int _top, MouseButton _id);
 		void notifyMouseReleased(Widget* _sender, int _left, int _top, MouseButton _id);
 
-		void notifyScrollChangePosition(VScroll* _sender, size_t _position);
+		void notifyScrollChangePosition(ScrollBar* _sender, size_t _position);
 		void notifyMouseWheel(Widget* _sender, int _rel);
 
-		virtual void onKeyLostFocus(Widget* _new);
-		virtual void onKeySetFocus(Widget* _old);
-
-		void updateScrollViewState();
 		void updateView();
 
-	private:
-		void initialiseWidgetSkin(ResourceSkin* _info);
-		void shutdownWidgetSkin();
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 
+		ScrollBar* getVScroll();
+
+	private:
 		// размер данных
 		virtual IntSize getContentSize();
 		// смещение данных
 		virtual IntPoint getContentPosition();
-		virtual void setContentPosition(const IntPoint& _point);
 		// размер окна, через которые видно данные
-		virtual IntSize getViewSize() const;
+		virtual IntSize getViewSize();
+		virtual void setContentPosition(const IntPoint& _point);
 		// размер на который прокручиваются данные при щелчке по скролу
 		virtual size_t getVScrollPage();
 		virtual size_t getHScrollPage();
 
-		virtual Align getContentAlign() { return mContentAlign; }
+		virtual Align getContentAlign();
 
 	protected:
-		bool mIsFocus;
-		bool mIsPressed;
-
-		Widget* mScrollClient;
 		Align mContentAlign;
-
+		Widget* mRealClient;
 	};
 
 } // namespace MyGUI

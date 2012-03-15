@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		12/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,19 +23,24 @@
 #define __MYGUI_COMBO_BOX_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Edit.h"
-#include "MyGUI_List.h"
+#include "MyGUI_EditBox.h"
+#include "MyGUI_ListBox.h"
 #include "MyGUI_Any.h"
 #include "MyGUI_EventPair.h"
 #include "MyGUI_ControllerFadeAlpha.h"
+#include "MyGUI_FlowDirection.h"
+#include "MyGUI_IItem.h"
+#include "MyGUI_IItemContainer.h"
 
 namespace MyGUI
 {
 
-	typedef delegates::CDelegate2<ComboBox*, size_t> EventHandle_ComboBoxPtrSizeT;
+	typedef delegates::CMultiDelegate2<ComboBox*, size_t> EventHandle_ComboBoxPtrSizeT;
 
 	class MYGUI_EXPORT ComboBox :
-		public Edit
+		public EditBox,
+		public IItemContainer,
+		public MemberObsolete<ComboBox>
 	{
 		MYGUI_RTTI_DERIVED( ComboBox )
 
@@ -47,13 +51,13 @@ namespace MyGUI
 		// манипуляции айтемами
 
 		//! Get number of items
-		size_t getItemCount() const { return mList->getItemCount(); }
+		size_t getItemCount() const;
 
 		//! Insert an item into a array at a specified position
 		void insertItemAt(size_t _index, const UString& _name, Any _data = Any::Null);
 
 		//! Add an item to the end of a array
-		void addItem(const UString& _name, Any _data = Any::Null) { return insertItemAt(ITEM_NONE, _name, _data); }
+		void addItem(const UString& _name, Any _data = Any::Null);
 
 		//! Remove item at a specified position
 		void removeItemAt(size_t _index);
@@ -70,13 +74,13 @@ namespace MyGUI
 		// манипуляции выделениями
 
 		//! Get index of selected item (ITEM_NONE if none selected)
-		size_t getIndexSelected() { return mItemIndex; }
+		size_t getIndexSelected() const;
 
 		//! Select specified _index
 		void setIndexSelected(size_t _index);
 
 		//! Clear item selection
-		void clearIndexSelected() { setIndexSelected(ITEM_NONE); }
+		void clearIndexSelected();
 
 
 		//------------------------------------------------------------------------------//
@@ -86,11 +90,11 @@ namespace MyGUI
 		void setItemDataAt(size_t _index, Any _data);
 
 		//! Clear an item data at a specified position
-		void clearItemDataAt(size_t _index) { setItemDataAt(_index, Any::Null); }
+		void clearItemDataAt(size_t _index);
 
 		//! Get item data from specified position
 		template <typename ValueType>
-		ValueType * getItemDataAt(size_t _index, bool _throw = true)
+		ValueType* getItemDataAt(size_t _index, bool _throw = true)
 		{
 			return mList->getItemDataAt<ValueType>(_index, _throw);
 		}
@@ -103,23 +107,23 @@ namespace MyGUI
 		void setItemNameAt(size_t _index, const UString& _name);
 
 		//! Get item name from specified position
-		const UString& getItemNameAt(size_t _index) { return mList->getItemNameAt(_index); }
+		const UString& getItemNameAt(size_t _index);
 
 
 		//------------------------------------------------------------------------------//
 		// манипуляции выдимостью
 
 		//! Move all elements so specified becomes visible
-		void beginToItemAt(size_t _index) { mList->beginToItemAt(_index); }
+		void beginToItemAt(size_t _index);
 
 		//! Move all elements so first becomes visible
-		void beginToItemFirst() { if (getItemCount()) beginToItemAt(0); }
+		void beginToItemFirst();
 
 		//! Move all elements so last becomes visible
-		void beginToItemLast() { if (getItemCount()) beginToItemAt(getItemCount() - 1); }
+		void beginToItemLast();
 
 		//! Move all elements so selected becomes visible
-		void beginToItemSelected() { if (getIndexSelected() != ITEM_NONE) beginToItemAt(getIndexSelected()); }
+		void beginToItemSelected();
 
 
 		//------------------------------------------------------------------------------------//
@@ -128,108 +132,91 @@ namespace MyGUI
 		//! Set drop list mode (text can not be edited)
 		void setComboModeDrop(bool _value);
 		//! Get drop list mode flag
-		bool getComboModeDrop() { return mModeDrop; }
+		bool getComboModeDrop() const;
 
 		//! Set smooth show of list
-		void setSmoothShow(bool _value) { mShowSmooth = _value; }
+		void setSmoothShow(bool _value);
 		//! Get smooth show of list flag
-		bool getSmoothShow() { return mShowSmooth; }
+		bool getSmoothShow() const;
 
-		//! Get max list height
-		void setMaxListHeight(int _value) { mMaxHeight = _value; }
-		//! Set max list height
-		int getMaxListHeight() { return mMaxHeight; }
+		//! Get max list length
+		void setMaxListLength(int _value);
+		//! Set max list length
+		int getMaxListLength() const;
 
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
+		// RENAME
+		//! Set direction, where drop down list appears (TopToBottom by default).
+		void setFlowDirection(FlowDirection _value);
+		//! Get direction, where drop down list appears.
+		FlowDirection getFlowDirection() const;
 
-	/*event:*/
-		/** Event : Enter pressed in combo mode or item selected in drop.\n
+		/*events:*/
+		/** Event : Enter pressed in combo mode or item selected in drop down list
+			and combo mode drop enabled (see void ComboBox::setComboModeDrop(bool _value)).\n
 			signature : void method(MyGUI::ComboBox* _sender, size_t _index)
 			@param _sender widget that called this event
 			@param _index item
 		*/
-		EventPair<EventHandle_WidgetVoid, EventHandle_ComboBoxPtrSizeT> eventComboAccept;
+		EventPair<EventHandle_WidgetVoid, EventHandle_ComboBoxPtrSizeT>
+			eventComboAccept;
 
 		/** Event : Position changed.\n
 			signature : void method(MyGUI::ComboBox* _sender, size_t _index)
 			@param _sender widget that called this event
 			@param _index of new position
 		*/
-		EventPair<EventHandle_WidgetSizeT, EventHandle_ComboBoxPtrSizeT> eventComboChangePosition;
+		EventPair<EventHandle_WidgetSizeT, EventHandle_ComboBoxPtrSizeT>
+			eventComboChangePosition;
 
+		/*internal:*/
+		// IItemContainer impl
+		virtual size_t _getItemCount();
+		virtual void _addItem(const MyGUI::UString& _name);
+		virtual void _removeItemAt(size_t _index);
+		virtual void _setItemNameAt(size_t _index, const UString& _name);
+		virtual const UString& _getItemNameAt(size_t _index);
 
-	/*internal:*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
-
-	/*obsolete:*/
-#ifndef MYGUI_DONT_USE_OBSOLETE
-
-		MYGUI_OBSOLETE("use : size_t ComboBox::getIndexSelected()")
-		size_t getItemIndexSelected() { return getIndexSelected(); }
-		MYGUI_OBSOLETE("use : void ComboBox::setIndexSelected(size_t _index)")
-		void setItemSelectedAt(size_t _index) { setIndexSelected(_index); }
-		MYGUI_OBSOLETE("use : void ComboBox::clearIndexSelected()")
-		void clearItemSelected() { clearIndexSelected(); }
-
-		MYGUI_OBSOLETE("use : void ComboBox::insertItemAt(size_t _index, const UString& _name)")
-		void insertItem(size_t _index, const UString& _name) { insertItemAt(_index, _name); }
-		MYGUI_OBSOLETE("use : void ComboBox::setItemNameAt(size_t _index, const UString& _name)")
-		void setItem(size_t _index, const UString& _item) { setItemNameAt(_index, _item); }
-		MYGUI_OBSOLETE("use : const UString& ComboBox::getItemNameAt(size_t _index)")
-		const UString& getItem(size_t _index) { return getItemNameAt(_index); }
-		MYGUI_OBSOLETE("use : void ComboBox::removeItemAt(size_t _index)")
-		void deleteItem(size_t _index) { removeItemAt(_index); }
-		MYGUI_OBSOLETE("use : void ComboBox::removeAllItems()")
-		void deleteAllItems() { removeAllItems(); }
-		MYGUI_OBSOLETE("use : size_t ComboBox::getIndexSelected()")
-		size_t getItemSelect() { return getIndexSelected(); }
-		MYGUI_OBSOLETE("use : void void ComboBox::clearIndexSelected()")
-		void resetItemSelect() { clearIndexSelected(); }
-		MYGUI_OBSOLETE("use : void ComboBox::setIndexSelected(size_t _index)")
-		void setItemSelect(size_t _index) { setIndexSelected(_index); }
-
-#endif // MYGUI_DONT_USE_OBSOLETE
+		virtual void _resetContainer(bool _update);
 
 	protected:
-		virtual ~ComboBox();
+		virtual void initialiseOverride();
+		virtual void shutdownOverride();
 
 		virtual void onKeyButtonPressed(KeyCode _key, Char _char);
 
-		virtual void baseChangeWidgetSkin(ResourceSkin* _info);
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 
 	private:
 		void notifyButtonPressed(Widget* _sender, int _left, int _top, MouseButton _id);
 		void notifyListLostFocus(Widget* _sender, MyGUI::Widget* _new);
-		void notifyListSelectAccept(List* _widget, size_t _position);
-		void notifyListMouseItemActivate(List* _widget, size_t _position);
-		void notifyListChangePosition(List* _widget, size_t _position);
+		void notifyListSelectAccept(ListBox* _widget, size_t _position);
+		void notifyListMouseItemActivate(ListBox* _widget, size_t _position);
+		void notifyListChangePosition(ListBox* _widget, size_t _position);
 		void notifyMouseWheel(Widget* _sender, int _rel);
 		void notifyMousePressed(Widget* _sender, int _left, int _top, MouseButton _id);
-		void notifyEditTextChange(Edit* _sender);
+		void notifyEditTextChange(EditBox* _sender);
+		void notifyToolTip(Widget* _sender, const ToolTipInfo& _info);
 
 		void showList();
 		void hideList();
 
-		void initialiseWidgetSkin(ResourceSkin* _info);
-		void shutdownWidgetSkin();
-
 		void actionWidgetHide(Widget* _widget);
 
 		ControllerFadeAlpha* createControllerFadeAlpha(float _alpha, float _coef, bool _enable);
+		IntCoord calculateListPosition();
 
 	private:
 		Button* mButton;
-		List* mList;
+		ListBox* mList;
 
 		bool mListShow;
-		int mMaxHeight;
+		int mMaxListLength;
 		size_t mItemIndex;
 		bool mModeDrop;
 		bool mDropMouse;
 		bool mShowSmooth;
-		bool mManualList;
 
+		FlowDirection mFlowDirection;
 	};
 
 } // namespace MyGUI

@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		01/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,14 +23,14 @@
 #define __MYGUI_TAB_ITEM_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Widget.h"
-#include "MyGUI_Tab.h"
+#include "MyGUI_TextBox.h"
+#include "MyGUI_TabControl.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT TabItem :
-		public Widget
+		public TextBox
 	{
 		MYGUI_RTTI_DERIVED( TabItem )
 
@@ -45,44 +44,12 @@ namespace MyGUI
 
 		//! Set button width
 		void setButtonWidth(int _value = DEFAULT);
-		//! Get button width
-		int getButtonWidth();
-
-		//! Replace an item name
-		void setItemName(const UString& _value);
-		//! Get item name
-		const UString& getItemName();
-
-		//! Replace an item name
-		void setItemData(Any _value);
-
-		//! Get item data
-		template <typename ValueType>
-		ValueType * getItemData(bool _throw = true)
-		{
-			return mOwner->getItemData<ValueType>(this, _throw);
-		}
-
-		//! Select sheet
-		void setItemSelected();
-
-		//! Remove item
-		void removeItem();
-
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
-
-	/*internal*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
 
 	protected:
-		virtual ~TabItem();
+		virtual void initialiseOverride();
+		virtual void shutdownOverride();
 
-		void setSelected(bool _value);
-
-	private:
-		Tab* mOwner;
-
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 	};
 
 } // namespace MyGUI

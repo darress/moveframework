@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,7 +28,8 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT SharedLayerNode : public LayerNode
+	class MYGUI_EXPORT SharedLayerNode :
+		public LayerNode
 	{
 		MYGUI_RTTI_DERIVED( SharedLayerNode )
 
@@ -37,9 +37,9 @@ namespace MyGUI
 		explicit SharedLayerNode(ILayer* _layer, ILayerNode* _parent = nullptr);
 		virtual ~SharedLayerNode();
 
-		void addUsing() { mCountUsing++; }
-		void removeUsing() { mCountUsing--; }
-		size_t countUsing() { return mCountUsing; }
+		void addUsing();
+		void removeUsing();
+		size_t countUsing() const;
 
 	private:
 		size_t mCountUsing;

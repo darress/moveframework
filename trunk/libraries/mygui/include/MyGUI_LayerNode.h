@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -35,19 +34,20 @@ namespace MyGUI
 	typedef std::vector<RenderItem*> VectorRenderItem;
 	typedef std::vector<ILayerItem*> VectorLayerItem;
 
-	class MYGUI_EXPORT LayerNode : public ILayerNode
+	class MYGUI_EXPORT LayerNode :
+		public ILayerNode
 	{
 		MYGUI_RTTI_DERIVED( LayerNode )
 
 	public:
-		explicit LayerNode(ILayer* _layer, ILayerNode * _parent = nullptr);
+		explicit LayerNode(ILayer* _layer, ILayerNode* _parent = nullptr);
 		virtual ~LayerNode();
 
 		// леер, которому мы принадлежим
-		virtual ILayer* getLayer() { return mLayer; }
+		virtual ILayer* getLayer() const;
 
 		// возвращает отца или nullptr
-		virtual ILayerNode* getParent() { return mParent; }
+		virtual ILayerNode* getParent() const;
 
 		// создаем дочерний нод
 		virtual ILayerNode* createChildItemNode();
@@ -58,7 +58,7 @@ namespace MyGUI
 		virtual void upChildItemNode(ILayerNode* _node);
 
 		// список детей
-		virtual EnumeratorILayerNode getEnumerator();
+		virtual EnumeratorILayerNode getEnumerator() const;
 
 		// добавляем айтем к ноду
 		virtual void attachLayerItem(ILayerItem* _item);
@@ -66,19 +66,19 @@ namespace MyGUI
 		virtual void detachLayerItem(ILayerItem* _item);
 
 		// добавляет саб айтем и возвращает рендер айтем
-		virtual RenderItem* addToRenderItem(ITexture* _texture, ISubWidget* _item);
+		virtual RenderItem* addToRenderItem(ITexture* _texture, bool _firstQueue, bool _manualRender);
 		// необходимо обновление нода
 		virtual void outOfDate(RenderItem* _item);
 
 		// возвращает виджет по позиции
-		virtual ILayerItem* getLayerItemByPoint(int _left, int _top);
+		virtual ILayerItem* getLayerItemByPoint(int _left, int _top) const;
 
 		// рисует леер
 		virtual void renderToTarget(IRenderTarget* _target, bool _update);
 
-		virtual void dumpStatisticToLog(size_t _level);
+		virtual void resizeView(const IntSize& _viewSize);
 
-		bool isOutOfDate() { return mOutOfDate; }
+		bool isOutOfDate() const;
 
 	protected:
 		void updateCompression();
@@ -95,7 +95,7 @@ namespace MyGUI
 		// список такиж как мы, для построения дерева
 		VectorILayerNode mChildItems;
 
-		ILayerNode * mParent;
+		ILayerNode* mParent;
 		ILayer* mLayer;
 		bool mOutOfDate;
 	};

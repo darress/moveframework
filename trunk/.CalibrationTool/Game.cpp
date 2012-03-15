@@ -50,10 +50,7 @@ void Game::createScene()
 
 void Game::initGui()
 {
-	MyGUI::LanguageManager::getInstance().loadUserTags("core_theme_black_orange_tag.xml");
-	mGUI->load("core_skin.xml");
-
-	MyGUI::VectorWidgetPtr& root = MyGUI::LayoutManager::getInstance().load("main.layout");
+	MyGUI::LayoutManager::getInstance().loadLayout("main.layout");
 
 	int eyeX, eyeY;
 	move->getEyeDimensions(eyeX,eyeY);
@@ -74,17 +71,17 @@ void Game::initGui()
 	lMaterial->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
 	//set texture of eye image
-	mGUI->findWidget<MyGUI::StaticImage>("Eye Image")->setImageTexture("CameraImage");
+	mGUI->findWidget<MyGUI::ImageBox>("Eye Image")->setImageTexture("CameraImage");
 
-	mGUI->findWidget<MyGUI::StaticText>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.");
+	mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.");
 	if (numMoves>0)
 	{
-		mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("To calibrate a device, press\nthe CIRCLE button on that device!");
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("To calibrate a device, press\nthe CIRCLE button on that device!");
 	}
 	else
 	{
-		mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("No device is connected via Bluetooth. Nothing to calibrate.");
-		mGUI->findWidget<MyGUI::StaticText>("Moves")->setCaption("No device is found.");
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected via Bluetooth. Nothing to calibrate.");
+		mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption("No device is found.");
 	}
 }
 
@@ -96,7 +93,7 @@ void Game::guiExitClick(MyGUI::Widget* _widget)
 void Game::calibrationDone(int moveId)
 {
 	state=GameState::Normal;
-	mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("Calibration done. To calibrate again,\npress the CIRCLE button on a device!");
+	mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Calibration done. To calibrate again,\npress the CIRCLE button on a device!");
 }
 
 bool Game::keyPressed( const OIS::KeyEvent &arg )
@@ -108,18 +105,18 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 			int num = move->pairMoves();
 			if (num==0)
 			{
-				mGUI->findWidget<MyGUI::StaticText>("PairInfo")->setCaption("No new device has been paired, to try again, press P.");
+				mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No new device has been paired, to try again, press P.");
 			}
 			else
 			{
 				char tmp[100];
 				sprintf(tmp,"%d new devices has been paired, to pair again, press P.",num);
-				mGUI->findWidget<MyGUI::StaticText>("PairInfo")->setCaption(tmp);
+				mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption(tmp);
 			}
 		}
 		catch(MoveNoBTDongleFound)
 		{
-			mGUI->findWidget<MyGUI::StaticText>("PairInfo")->setCaption("No Bluetooth dongle found, please connect one!");
+			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No Bluetooth dongle found, please connect one!");
 		}
 	}
 	else if (arg.key==OIS::KC_M)
@@ -146,13 +143,13 @@ void Game::moveKeyPressed(int moveId, int keyCode)
 		if (state==GameState::WaitForXBeforeCalibration)
 		{
 			state=GameState::Calibrating;
-			mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("Please rotate the Move in every possible directions,\nthen press the Cross button again.");
+			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please rotate the Move in every possible directions,\nthen press the Cross button again.");
 			move->startCalibration(moveId);
 		}
 		else if (state==GameState::Calibrating)
 		{
 			state=GameState::Calculating;
-			mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("Please wait until the calculation process ends.");
+			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please wait until the calculation process ends.");
 			move->endCalibration(moveId);
 		}
 	}
@@ -160,7 +157,7 @@ void Game::moveKeyPressed(int moveId, int keyCode)
 	{
 		if (state==GameState::Normal)
 		{
-			mGUI->findWidget<MyGUI::StaticText>("Info")->setCaption("To calibrate the magnetic sensor, please press the Cross button,\nthen rotate the Move in every possible directions!");
+			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("To calibrate the magnetic sensor, please press the Cross button,\nthen rotate the Move in every possible directions!");
 			state=GameState::WaitForXBeforeCalibration;
 			calibratingMove=moveId;
 		}
@@ -204,7 +201,7 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 			strin.append(tmp);
 		}
 	}
-	mGUI->findWidget<MyGUI::StaticText>("Moves")->setCaption(strin);
+	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(strin);
 }
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)

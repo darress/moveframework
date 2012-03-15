@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -35,47 +34,37 @@ namespace MyGUI
 	{
 		MYGUI_RTTI_DERIVED( ResourceManualFont )
 
-	private:
-		typedef std::vector<RangeInfo> VectorRangeInfo;
-		typedef std::vector<PairCodeCoord> VectorPairCodeCoord;
-
 	public:
 		ResourceManualFont();
 		virtual ~ResourceManualFont();
 
 		virtual void deserialization(xml::ElementPtr _node, Version _version);
 
+		// Returns the glyph info for the specified code point, or the glyph info for a substitute glyph if the code point does not
+		// exist in this font. Returns nullptr if the code point does not exist and there is no substitute glyph available.
 		virtual GlyphInfo* getGlyphInfo(Char _id);
 
-		virtual ITexture* getTextureFont() { return mTexture; }
+		virtual ITexture* getTextureFont();
 
-		// дефолтная высота, указанная в настройках шрифта
-		virtual int getDefaultHeight() { return mDefaultHeight; }
-
-	private:
-		void addGlyph(Char _index, const IntCoord& _coord);
-
-		void initialise();
-
-		void addGlyph(GlyphInfo * _info, Char _index, int _left, int _top, int _right, int _bottom, int _finalw, int _finalh, float _aspect, int _addHeight = 0);
-
-		void addRange(VectorPairCodeCoord& _info, size_t _first, size_t _last, int _width, int _height, float _aspect);
-		void checkTexture();
+		// РґРµС„РѕР»С‚РЅР°СЏ РІС‹СЃРѕС‚Р°, СѓРєР°Р·Р°РЅРЅР°СЏ РІ РЅР°СЃС‚СЂРѕР№РєР°С… С€СЂРёС„С‚Р°
+		virtual int getDefaultHeight();
 
 	private:
-		std::string mSource;
-		int mDefaultHeight;
+		// Loads the texture specified by mSource.
+		void loadTexture();
 
-		// отдельная информация о символах
-		GlyphInfo mSpaceGlyphInfo;
+		// A map of code points to glyph info objects.
+		typedef std::map<Char, GlyphInfo> CharMap;
 
-		// символы созданные руками
-		VectorPairCodeCoord mVectorPairCodeCoord;
+		// The following variables are set directly from values specified by the user.
+		std::string mSource; // Source (filename) of the font.
 
-		// вся информация о символах
-		VectorRangeInfo mVectorRangeInfo;
+		// The following variables are calculated automatically.
+		int mDefaultHeight; // The nominal height of the font in pixels.
+		GlyphInfo* mSubstituteGlyphInfo; // The glyph info to use as a substitute for code points that don't exist in the font.
+		MyGUI::ITexture* mTexture; // The texture that contains all of the rendered glyphs in the font.
 
-		MyGUI::ITexture* mTexture;
+		CharMap mCharMap; // A map of code points to glyph info objects.
 	};
 
 } // namespace MyGUI

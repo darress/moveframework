@@ -25,7 +25,7 @@
 #ifndef __MYGUI_PLATFORM_H__
 #define __MYGUI_PLATFORM_H__
 
-// Definnition of platforms
+// Definition of platforms
 #define MYGUI_PLATFORM_WIN32		1
 #define MYGUI_PLATFORM_LINUX		2
 #define MYGUI_PLATFORM_APPLE		3
@@ -52,8 +52,8 @@
 #elif defined( __GNUC__ )
 #	define MYGUI_COMPILER MYGUI_COMPILER_GNUC
 #	define MYGUI_COMP_VER (((__GNUC__)*100) + \
-        (__GNUC_MINOR__*10) + \
-        __GNUC_PATCHLEVEL__)
+		(__GNUC_MINOR__*10) + \
+		__GNUC_PATCHLEVEL__)
 #else
 #	pragma error "Unknown compiler! Stop building!!!"
 #endif
@@ -125,9 +125,6 @@
 #	else
 #		define MYGUI_EXPORT_DLL
 #	endif
-#
-// A quick define to overcome different names for the same function
-#   define stricmp strcasecmp
 #
 // Unlike the Win32 compilers, Linux compilers seem to use DEBUG for when
 // specifying a debug build.

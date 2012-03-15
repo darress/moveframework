@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		05/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,7 +28,8 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT DataStream : public IDataStream
+	class MYGUI_EXPORT DataStream :
+		public IDataStream
 	{
 	public:
 		DataStream();

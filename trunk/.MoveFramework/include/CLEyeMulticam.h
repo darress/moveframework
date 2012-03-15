@@ -3,33 +3,37 @@
 // This library is part of CL-Eye SDK
 // It allows the use of multiple CL-Eye cameras in your own applications
 //
-// For updates and file downloads go to: http://codelaboratories.com/research/view/cl-eye-muticamera-api
+// For updates and file downloads go to: http://codelaboratories.com
 //
 // Copyright 2008-2010 (c) Code Laboratories, Inc. All rights reserved.
 //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <windows.h>
-#define CLEYEMULTICAM_API extern "C" __declspec(dllimport)
+#define IMPORT(type) extern "C" __declspec(dllimport)## type __cdecl
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CLEyeMulticam Camera API
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// camera instance
+
+// camera instance type
 typedef void *CLEyeCameraInstance;
 
-// camera color mode
+// camera modes
 typedef enum
 { 
-	CLEYE_GRAYSCALE, 
-	CLEYE_COLOR
+	CLEYE_MONO_PROCESSED,
+	CLEYE_COLOR_PROCESSED,
+	CLEYE_MONO_RAW,
+	CLEYE_COLOR_RAW,
+	CLEYE_BAYER_RAW
 }CLEyeCameraColorMode;
 
 // camera resolution
 typedef enum
 { 
-	CLEYE_QVGA,					// Allowed frame rates: 15, 30, 60, 75, 100, 125
-	CLEYE_VGA					// Allowed frame rates: 15, 30, 40, 50, 60, 75
+	CLEYE_QVGA,
+	CLEYE_VGA
 }CLEyeCameraResolution;
 
 // camera parameters
@@ -44,7 +48,7 @@ typedef enum
 	CLEYE_WHITEBALANCE_RED,		// [0, 255]
 	CLEYE_WHITEBALANCE_GREEN,	// [0, 255]
 	CLEYE_WHITEBALANCE_BLUE,	// [0, 255]
-	// camera linear transform parameters
+	// camera linear transform parameters (valid for CLEYE_MONO_PROCESSED, CLEYE_COLOR_PROCESSED modes)
 	CLEYE_HFLIP,				// [false, true]
 	CLEYE_VFLIP,				// [false, true]
 	CLEYE_HKEYSTONE,			// [-500, 500]
@@ -53,7 +57,7 @@ typedef enum
 	CLEYE_YOFFSET,				// [-500, 500]
 	CLEYE_ROTATION,				// [-500, 500]
 	CLEYE_ZOOM,					// [-500, 500]
-	// camera non-linear transform parameters
+	// camera non-linear transform parameters (valid for CLEYE_MONO_PROCESSED, CLEYE_COLOR_PROCESSED modes)
 	CLEYE_LENSCORRECTION1,		// [-500, 500]
 	CLEYE_LENSCORRECTION2,		// [-500, 500]
 	CLEYE_LENSCORRECTION3,		// [-500, 500]
@@ -61,24 +65,27 @@ typedef enum
 }CLEyeCameraParameter;
 
 // Camera information
-CLEYEMULTICAM_API int CLEyeGetCameraCount();
-CLEYEMULTICAM_API GUID CLEyeGetCameraUUID(int camId);
+IMPORT(int) CLEyeGetCameraCount();
+IMPORT(GUID) CLEyeGetCameraUUID(int camId);
 
 // Library initialization
-CLEYEMULTICAM_API CLEyeCameraInstance CLEyeCreateCamera(GUID camUUID, CLEyeCameraColorMode mode, 
-														CLEyeCameraResolution res, int frameRate);
-CLEYEMULTICAM_API bool CLEyeDestroyCamera(CLEyeCameraInstance cam);
+IMPORT(CLEyeCameraInstance) CLEyeCreateCamera(GUID camUUID, CLEyeCameraColorMode mode, 
+												CLEyeCameraResolution res, float frameRate);
+IMPORT(bool) CLEyeDestroyCamera(CLEyeCameraInstance cam);
 
 // Camera capture control
-CLEYEMULTICAM_API bool CLEyeCameraStart(CLEyeCameraInstance cam);
-CLEYEMULTICAM_API bool CLEyeCameraStop(CLEyeCameraInstance cam);
+IMPORT(bool) CLEyeCameraStart(CLEyeCameraInstance cam);
+IMPORT(bool) CLEyeCameraStop(CLEyeCameraInstance cam);
 
-// Camera settings control
-CLEYEMULTICAM_API bool CLEyeSetCameraParameter(CLEyeCameraInstance cam, CLEyeCameraParameter param, int value);
-CLEYEMULTICAM_API int CLEyeGetCameraParameter(CLEyeCameraInstance cam, CLEyeCameraParameter param);
+// Camera LED control
+IMPORT(bool) CLEyeCameraLED(CLEyeCameraInstance cam, bool on);
+
+// Camera parameters control
+IMPORT(bool) CLEyeSetCameraParameter(CLEyeCameraInstance cam, CLEyeCameraParameter param, int value);
+IMPORT(int) CLEyeGetCameraParameter(CLEyeCameraInstance cam, CLEyeCameraParameter param);
 
 // Camera video frame image data retrieval
-CLEYEMULTICAM_API bool CLEyeCameraGetFrameDimensions(CLEyeCameraInstance cam, int &width, int &height);
-CLEYEMULTICAM_API bool CLEyeCameraGetFrame(CLEyeCameraInstance cam, PBYTE pData, int waitTimeout = 2000);
+IMPORT(bool) CLEyeCameraGetFrameDimensions(CLEyeCameraInstance cam, int &width, int &height);
+IMPORT(bool) CLEyeCameraGetFrame(CLEyeCameraInstance cam, PBYTE pData, int waitTimeout = 2000);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////

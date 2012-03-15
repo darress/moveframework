@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		11/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -25,20 +24,23 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_Button.h"
-#include "MyGUI_MenuCtrl.h"
+#include "MyGUI_MenuControl.h"
+#include "MyGUI_IItem.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT MenuItem :
-		public Button
+		public Button,
+		public IItem,
+		public MemberObsolete<MenuItem>
 	{
 		MYGUI_RTTI_DERIVED( MenuItem )
 
 	public:
 		MenuItem();
 
-		/** @copydoc Widget::setCaption(const UString& _value) */
+		/** @copydoc TextBox::setCaption(const UString& _value) */
 		virtual void setCaption(const UString& _value);
 
 		//! Replace an item name
@@ -68,11 +70,11 @@ namespace MyGUI
 		size_t getItemIndex();
 
 		/** Create child item (submenu), MenuItem can have only one child */
-		MenuCtrl* createItemChild();
+		MenuControl* createItemChild();
 
 		/** Create specific type child item (submenu), MenuItem can have only one child */
 		template <typename Type>
-		Type * createItemChildT()
+		Type* createItemChildT()
 		{
 			return mOwner->createItemChildT<Type>(this);
 		}
@@ -85,45 +87,35 @@ namespace MyGUI
 		/** Hide or show child item (submenu) */
 		void setItemChildVisible(bool _value);
 
-		/** Get parent MenuCtrl */
-		MenuCtrl* getMenuCtrlParent() { return mOwner; }
+		/** Get parent MenuControl */
+		MenuControl* getMenuCtrlParent();
 
 		/** Get child item (submenu) */
-		MenuCtrl* getItemChild();
+		MenuControl* getItemChild();
 
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
+		bool getItemChecked() const;
+		void setItemChecked(bool _value);
 
-
-	/*internal:*/
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
-
-	/*obsolete:*/
-#ifndef MYGUI_DONT_USE_OBSOLETE
-
-		MYGUI_OBSOLETE("use : void setItemChildVisible(bool _visible)")
-		void showItemChild() { setItemChildVisible(true); }
-		MYGUI_OBSOLETE("use : void setItemChildVisible(bool _visible)")
-		void hideItemChild() { setItemChildVisible(false); }
-
-#endif // MYGUI_DONT_USE_OBSOLETE
+		/*internal:*/
+		virtual IItemContainer* _getItemContainer();
+		IntSize _getContentSize();
 
 	protected:
-		virtual ~MenuItem();
+		virtual void initialiseOverride();
+		virtual void shutdownOverride();
 
-		virtual Widget* baseCreateWidget(WidgetStyle _style, const std::string& _type, const std::string& _skin, const IntCoord& _coord, Align _align, const std::string& _layer, const std::string& _name);
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 
-		virtual void baseChangeWidgetSkin(ResourceSkin* _info);
-		void initialiseWidgetSkin(ResourceSkin* _info);
-		void shutdownWidgetSkin();
-
-	private:
-		virtual void onMouseButtonPressed(int _left, int _top, MouseButton _id);
-		virtual void onMouseButtonReleased(int _left, int _top, MouseButton _id);
+		virtual void onWidgetCreated(Widget* _widget);
 
 	private:
-		MenuCtrl* mOwner;
+		void updateCheck();
 
+	private:
+		MenuControl* mOwner;
+		IntSize mMinSize;
+		Widget* mCheck;
+		bool mCheckValue;
 	};
 
 } // namespace MyGUI

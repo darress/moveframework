@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -29,13 +28,13 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT IStateInfo : public ISerializable
+	class MYGUI_EXPORT IStateInfo :
+		public ISerializable
 	{
 		MYGUI_RTTI_DERIVED( IStateInfo )
 
 	public:
 		virtual ~IStateInfo() { }
-
 	};
 
 	typedef std::vector<IStateInfo*> VectorStateInfo;

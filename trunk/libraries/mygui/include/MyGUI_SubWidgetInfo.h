@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		26/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -28,9 +27,10 @@
 namespace MyGUI
 {
 
-	// информация, об одном сабвиджете
+	// РёРЅС„РѕСЂРјР°С†РёСЏ, РѕР± РѕРґРЅРѕРј СЃР°Р±РІРёРґР¶РµС‚Рµ
 	struct SubWidgetInfo
 	{
+	public:
 		SubWidgetInfo(const std::string& _type, const IntCoord& _coord, Align _align) :
 			coord(_coord),
 			align(_align),
@@ -38,6 +38,7 @@ namespace MyGUI
 		{
 		}
 
+	public:
 		IntCoord coord;
 		Align align;
 		std::string type;

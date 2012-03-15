@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -25,6 +24,7 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_RenderTargetInfo.h"
+#include <stddef.h>
 
 namespace MyGUI
 {
@@ -44,7 +44,6 @@ namespace MyGUI
 		virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count) = 0;
 
 		virtual const RenderTargetInfo& getInfo() = 0;
-
 	};
 
 } // namespace MyGUI

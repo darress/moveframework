@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		10/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -31,10 +30,10 @@
 namespace MyGUI
 {
 
-	typedef delegates::CDelegate3<DDContainer*, const DDItemInfo&, bool&> EventHandle_DDContainerPtrCDDItemInfoRefBoolRef;
-	typedef delegates::CDelegate3<DDContainer*, const DDItemInfo&, bool> EventHandle_DDContainerPtrCDDItemInfoRefBool;
-	typedef delegates::CDelegate2<DDContainer*, DDItemState> EventHandle_EventHandle_DDContainerPtrDDItemState;
-	typedef delegates::CDelegate3<DDContainer*, WidgetPtr&, IntCoord&> EventHandle_EventHandle_DDContainerPtrWidgetPtrRefIntCoordRef;
+	typedef delegates::CMultiDelegate3<DDContainer*, const DDItemInfo&, bool&> EventHandle_DDContainerPtrCDDItemInfoRefBoolRef;
+	typedef delegates::CMultiDelegate3<DDContainer*, const DDItemInfo&, bool> EventHandle_DDContainerPtrCDDItemInfoRefBool;
+	typedef delegates::CMultiDelegate2<DDContainer*, DDItemState> EventHandle_EventHandle_DDContainerPtrDDItemState;
+	typedef delegates::CDelegate3<DDContainer*, Widget*&, IntCoord&> EventHandle_EventHandle_DDContainerPtrWidgetPtrRefIntCoordRef;
 
 
 	class MYGUI_EXPORT DDContainer :
@@ -48,103 +47,96 @@ namespace MyGUI
 		/** Set drag'n'drop mode flag.
 			Disabled (false) by default.
 		*/
-		void setNeedDragDrop(bool _value) { mNeedDragDrop = _value; }
+		void setNeedDragDrop(bool _value);
 		/** Get drag'n'drop mode flag */
-		bool getNeedDragDrop() { return mNeedDragDrop; }
+		bool getNeedDragDrop() const;
 
-		/** @copydoc Widget::setProperty(const std::string& _key, const std::string& _value) */
-		virtual void setProperty(const std::string& _key, const std::string& _value);
+		void resetDrag();
 
-	/*event:*/
-		/** Event : request for start drag
+		/*events:*/
+		/** Event : Request for start drag.\n
 			signature : void method(MyGUI::DDContainer* _sender, const MyGUI::DDItemInfo& _info, bool& _result)
 			@param _sender widget that called this event
 			@param _info information about DDContainers
 			@param _result write here true if container can be draggedor false if it can't
 		*/
-		EventHandle_DDContainerPtrCDDItemInfoRefBoolRef eventStartDrag;
+		EventHandle_DDContainerPtrCDDItemInfoRefBoolRef
+			eventStartDrag;
 
-		/** Event : request for start drag (moving mouse over container, but not dropped yet)
+		/** Event : Request for start drop (moving mouse over container, but not dropped yet).\n
 			signature : void method(MyGUI::DDContainer* _sender, const MyGUI::DDItemInfo& _info, bool& _result)
 			@param _sender widget that called this event
 			@param _info information about DDContainers
 			@param _result write here true if container accept dragged widget or false if it isn't
 		*/
-		EventHandle_DDContainerPtrCDDItemInfoRefBoolRef eventRequestDrop;
+		EventHandle_DDContainerPtrCDDItemInfoRefBoolRef
+			eventRequestDrop;
 
-		/** Event : end drag (drop)
+		/** Event : End drag (drop).\n
 			signature : void method(MyGUI::DDContainer* _sender, const MyGUI::DDItemInfo& _info, bool _result)
 			@param _sender widget that called this event
 			@param _info information about DDContainers
 			@param _result if true then drop was successfull
 		*/
-		EventHandle_DDContainerPtrCDDItemInfoRefBool eventDropResult;
+		EventHandle_DDContainerPtrCDDItemInfoRefBool
+			eventDropResult;
 
-		/** Event : drag'n'drop state changed
+		/** Event : Drag'n'drop state changed.\n
 			signature : void method(MyGUI::DDContainer* _sender, MyGUI::DDItemState _state)
 			@param _sender widget that called this event
 			@param _state new state
 		*/
-		EventHandle_EventHandle_DDContainerPtrDDItemState eventChangeDDState;
+		EventHandle_EventHandle_DDContainerPtrDDItemState
+			eventChangeDDState;
 
-		/** Event : [not used] request widget for dragging
+		/** Event : [not used] Request widget for dragging.\n
 			signature : void method(MyGUI::DDContainer* _sender, MyGUI::Widget*& _item, MyGUI::IntCoord& _dimension)
 			@param _sender widget that called this event
 			@param _item write widget pointer here
 			@param _dimension write widget coordinate here
 		*/
-		EventHandle_EventHandle_DDContainerPtrWidgetPtrRefIntCoordRef requestDragWidgetInfo;
+		EventHandle_EventHandle_DDContainerPtrWidgetPtrRefIntCoordRef
+			requestDragWidgetInfo;
 
 
-	/*internal:*/
+		/*internal:*/
 		// метод для установления стейта айтема
-		virtual void _setContainerItemInfo(size_t _index, bool _set, bool _accept) { }
+		virtual void _setContainerItemInfo(size_t _index, bool _set, bool _accept);
 
-		virtual void _initialise(WidgetStyle _style, const IntCoord& _coord, Align _align, ResourceSkin* _info, Widget* _parent, ICroppedRectangle * _croppedParent, IWidgetCreator * _creator, const std::string& _name);
-
-		/** Event : внутреннее событие, невалидна информация для контейнера
+		/** Event : [Internal event] невалидна информация для контейнера.\n
 			signature : void method(MyGUI::DDContainer* _sender)
 			@param _sender widget that called this event
 		*/
-		EventPair<EventHandle_WidgetVoid, delegates::CDelegate1<DDContainer*> >
+		delegates::CMultiDelegate1<DDContainer*>
 			_eventInvalideContainer;
 
-		/** Event : !!обновить виджеты дропа DD_FIXME наверное internal
+		/** Event : [Internal event] !!обновить виджеты дропа DD_FIXME наверное internal.\n
 			signature : void method(MyGUI::DDContainer* _sender, MyGUI::Widget* _item, const MyGUI::DDWidgetState& _state)
 			@param _sender widget that called this event
 			@param _items
 			@param _state
 		*/
-		delegates::CDelegate3<DDContainer*, Widget*, const DDWidgetState&>
+		delegates::CMultiDelegate3<DDContainer*, Widget*, const DDWidgetState&>
 			eventUpdateDropState;
 
 	protected:
-		virtual ~DDContainer();
-
-		void baseChangeWidgetSkin(ResourceSkin* _info);
-
 		virtual void onMouseButtonPressed(int _left, int _top, MouseButton _id);
 		virtual void onMouseButtonReleased(int _left, int _top, MouseButton _id);
-		virtual void onMouseDrag(int _left, int _top);
+		virtual void onMouseDrag(int _left, int _top, MouseButton _id);
 
 		virtual void notifyInvalideDrop(DDContainer* _sender);
-
-		virtual void _getContainer(Widget*& _container, size_t& _index);
 
 		virtual void removeDropItems();
 		virtual void updateDropItems();
 		virtual void updateDropItemsState(const DDWidgetState& _state);
 
-		void mouseDrag();
+		void mouseDrag(MouseButton _id);
 		void mouseButtonReleased(MouseButton _id);
 		void mouseButtonPressed(MouseButton _id);
 
 		void endDrop(bool _reset);
 
-	private:
-		void initialiseWidgetSkin(ResourceSkin* _info);
-		void shutdownWidgetSkin();
-
+		virtual void setPropertyOverride(const std::string& _key, const std::string& _value);
 
 	protected:
 		bool mDropResult;

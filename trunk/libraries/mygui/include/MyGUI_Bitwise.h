@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		06/2009
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -50,7 +49,7 @@ namespace MyGUI
 		template<typename Type>
 		static MYGUI_FORCEINLINE bool isPO2(Type _value)
 		{
-			return (_value & (_value-1)) == 0;
+			return (_value & (_value - 1)) == 0;
 		}
 
 		/** Returns the number of bits a pattern must be shifted right by to
@@ -70,7 +69,6 @@ namespace MyGUI
 			}
 			return result;
 		}
-
 	};
 
 } // namespace MyGUI

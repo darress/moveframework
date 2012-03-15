@@ -1,7 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<MyGUI type="Layout">
-    <Widget type="StaticImage" skin="StaticImage" position="0 0 320 240" layer="Back" name="Eye Image"/>
-    <Widget type="StaticText" skin="StaticText" position="336 10 648 20" layer="Back" name="PairInfo"/>
-    <Widget type="StaticText" skin="StaticText" position="336 40 648 50" layer="Back" name="Info"/>
-    <Widget type="StaticText" skin="StaticText" position="10 256 300 600" layer="Back" name="Moves"/>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="ImageBox" skin="ImageBox" position="0 0 320 240" layer="Back" name="Eye Image"/>
+    <Widget type="TextBox" skin="TextBox" position="336 10 648 20" layer="Back" name="PairInfo">
+        <Property key="TextColour" value="1 1 1"/>
+    </Widget>
+    <Widget type="TextBox" skin="TextBox" position="336 40 648 50" layer="Back" name="Info">
+        <Property key="TextColour" value="1 1 1"/>
+    </Widget>
+    <Widget type="TextBox" skin="TextBox" position="10 256 300 600" layer="Back" name="Moves">
+        <Property key="TextColour" value="1 1 1"/>
+    </Widget>
+    <CodeGeneratorSettings/>
 </MyGUI>

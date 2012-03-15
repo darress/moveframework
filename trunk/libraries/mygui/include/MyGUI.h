@@ -2,7 +2,6 @@
 	@file
 	@author		Georgiy Evmenov
 	@date		01/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -27,28 +26,26 @@
 
 #include "MyGUI_Button.h"
 #include "MyGUI_ComboBox.h"
-#include "MyGUI_Edit.h"
-#include "MyGUI_HScroll.h"
-#include "MyGUI_List.h"
-#include "MyGUI_StaticText.h"
-#include "MyGUI_StaticImage.h"
-#include "MyGUI_Tab.h"
+#include "MyGUI_EditBox.h"
+#include "MyGUI_ListBox.h"
+#include "MyGUI_TextBox.h"
+#include "MyGUI_ImageBox.h"
+#include "MyGUI_TabControl.h"
 #include "MyGUI_TabItem.h"
-#include "MyGUI_VScroll.h"
 #include "MyGUI_Window.h"
-#include "MyGUI_Progress.h"
-#include "MyGUI_Message.h"
+#include "MyGUI_ProgressBar.h"
 #include "MyGUI_ItemBox.h"
-#include "MyGUI_MultiList.h"
-#include "MyGUI_MenuCtrl.h"
+#include "MyGUI_MultiListBox.h"
+#include "MyGUI_MenuControl.h"
 #include "MyGUI_MenuItem.h"
 #include "MyGUI_PopupMenu.h"
 #include "MyGUI_MenuBar.h"
+#include "MyGUI_ScrollBar.h"
 #include "MyGUI_ScrollView.h"
 #include "MyGUI_DDContainer.h"
 #include "MyGUI_Canvas.h"
-#include "MyGUI_ListCtrl.h"
-#include "MyGUI_ListBox.h"
+#include "MyGUI_MultiListItem.h"
+#include "MyGUI_DeprecatedWidgets.h"
 
 #include "MyGUI_InputManager.h"
 #include "MyGUI_SubWidgetManager.h"
@@ -75,7 +72,6 @@
 #include "MyGUI_ControllerPosition.h"
 #include "MyGUI_CoordConverter.h"
 #include "MyGUI_IResource.h"
-#include "MyGUI_CastWidget.h"
 #include "MyGUI_Any.h"
 #include "MyGUI_MenuItemType.h"
 #include "MyGUI_Version.h"
@@ -83,10 +79,11 @@
 #include "MyGUI_WidgetStyle.h"
 #include "MyGUI_IObject.h"
 #include "MyGUI_ISerializable.h"
-#include "MyGUI_RenderOut.h"
 
-#include "MyGUI_RawRect.h"
+#include "MyGUI_PolygonalSkin.h"
 #include "MyGUI_RotatingSkin.h"
 #include "MyGUI_TextureUtility.h"
+#include "MyGUI_Constants.h"
+#include "MyGUI_Bitwise.h"
 
 #endif // __MYGUI_H__

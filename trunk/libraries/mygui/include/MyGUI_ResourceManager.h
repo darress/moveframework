@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		09/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,77 +23,81 @@
 #define __MYGUI_RESOURCE_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_Enumerator.h"
-#include "MyGUI_Guid.h"
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_IResource.h"
-#include "MyGUI_ResourceHolder.h"
 #include "MyGUI_Delegate.h"
+#include "MyGUI_BackwardCompatibility.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT ResourceManager :
-		public ResourceHolder<IResource>
+		public Singleton<ResourceManager>,
+		public MemberObsolete<ResourceManager>
 	{
-		MYGUI_INSTANCE_HEADER( ResourceManager )
-
 	public:
+		ResourceManager();
+
 		void initialise();
 		void shutdown();
 
 	public:
-
 		/** Load additional MyGUI *_resource.xml file */
 		bool load(const std::string& _file);
 
-		bool _loadImplement(const std::string& _file, bool _match, const std::string& _type, const std::string& _instance);
-		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
-		void _loadList(xml::ElementPtr _node, const std::string& _file, Version _version);
+		void loadFromXmlNode(xml::ElementPtr _node, const std::string& _file, Version _version);
 
-		/** Get resource by GUID */
-		IResourcePtr getByID(const Guid& _id, bool _throw = true);
-
-		std::string getFileNameByID(const Guid& _id);
-
+		/** Add resource item to resources */
 		void addResource(IResourcePtr _item);
 
+		/** Remove resource item from resources */
 		void removeResource(IResourcePtr _item);
 
-		typedef delegates::CDelegate3<xml::ElementPtr, const std::string &, Version> LoadXmlDelegate;
+		typedef delegates::CDelegate3<xml::ElementPtr, const std::string&, Version> LoadXmlDelegate;
 
+		/** Register delegate that parse XML node with specified tag (_key) */
 		LoadXmlDelegate& registerLoadXmlDelegate(const std::string& _key);
 
+		/** Unregister delegate that parse XML node with specified tag (_key) */
 		void unregisterLoadXmlDelegate(const std::string& _key);
 
-	/*obsolete:*/
-#ifndef MYGUI_DONT_USE_OBSOLETE
+		/** Check is resource exist */
+		bool isExist(const std::string& _name) const;
 
-		MYGUI_OBSOLETE("use : size_t ResourceManager::getCount()")
-		size_t getResourceCount() { return getCount(); }
+		/** Find resource by name*/
+		IResource* findByName(const std::string& _name) const;
 
-		MYGUI_OBSOLETE("use : IResourcePtr ResourceManager::getByName(const std::string& _name, bool _throw)")
-		IResourcePtr getResource(const std::string& _name, bool _throw = true) { return getByName(_name, _throw); }
+		/** Get resource by name*/
+		IResource* getByName(const std::string& _name, bool _throw = true) const;
 
-		MYGUI_OBSOLETE("use : IResourcePtr ResourceManager::getByID(const Guid& _id, bool _throw)")
-		IResourcePtr getResource(const Guid& _id, bool _throw = true) { return getByID(_id, _throw); }
+		bool removeByName(const std::string& _name);
 
-#endif // MYGUI_DONT_USE_OBSOLETE
+		void clear();
+
+		typedef std::map<std::string, IResource*> MapResource;
+		typedef Enumerator<MapResource> EnumeratorPtr;
+
+		EnumeratorPtr getEnumerator() const;
+
+		size_t getCount() const;
 
 	private:
-		typedef std::map<Guid, IResourcePtr> MapResourceID;
-		MapResourceID mResourcesID;
+		void _loadList(xml::ElementPtr _node, const std::string& _file, Version _version);
+		bool _loadImplement(const std::string& _file, bool _match, const std::string& _type, const std::string& _instance);
 
+	private:
 		// карта с делегатами для парсинга хмл блоков
 		typedef std::map<std::string, LoadXmlDelegate> MapLoadXmlDelegate;
 		MapLoadXmlDelegate mMapLoadXmlDelegate;
 
-		std::string mResourceGroup;
-		typedef std::vector<Guid> VectorGuid;
-		typedef std::map<std::string, VectorGuid> MapVectorString;
+		MapResource mResources;
 
-		MapVectorString mListFileGuid;
+		typedef std::vector<IResource*> VectorResource;
+		VectorResource mRemovedResoures;
+
+		bool mIsInitialise;
 	};
 
 } // namespace MyGUI

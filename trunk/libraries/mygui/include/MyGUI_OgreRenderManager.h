@@ -2,14 +2,12 @@
 	@file
 	@author		Albert Semenov
 	@date		04/2008
-	@module
 */
 
 #ifndef __MYGUI_OGRE_RENDER_MANAGER_H__
 #define __MYGUI_OGRE_RENDER_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
 #include "MyGUI_RenderFormat.h"
 #include "MyGUI_IVertexBuffer.h"
 #include "MyGUI_RenderManager.h"
@@ -28,33 +26,49 @@ namespace MyGUI
 		public Ogre::RenderQueueListener,
 		public Ogre::RenderSystem::Listener
 	{
-		MYGUI_INSTANCE_HEADER(OgreRenderManager)
-
 	public:
+		OgreRenderManager();
+
 		void initialise(Ogre::RenderWindow* _window, Ogre::SceneManager* _scene);
 		void shutdown();
 
-		virtual const IntSize& getViewSize() const { return mViewSize; }
+		static OgreRenderManager& getInstance();
+		static OgreRenderManager* getInstancePtr();
 
-		virtual VertexColourType getVertexFormat() { return mVertexFormat; }
+		/** @see RenderManager::getViewSize */
+		virtual const IntSize& getViewSize() const;
 
+		/** @see RenderManager::getVertexFormat */
+		virtual VertexColourType getVertexFormat();
+
+		/** @see RenderManager::createVertexBuffer */
 		virtual IVertexBuffer* createVertexBuffer();
+		/** @see RenderManager::destroyVertexBuffer */
 		virtual void destroyVertexBuffer(IVertexBuffer* _buffer);
 
+		/** @see RenderManager::createTexture */
 		virtual ITexture* createTexture(const std::string& _name);
+		/** @see RenderManager::destroyTexture */
 		virtual void destroyTexture(ITexture* _texture);
+		/** @see RenderManager::getTexture */
 		virtual ITexture* getTexture(const std::string& _name);
 
+		/** @see RenderManager::isFormatSupported */
 		virtual bool isFormatSupported(PixelFormat _format, TextureUsage _usage);
 
+		/** @see IRenderTarget::begin */
 		virtual void begin();
+		/** @see IRenderTarget::end */
 		virtual void end();
 
+		/** @see IRenderTarget::doRender */
 		virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count);
 
-		virtual const RenderTargetInfo& getInfo() { return mInfo; }
+		/** @see IRenderTarget::getInfo */
+		virtual const RenderTargetInfo& getInfo();
 
 		void setRenderSystem(Ogre::RenderSystem* _render);
+		Ogre::RenderSystem* getRenderSystem();
 
 		void setRenderWindow(Ogre::RenderWindow* _window);
 
@@ -62,12 +76,17 @@ namespace MyGUI
 		void setSceneManager(Ogre::SceneManager* _scene);
 
 		/** Get GUI viewport index */
-		size_t getActiveViewport() { return mActiveViewport; }
+		size_t getActiveViewport();
 
 		/** Set GUI viewport index */
-		void setActiveViewport(size_t _num);
+		void setActiveViewport(unsigned short _num);
 
-		Ogre::RenderWindow * getRenderWindow() { return mWindow; }
+		Ogre::RenderWindow* getRenderWindow();
+
+		bool getManualRender();
+		void setManualRender(bool _value);
+
+		size_t getBatchCount() const;
 
 #if MYGUI_DEBUG_MODE == 1
 		virtual bool checkTexture(ITexture* _texture);
@@ -78,14 +97,14 @@ namespace MyGUI
 		virtual void renderQueueEnded(Ogre::uint8 queueGroupId, const Ogre::String& invocation, bool& repeatThisInvocation);
 		virtual void windowResized(Ogre::RenderWindow* _window);
 
-		// восстанавливаем буферы
+		// РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р±СѓС„РµСЂС‹
 		virtual void eventOccurred(const Ogre::String& eventName, const Ogre::NameValuePairList* parameters);
 
 		void destroyAllResources();
 		void updateRenderInfo();
 
 	private:
-		// флаг для обновления всех и вся
+		// С„Р»Р°Рі РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РІСЃРµС… Рё РІСЃСЏ
 		bool mUpdate;
 
 		IntSize mViewSize;
@@ -94,11 +113,11 @@ namespace MyGUI
 
 		VertexColourType mVertexFormat;
 
-		// окно, на которое мы подписываемся для изменения размеров
+		// РѕРєРЅРѕ, РЅР° РєРѕС‚РѕСЂРѕРµ РјС‹ РїРѕРґРїРёСЃС‹РІР°РµРјСЃСЏ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ СЂР°Р·РјРµСЂРѕРІ
 		Ogre::RenderWindow* mWindow;
 
-		// вьюпорт, с которым работает система
-		size_t mActiveViewport;
+		// РІСЊСЋРїРѕСЂС‚, СЃ РєРѕС‚РѕСЂС‹Рј СЂР°Р±РѕС‚Р°РµС‚ СЃРёСЃС‚РµРјР°
+		unsigned short mActiveViewport;
 
 		Ogre::RenderSystem* mRenderSystem;
 		Ogre::TextureUnitState::UVWAddressingMode mTextureAddressMode;
@@ -108,6 +127,10 @@ namespace MyGUI
 
 		typedef std::map<std::string, ITexture*> MapTexture;
 		MapTexture mTextures;
+
+		bool mIsInitialise;
+		bool mManualRender;
+		size_t mCountBatch;
 	};
 
 } // namespace MyGUI

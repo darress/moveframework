@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		02/2008
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -24,26 +23,29 @@
 #define __MYGUI_LAYER_MANAGER_H__
 
 #include "MyGUI_Prerequest.h"
-#include "MyGUI_Instance.h"
+#include "MyGUI_Singleton.h"
 #include "MyGUI_Enumerator.h"
 #include "MyGUI_XmlDocument.h"
 #include "MyGUI_IUnlinkWidget.h"
 #include "MyGUI_ResourceManager.h"
 #include "MyGUI_ILayer.h"
+#include "MyGUI_BackwardCompatibility.h"
 
 namespace MyGUI
 {
 
 	class MYGUI_EXPORT LayerManager :
-		public IUnlinkWidget
+		public Singleton<LayerManager>,
+		public IUnlinkWidget,
+		public MemberObsolete<LayerManager>
 	{
-		MYGUI_INSTANCE_HEADER( LayerManager )
-
 	public:
 		typedef std::vector<ILayer*> VectorLayer;
 		typedef Enumerator<VectorLayer> EnumeratorLayer;
 
 	public:
+		LayerManager();
+
 		void initialise();
 		void shutdown();
 
@@ -62,26 +64,24 @@ namespace MyGUI
 		*/
 		void upLayerItem(Widget* _item);
 
-		/** Load additional MyGUI *_layer.xml file */
-		bool load(const std::string& _file);
-		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
-
 		/** Check is layer exist */
 		bool isExist(const std::string& _name) const;
 		/** Get layer nodes Enumerator */
-		EnumeratorLayer getEnumerator() { return EnumeratorLayer(mLayerNodes); }
+		EnumeratorLayer getEnumerator() const;
 
+		/** Get layer by name */
 		ILayer* getByName(const std::string& _name, bool _throw = true) const;
 
 		/** Get top visible and enabled widget at specified position */
 		Widget* getWidgetFromPoint(int _left, int _top);
 
+		/** Render all layers to specified target */
 		void renderToTarget(IRenderTarget* _target, bool _update);
 
-		virtual void dumpStatisticToLog();
+		void resizeView(const IntSize& _viewSize);
 
 	private:
-		// удаляем данный виджет из всех возможных мест
+		void _load(xml::ElementPtr _node, const std::string& _file, Version _version);
 		void _unlinkWidget(Widget* _widget);
 
 		void clear();
@@ -92,6 +92,7 @@ namespace MyGUI
 	private:
 		VectorLayer mLayerNodes;
 
+		bool mIsInitialise;
 	};
 
 } // namespace MyGUI

@@ -3,7 +3,6 @@
 	@author		Albert Semenov
 	@author		baho_is
 	@date		11/2007
-	@module
 */
 /*
 	This file is part of MyGUI.
@@ -85,22 +84,21 @@
 #endif
 
 
-// for more info see: http://mdf-i.blogspot.com/2008/09/deprecated-gcc-vs-vs-vs-vs.html
 #if MYGUI_COMPILER == MYGUI_COMPILER_MSVC
-	#if MYGUI_COMP_VER == 1310 	// VC++ 7.1
+	#if MYGUI_COMP_VER < 1310 // VC++ 7.1
 		#define MYGUI_OBSOLETE_START(text)
-	    #define MYGUI_OBSOLETE_END
+		#define MYGUI_OBSOLETE_END
 	#else
 		#define MYGUI_OBSOLETE_START(text) __declspec(deprecated(text))
-	    #define MYGUI_OBSOLETE_END
+		#define MYGUI_OBSOLETE_END
 	#endif
 
 #elif MYGUI_COMPILER == MYGUI_COMPILER_GNUC
-	#if MYGUI_PLATFORM == MYGUI_PLATFORM_LINUX && MYGUI_COMP_VER == 412
+	#if MYGUI_PLATFORM == MYGUI_PLATFORM_LINUX && MYGUI_COMP_VER < 310 // gcc 3.1
 		#define MYGUI_OBSOLETE_START(text)
-        #define MYGUI_OBSOLETE_END
+		#define MYGUI_OBSOLETE_END
 	#else
-        #define MYGUI_OBSOLETE_START(text)
+		#define MYGUI_OBSOLETE_START(text)
 		#define MYGUI_OBSOLETE_END __attribute__((deprecated))
 	#endif
 

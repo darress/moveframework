@@ -2,7 +2,6 @@
 	@file
 	@author		Albert Semenov
 	@date		10/2009
-	@module
 */
 
 #ifndef __MYGUI_OGRE_RTTEXTURE_H__
@@ -30,7 +29,10 @@ namespace MyGUI
 
 		virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count);
 
-		virtual const RenderTargetInfo& getInfo() { return mRenderTargetInfo; }
+		virtual const RenderTargetInfo& getInfo()
+		{
+			return mRenderTargetInfo;
+		}
 
 	private:
 		RenderTargetInfo mRenderTargetInfo;
