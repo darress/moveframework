@@ -13,12 +13,16 @@ The Move connects always to the host address, that is stored in the it's memory.
 
 
 ==Connecting the paired Moves to you PC for the first time==
-*Only tested with Windows 7 and Windows 8, please comment if it works or not with other versions!*
+*I paired two devices with more operating systems and PCs! In most cases it works, just don't give up! If you did it once, the Move will always automatically connect by pressing the PS button!*
+*Tested on Windows 7 32 and 64 bit*
   # Make sure MotionInJoy is not installed!
   # Open your Bluetooth settings, and make sure "Allow devices to find this computer" is checked
   # Click "Add a Bluetooth device"
-  # Press the PS button on your Move
-  # Pair the Move without a oode (if the Move device doesnt appear while searching, my framework will probably not work with your OS, and there are some win7-64 that can add the device, some cannot)
+  # Press the PS button on your Move while the BT discovery is in progress
+  # "Motion Controller" will appear, select it, wait until the blinking is over
+    * Method 1: Press the PS button, than immediately click next/double click on the device
+    * Method 2: Double click on the device, wait 2 sec, press the PS button
+  # Pair the Move without a oode
     * Sometimes it is necessary to press the PS button just after clicking the "pair without code", and also try to press it if you stuck at some step.
     * If you can't pair it, try an other dongle, some dongles just don't work
   # Open the Properties window of the Move (if you are here, you will probably able to pair the device, dont give up, play around a little, and report how you could manage it! :))
@@ -29,12 +33,12 @@ The Move connects always to the host address, that is stored in the it's memory.
       * Hit the ps button and, quickly:
       * Click properties
       * Click services tab
-  # Now you have 3 methods to try
+  # You see the checkbox, now you have 3 methods to try
     * Method 1: Tick the checkbox, press the PS button and immediately hit Apply. If it doesn't work for first, uncheck the checkbox, close the window, open it again, and repeat this step.
     * Method 2: Make sure the checkbox is not checked. Close the window. Open it again, but don't click on the services tab yet. Press the PS button, and immediately click the services tab. If it doesn't work, repeat it.
     * Method 3: During HID device installation stage, press PS button immediately after led goes off, just to keep the installation going. Then when that's done, the led will light up on its own, and don't press PS button any more, or Move goes into pairing mode again and have to start all over. (Comment: During HID device installation stage, every time the Move LED goes off, press PS button immediately so the LED starts blinking again, this is just to keep the installation going. Also make sure you fully charge the Move, it will greatly prolong the blinking period.)
   # If the led on your Move is on and not blinking, you successfully connected your Move to your PC, and you will be able to pair it very fast every other time by simple pushing the PS button.
-  # If you could not manage to connect the Move to the PC, please play around a bit, and if you found a 3. method, let me know!
+  # If you could not manage to connect the Move to the PC, please play around a bit, and if you found a new method, let me know!
 
   
 ==Connecting the paired Moves to your PC (not the first time)==
