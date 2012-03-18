@@ -19,8 +19,8 @@ The Move connects always to the host address, that is stored in the it's memory.
   # Open your Bluetooth settings, and make sure "Allow devices to find this computer" is checked
   # Click "Add a Bluetooth device"
   # Press the PS button on your Move while the BT discovery is in progress
-  # "Motion Controller" will appear, select it, wait until the blinking is over
-    * Method 1: Press the PS button, than immediately click next/double click on the device
+  # "Motion Controller" will appear, wait until the blinking is over
+    * Method 1: Press the PS button, than immediately double click on the device
     * Method 2: Double click on the device, wait 2 sec, press the PS button
   # Pair the Move without a oode
     * Sometimes it is necessary to press the PS button just after clicking the "pair without code", and also try to press it if you stuck at some step.
