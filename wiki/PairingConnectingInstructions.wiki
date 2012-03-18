@@ -20,6 +20,7 @@ The Move connects always to the host address, that is stored in the it's memory.
   # Press the PS button on your Move
   # Pair the Move without a oode (if the Move device doesnt appear while searching, my framework will probably not work with your OS, and there are some win7-64 that can add the device, some cannot)
     * Sometimes it is necessary to press the PS button just after clicking the "pair without code", and also try to press it if you stuck at some step.
+    * If you can't pair it, try an other dongle, some dongles just don't work
   # Open the Properties window of the Move (if you are here, you will probably able to pair the device, dont give up, play around a little, and report how you could manage it! :))
   # Open the properties of the device, go to the "Services" tab and you have to see the checkbox for the HID service! 
     * If the checkbox does not appear, try to press the PS button a bit before clicking the services tab. If it appeared once, it will not desappear any more.
