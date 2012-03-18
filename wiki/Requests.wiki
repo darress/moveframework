@@ -11,4 +11,4 @@
  * OSC support
     * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
  * C# support
-    * Finished. See the Downloads tab. ;)
+    * *Finished.* See the Downloads tab. ;)
