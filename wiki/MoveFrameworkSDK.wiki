@@ -108,7 +108,7 @@ These things are in the [Tracking] section.
 
 algorithmGain: This is the gain of the orientation tracking algorithm. If you set this high, there will be less drift but the jitter will be higher. With a low value there will be more drift but less jitter.
 
-For example, if you want to set the algorithm gain to 1.0, you have to add these lines to the end/begin of the file:
+For example, if you want to set the algorithm gain to 1.0, you have to add these lines to the end or begin of the file:
 {{{
 [Tracking]
 algorithmGain=1.0
