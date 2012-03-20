@@ -25,7 +25,6 @@ namespace Eye
 		EyeInterface(int numMoves);
 		~EyeInterface(void);
 
-		void startCapture();
 		void getDimensions(int &x, int &y)
 		{
 			x=width; y=height;

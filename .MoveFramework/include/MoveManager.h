@@ -14,8 +14,6 @@ namespace Move
 
 	class MoveManager : public IMoveManager
 	{
-		HANDLE _hThread;
-
 		Eye::EyeInterface* eyeInt;
 
 		int moveCount;
@@ -79,7 +77,6 @@ namespace Move
 		void moveKeyReleased(int moveId, int keyCode);
 		void calibrationDone(int moveId);
 
-	private:
-		static DWORD WINAPI controlThread(LPVOID instance);
+
 	};
 }

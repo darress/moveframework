@@ -11,9 +11,6 @@
     <ClInclude Include="include\MoveCalibration.h">
       <Filter>PS Move\Calibration</Filter>
     </ClInclude>
-    <ClInclude Include="include\IniFile.h">
-      <Filter>ConfigFile</Filter>
-    </ClInclude>
     <ClInclude Include="include\MovePrecompiled.h" />
     <ClInclude Include="include\MoveRawCalibration.h">
       <Filter>PS Move\Calibration</Filter>
@@ -51,6 +48,9 @@
     <ClInclude Include="include\MadgwickAHRS.h">
       <Filter>PS Move\Orientation</Filter>
     </ClInclude>
+    <ClInclude Include="include\IniFile.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MoveFactory.cpp" />
@@ -84,9 +84,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="ConfigFile">
-      <UniqueIdentifier>{645caa5a-f23f-4053-86b7-bf874ec00c0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PS Move">
       <UniqueIdentifier>{aa3c2f25-0016-48b5-b2e3-b1ed52012af7}</UniqueIdentifier>
     </Filter>

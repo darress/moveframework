@@ -32,7 +32,6 @@ namespace Move
 		Vector3 GetAngularVelocity();
 		Vector3 GetAngularAcceleration();
 		void UseMagnetometer(bool value);
-		void HighGains();
 		void Reset();
 	};
 }

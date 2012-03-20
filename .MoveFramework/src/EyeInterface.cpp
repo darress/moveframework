@@ -12,10 +12,16 @@ namespace Eye
 		_cam=0;
 		balls[0].ballOutColor=ColorRgb(0,0,255);
 		balls[1].ballOutColor=ColorRgb(0,255,0);
+
+		_hThread = CreateThread(NULL, 0, &EyeInterface::CaptureThread, this, 0, 0);
+		SetPriorityClass(_hThread,REALTIME_PRIORITY_CLASS);
+		SetThreadPriority(_hThread,THREAD_PRIORITY_HIGHEST);
 	}
 	
 	EyeInterface::~EyeInterface(void)
 	{
+		TerminateThread(_hThread,0);
+
 		if (img)
 			delete(img);
 
@@ -26,13 +32,6 @@ namespace Eye
 		}
 		if (pCapBuffer)
 			delete[] pCapBuffer;
-	}
-
-	void EyeInterface::startCapture()
-	{
-		_hThread = CreateThread(NULL, 0, &EyeInterface::CaptureThread, this, 0, 0);
-		SetPriorityClass(_hThread,REALTIME_PRIORITY_CLASS);
-		SetThreadPriority(_hThread,THREAD_PRIORITY_HIGHEST);
 	}
 
 	void EyeInterface::Run()
