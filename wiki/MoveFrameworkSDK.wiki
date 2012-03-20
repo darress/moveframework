@@ -98,3 +98,18 @@ enum MoveButton
 	B_T=    0x100000
 };
 }}}
+
+= Config file =
+
+The filename is always config.cfg
+
+The most of the file is generated through the calibration process (Calibration Tool), but you can set a few things manually.
+These things are in the [Tracking] section.
+
+algorithmGain: This is the gain of the orientation tracking algorithm. If you set this high, there will be less drift but the jitter will be higher. With a low value there will be more drift but less jitter.
+
+For example, if you want to set the algorithm gain to 1.0, you have to add these lines to the end/begin of the file:
+{{{
+[Tracking]
+algorithmGain=1.0
+}}}
