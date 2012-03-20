@@ -14,6 +14,8 @@ namespace Move
 
 	class MoveController
 	{
+		HANDLE _hThread;
+
 		int id;
 		MoveManager* manager;
 
@@ -39,5 +41,8 @@ namespace Move
 		void EndCalibration();
 		void UseMagnetometer(bool value);
 		void setRumble(int value);
+
+	private:
+		static DWORD WINAPI controlThread(LPVOID instance);
 	};
 }

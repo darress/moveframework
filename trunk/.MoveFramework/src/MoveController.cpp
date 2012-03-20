@@ -15,11 +15,24 @@ namespace Move
 		lastSeqNumber=-1;
 		firstPackage=true;
 		resetTimer=0;
+
+		_hThread = CreateThread(NULL, 0, &MoveController::controlThread, this, 0, 0);
+		SetPriorityClass(_hThread,REALTIME_PRIORITY_CLASS);
+		SetThreadPriority(_hThread,THREAD_PRIORITY_TIME_CRITICAL);
 	}
 
+	DWORD WINAPI MoveController::controlThread(LPVOID instance)
+	{
+		MoveController *pThis = (MoveController*)instance;
+		pThis->Update();
+		return 0;
+	}
 
 	MoveController::~MoveController(void)
 	{
+		TerminateThread(_hThread, 0);
+		delete calibration;
+		delete orientation;
 	}
 
 	void MoveController::Update()

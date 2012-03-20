@@ -40,12 +40,8 @@ namespace Move
 
 		for (int i=0;i<moveCount;++i)
 		{
-			//TODO: read BT Mac address to identify the device
 			MoveController* ctrl=new MoveController(i, this);
 			moves.push_back(ctrl);
-			_hThread = CreateThread(NULL, 0, &MoveManager::controlThread, ctrl, 0, 0);
-			SetPriorityClass(_hThread,REALTIME_PRIORITY_CLASS);
-			SetThreadPriority(_hThread,THREAD_PRIORITY_TIME_CRITICAL);
 		}
 		return moveCount;
 	}
@@ -78,7 +74,6 @@ namespace Move
 	void MoveManager::initCamera(int numMoves)
 	{
 		eyeInt=new Eye::EyeInterface(numMoves);
-		eyeInt->startCapture();
 	}
 
 	PBYTE MoveManager::getEyeBuffer()
@@ -87,13 +82,6 @@ namespace Move
 		{
 			return eyeInt->img->data;
 		}
-		return 0;
-	}
-
-	DWORD WINAPI MoveManager::controlThread(LPVOID instance)
-	{
-		MoveController *pThis = (MoveController*)instance;
-		pThis->Update();
 		return 0;
 	}
 

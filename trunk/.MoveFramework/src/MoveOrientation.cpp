@@ -1,5 +1,6 @@
 #include "MovePrecompiled.h"
 #include "MoveOrientation.h"
+#include "IniFile.h"
 
 namespace Move
 {
@@ -15,6 +16,12 @@ namespace Move
 		angularAcc=Vector3(0,0,0);
 
 		AEq_1 = 1, AEq_2 = 0, AEq_3 = 0, AEq_4 = 0;
+		try
+		{
+			ahrs.beta = CIniFile::GetFloat("algorithmGain", "Tracking", "settings.cfg");
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{}
 	}
 
 
@@ -91,22 +98,8 @@ namespace Move
 		LeaveCriticalSection(&criticalSection);
 	}
 
-	//only for testing
-	void MoveOrientation::HighGains()
-	{
-		ahrs.beta = 0.5f;
-		useMagnetometer=false;
-		// store orientation of auxiliary frame
-		AEq_1 = ahrs.q0;                                                              
-		AEq_2 = ahrs.q1;
-		AEq_3 = ahrs.q2;
-		AEq_4 = ahrs.q3;
-
-	}
-
 	void MoveOrientation::Reset()
 	{
-		//Madgwick::beta = 0.5f;
 		//useMagnetometer=true;
 		// store orientation of auxiliary frame
 		AEq_1 = ahrs.q0;                                                              

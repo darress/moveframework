@@ -173,35 +173,31 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 {
 	if (!guiInitialized)
 		return;
-	MyGUI::UString strin;
-	char tmp[100];
+	char tmp[1000];
 	sprintf(tmp,"%d devices connected.\n",numMoves);
-	strin.append(tmp);
 	if (useMagnetometers)
-		strin.append("The algorithm uses magnetometers.\n  Press M to turn it off.\n");
+		sprintf(tmp+ strlen(tmp), "The algorithm uses magnetometers.\n  Press M to turn it off.\n");
 	else
-		strin.append("The algorithm doesnt use magnetometers.\n  Press M to turn it on.\n");
+		sprintf(tmp+ strlen(tmp), "The algorithm doesnt use magnetometers.\n  Press M to turn it on.\n");
 	for (int i=0; i<numMoves; i++)
 	{
-		strin.append("\n");
+		sprintf(tmp+ strlen(tmp), "\n");
 		if (!move->isCalibrated(i))
 		{
-			strin.append("The device is not calibrated.\n");
+			sprintf(tmp+ strlen(tmp), "The device is not calibrated.\n");
 		}
 		else
 		{
-			strin.append("The device is calibrated.\n");
+			sprintf(tmp+ strlen(tmp), "The device is calibrated.\n");
 
 			Move::Vector3 pos = move->getPosition(i);
-			sprintf(tmp,"Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
-			strin.append(tmp);
+			sprintf(tmp+ strlen(tmp), "Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
 
 			Move::Quaternion quat = move->getOrientation(i);
-			sprintf(tmp,"Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.x,quat.y,quat.z);
-			strin.append(tmp);
+			sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.x,quat.y,quat.z);
 		}
 	}
-	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(strin);
+	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
 }
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
