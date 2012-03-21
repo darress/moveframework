@@ -101,7 +101,7 @@ enum MoveButton
 
 = Config file =
 
-The filename is always config.cfg
+The filename is always settings.cfg
 
 The most of the file is generated through the calibration process (Calibration Tool), but you can set a few things manually.
 These things are in the [Tracking] section.
