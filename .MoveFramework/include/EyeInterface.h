@@ -23,6 +23,7 @@ namespace Eye
 
 	public:
 		EyeInterface(int numMoves);
+		bool initCamera();
 		~EyeInterface(void);
 
 		void getDimensions(int &x, int &y)

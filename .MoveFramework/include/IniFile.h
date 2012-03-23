@@ -27,7 +27,7 @@ public:
 		char value[200];
 		char path[200];
 		_getcwd(value,200);
-		sprintf(path,"%s\\%s",value,FileName);
+		sprintf_s(path,"%s\\%s",value,FileName);
 		GetPrivateProfileString(SectionName, KeyName, "", value, 200, path);
 		if (strcmp(value,"")==0)
 			throw MoveConfigFileRecordNotFoundException();
@@ -39,7 +39,7 @@ public:
 		char value[200];
 		char path[200];
 		_getcwd(value,200);
-		sprintf(path,"%s\\%s",value,FileName);
+		sprintf_s(path,"%s\\%s",value,FileName);
 		WritePrivateProfileString(SectionName, KeyName, valuein.c_str(), path);
 		return true;
 	}

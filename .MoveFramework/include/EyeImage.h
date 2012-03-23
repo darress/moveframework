@@ -102,6 +102,7 @@ namespace Eye
 	struct Ball
 	{
 		Vector2 position;
+		float positionX, positionY;
 		float ballSize;
 		volatile float ballX,ballY,ballZ;
 		ColorRgb ballOutColor;

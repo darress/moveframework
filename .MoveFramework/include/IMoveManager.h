@@ -12,7 +12,7 @@ namespace Move
 	public:
 		//initialization
 		virtual int initMoves()=0;
-		virtual void initCamera(int numMoves)=0;
+		virtual bool initCamera(int numMoves)=0;
 
 		//observers
 		virtual void subsribeMove(IMoveObserver* observer)=0;

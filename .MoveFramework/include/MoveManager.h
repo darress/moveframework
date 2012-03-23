@@ -30,7 +30,7 @@ namespace Move
 
 		//initialization
 		int initMoves();
-		void initCamera(int numMoves);
+		bool initCamera(int numMoves);
 
 		//move count
 		int getMoveCount()
