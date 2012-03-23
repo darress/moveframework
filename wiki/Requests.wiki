@@ -10,5 +10,7 @@
     * This is not my priority, there are more important changes first
  * OSC support
     * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
+
+= Fulfilled requests =
  * C# support
-    * *Finished.* See the Downloads tab. ;)
+ * The framework works without a camera
