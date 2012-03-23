@@ -122,20 +122,20 @@ namespace Eye
 		std::vector<double> init;
 		std::vector<double> result;
 
-		init.push_back(ball->position.x);
-		init.push_back(ball->position.y);
+		init.push_back(ball->positionX);
+		init.push_back(ball->positionY);
 		currentBallSize= (ball->ballSize)*0.5f;
 
 		result.clear();
 		result=BT::Simplex(&Eye::EyeImage::integrateCircleError, init, 30);
 
-		ball->position.x=result[0];
-		ball->position.y=result[1];
+		ball->positionX=(float)result[0];
+		ball->positionY=(float)result[1];
 
 		float size=0;
 		int nums=0;
 		glm::vec2 midp=glm::vec2(result[0],result[1]);
-		for (int i=0; i<currentBallContour.size(); i++)
+		for (unsigned int i=0; i<currentBallContour.size(); i++)
 		{
 			float dis=glm::distance(midp,currentBallContour[i]);
 			if (dis>currentBallSize*0.9f)
@@ -153,7 +153,7 @@ namespace Eye
 
 		glm::vec2 midp=glm::vec2(x[0],x[1]);
 
-		for ( int i=0; i<currentBallContour.size(); i++)
+		for (unsigned int i=0; i<currentBallContour.size(); i++)
 		{
 			float dis=glm::distance2(midp,currentBallContour[i]);
 			error+=abs(dis-currentBallSize*currentBallSize);
@@ -211,12 +211,12 @@ namespace Eye
 			if (ball->ballContour.size()>2500)
 				break;
 		}
-		ball->position.x=0.5f*(float)(max.x+min.x);
-		ball->position.y=0.5f*(float)(max.y+min.y);
+		ball->positionX=0.5f*(float)(max.x+min.x);
+		ball->positionY=0.5f*(float)(max.y+min.y);
 		if (max.x-min.x>max.y-min.y)
-			ball->ballSize=max.x-min.x;
+			ball->ballSize=(float)(max.x-min.x);
 		else
-			ball->ballSize=max.y-min.y;
+			ball->ballSize=(float)(max.y-min.y);
 	}
 
 	Vector2 EyeImage::findNeighbor(Vector2 pos, Ball* ball)

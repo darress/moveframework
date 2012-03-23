@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
     <Widget type="ImageBox" skin="ImageBox" position="0 0 320 240" layer="Back" name="Eye Image"/>
+    <Widget type="TextBox" skin="TextBox" position="80 110 300 20" layer="Back" name="CameraInfo">
+        <Property key="TextColour" value="1 1 1"/>
+    </Widget>
     <Widget type="TextBox" skin="TextBox" position="336 10 648 20" layer="Back" name="PairInfo">
         <Property key="TextColour" value="1 1 1"/>
     </Widget>

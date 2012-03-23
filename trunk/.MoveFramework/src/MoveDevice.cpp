@@ -28,7 +28,6 @@ namespace MoveDevice
 	int MoveCount = 0;
 
 	int OpenMoves() {
-		int res;
 		struct hid_device_info *devs, *cur_dev;
 
 		unsigned char buf[49];
@@ -77,7 +76,6 @@ namespace MoveDevice
 
 	int PairMoves() {
 		int numBtMacSet=0;
-		int res;
 		struct hid_device_info *devs, *cur_dev;
 
 		unsigned char buf[49];

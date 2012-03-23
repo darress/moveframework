@@ -12,12 +12,35 @@ namespace Eye
 		_cam=0;
 		balls[0].ballOutColor=ColorRgb(0,0,255);
 		balls[1].ballOutColor=ColorRgb(0,255,0);
+	}
+	
+	bool EyeInterface::initCamera()
+	{
+		GUID _cameraGUID;
+
+		_cameraGUID = CLEyeGetCameraUUID(0);
+		if (_cameraGUID==GUID_NULL)
+			return false;
+		_cam = CLEyeCreateCamera(_cameraGUID, CLEYE_COLOR_PROCESSED, CLEYE_VGA, 75);
+		if (_cam==0)
+			return false;
+		CLEyeCameraGetFrameDimensions(_cam, width, height);
+
+		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
+		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, true);
+		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, true);
+		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);
+		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_GREEN, 255);
+		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_BLUE, 255);
+		CLEyeSetCameraParameter(_cam, CLEYE_HFLIP, true);
+		//CLEyeSetCameraParameter(_cam, CLEYE_VFLIP, true);
 
 		_hThread = CreateThread(NULL, 0, &EyeInterface::CaptureThread, this, 0, 0);
 		SetPriorityClass(_hThread,REALTIME_PRIORITY_CLASS);
 		SetThreadPriority(_hThread,THREAD_PRIORITY_HIGHEST);
+		return true;
 	}
-	
+
 	EyeInterface::~EyeInterface(void)
 	{
 		TerminateThread(_hThread,0);
@@ -36,21 +59,6 @@ namespace Eye
 
 	void EyeInterface::Run()
 	{
-		GUID _cameraGUID;
-
-		_cameraGUID = CLEyeGetCameraUUID(0);
-		_cam = CLEyeCreateCamera(_cameraGUID, CLEYE_COLOR_PROCESSED, CLEYE_VGA, 75);
-		CLEyeCameraGetFrameDimensions(_cam, width, height);
-
-		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
-		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, true);
-		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, true);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_GREEN, 255);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_BLUE, 255);
-		CLEyeSetCameraParameter(_cam, CLEYE_HFLIP, true);
-		//CLEyeSetCameraParameter(_cam, CLEYE_VFLIP, true);
-
 		CLEyeCameraStart(_cam);
 		Sleep(100);
 
@@ -67,8 +75,8 @@ namespace Eye
 			{
 				if (balls[i].ballFound)
 				{
-					x=balls[i].position.x;
-					y=balls[i].position.y;
+					x=balls[i].positionX;
+					y=balls[i].positionY;
 					size=balls[i].ballSize;
 
 					img->drawCircle(Vector2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));

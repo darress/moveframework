@@ -37,6 +37,8 @@ class Game : public BaseApplication, Move::IMoveObserver, Move::IMoveCalibration
 	int numMoves;
 	bool useMagnetometers;
 
+	bool cameraWorks;
+
 	bool guiInitialized;
 
 public:

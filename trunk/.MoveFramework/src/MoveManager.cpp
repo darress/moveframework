@@ -23,6 +23,7 @@ namespace Move
 		{
 			delete eyeInt;
 		}
+		MoveDevice::CloseMoves();
 	}
 
 	int MoveManager::initMoves()
@@ -48,7 +49,14 @@ namespace Move
 
 	void MoveManager::getEyeDimensions(int &x, int &y)
 	{
-		eyeInt->getDimensions(x,y);
+		if (eyeInt)
+		{
+			eyeInt->getDimensions(x,y);
+		}
+		else
+		{
+			x=y=0;
+		}
 	}
 
 	Quaternion MoveManager::getOrientation(int id)
@@ -71,9 +79,16 @@ namespace Move
 		return FPS;
 	}
 
-	void MoveManager::initCamera(int numMoves)
+	bool MoveManager::initCamera(int numMoves)
 	{
 		eyeInt=new Eye::EyeInterface(numMoves);
+		if (!eyeInt->initCamera())
+		{
+			delete eyeInt;
+			eyeInt=0;
+			return false;
+		}
+		return true;
 	}
 
 	PBYTE MoveManager::getEyeBuffer()
