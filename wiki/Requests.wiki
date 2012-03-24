@@ -10,6 +10,8 @@
     * This is not my priority, there are more important changes first
  * OSC support
     * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
+ * Expose the the control of colors
+    * Yes, I will do so. ;) But I don't promise it will be soon.
 
 = Fulfilled requests =
  * C# support
