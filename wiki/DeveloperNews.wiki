@@ -1,0 +1,7 @@
+#summary We will publish information about the development here.
+
+= Initial class diagram for version 3.0 =
+I made a UML class diagram, so everybody can see what's going on in the code. The classes above the thick line can be seen from outside of the dll.
+
+*Please feel free to leave a note or make a proposal for any change!*
+[http://code.google.com/p/moveframework/source/browse/trunk/uml/cdMain.png]
