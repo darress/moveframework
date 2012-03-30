@@ -4,4 +4,4 @@
 I made a UML class diagram, so everybody can see what's going on in the code. The classes above the thick line can be seen from outside of the dll.
 
 *Please feel free to leave a note or make a proposal for any change!*
-[http://code.google.com/p/moveframework/source/browse/trunk/uml/cdMain.png]
+[http://moveframework.googlecode.com/svn/uml/cdMain.png]
