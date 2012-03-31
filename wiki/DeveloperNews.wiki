@@ -5,4 +5,4 @@ I made a UML class diagram, so everybody can see what's going on in the code. Th
 
 *Please feel free to leave a note or make a proposal for any change!*
 *Click on the picture for high resolution*
-[https://moveframework.googlecode.com/svn/wiki/cdMain.png https://moveframework.googlecode.com/svn/wiki/cdMain.png]
+[http://moveframework.googlecode.com/svn/wiki/cdMain.png?1 http://moveframework.googlecode.com/svn/wiki/cdMain.png]
