@@ -34,7 +34,3 @@
 
 #include "MyGUI.h"
 #include "MyGUI_OgrePlatform.h"
-
-#include "MovePrecompiled.h"
-#include "IMoveManager.h"
-#include "MoveFactory.h"

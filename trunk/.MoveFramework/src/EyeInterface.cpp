@@ -1,4 +1,4 @@
-#include "MovePrecompiled.h"
+
 #include "EyeInterface.h"
 
 namespace Eye
@@ -79,7 +79,7 @@ namespace Eye
 					y=balls[i].positionY;
 					size=balls[i].ballSize;
 
-					img->drawCircle(Vector2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));
+					img->drawCircle(Vec2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));
 
 					balls[i].ballZ=kballz[i].update(2500/size);
 					balls[i].ballX=(x-(width/2))*balls[i].ballZ/400;

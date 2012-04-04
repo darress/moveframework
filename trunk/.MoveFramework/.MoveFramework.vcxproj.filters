@@ -1,55 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="include\MoveFactory.h" />
-    <ClInclude Include="include\EyeInterface.h">
-      <Filter>PS Move\Eye</Filter>
-    </ClInclude>
-    <ClInclude Include="include\EyeImage.h">
-      <Filter>PS Move\Eye</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MoveCalibration.h">
-      <Filter>PS Move\Calibration</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MovePrecompiled.h" />
-    <ClInclude Include="include\MoveRawCalibration.h">
-      <Filter>PS Move\Calibration</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IMoveObserver.h" />
-    <ClInclude Include="include\IMoveCalibrationObserver.h" />
-    <ClInclude Include="include\ConfigMath.h" />
-    <ClInclude Include="include\IMoveManager.h" />
-    <ClInclude Include="include\MoveManager.h">
-      <Filter>PS Move</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MoveController.h">
-      <Filter>PS Move</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MoveData.h" />
-    <ClInclude Include="include\MoveExceptions.h" />
-    <ClInclude Include="include\simplex.h">
-      <Filter>Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Helpers.h">
-      <Filter>Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\kalman.h">
-      <Filter>Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\hidapi.h">
+    <ClInclude Include="public_include\IMoveManager.h" />
+    <ClInclude Include="public_include\IMoveObserver.h" />
+    <ClInclude Include="public_include\MoveData.h" />
+    <ClInclude Include="public_include\MoveDevice.h">
       <Filter>PS Move\Device</Filter>
     </ClInclude>
-    <ClInclude Include="include\MoveDevice.h">
+    <ClInclude Include="public_include\MoveFactory.h" />
+    <ClInclude Include="src\EyeImage.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EyeInterface.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Helpers.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hidapi.h">
       <Filter>PS Move\Device</Filter>
     </ClInclude>
-    <ClInclude Include="include\MoveOrientation.h">
-      <Filter>PS Move\Orientation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MadgwickAHRS.h">
-      <Filter>PS Move\Orientation</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IniFile.h">
+    <ClInclude Include="src\IniFile.h">
       <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kalman.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MadgwickAHRS.h">
+      <Filter>PS Move\Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveCalibration.h">
+      <Filter>PS Move\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveController.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveManager.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveOrientation.h">
+      <Filter>PS Move\Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveRawCalibration.h">
+      <Filter>PS Move\Calibration</Filter>
+    </ClInclude>
+    <ClInclude Include="src\simplex.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\Vec3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\MoveConfig.h" />
+    <ClInclude Include="public_include\Quat.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveExceptions.h" />
+    <ClInclude Include="src\MoveIncludes.h" />
+    <ClInclude Include="public_include\Mat3.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\Vec2.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -66,7 +77,6 @@
     <ClCompile Include="src\MoveRawCalibration.cpp">
       <Filter>PS Move\Calibration</Filter>
     </ClCompile>
-    <ClCompile Include="src\MovePrecompiled.cpp" />
     <ClCompile Include="src\MoveManager.cpp">
       <Filter>PS Move</Filter>
     </ClCompile>
@@ -81,6 +91,18 @@
     </ClCompile>
     <ClCompile Include="src\MadgwickAHRS.cpp">
       <Filter>PS Move\Orientation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vec3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quat.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mat3.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vec2.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +123,9 @@
     </Filter>
     <Filter Include="PS Move\Orientation">
       <UniqueIdentifier>{e5dc733e-294e-44ee-866e-8c3eb89ac047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{5b50740f-0e94-4541-b2b7-f4597364e165}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

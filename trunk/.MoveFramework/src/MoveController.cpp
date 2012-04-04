@@ -1,4 +1,3 @@
-#include "MovePrecompiled.h"
 #include "MoveController.h"
 
 namespace Move
@@ -60,19 +59,19 @@ namespace Move
 			lastSeqNumber = m.SeqNumber;
 			lastTimestamp = m.Timestamp;
 
-			Vector3 MoveAcc, MoveGyro, MoveMag;
-			MoveAcc = Vector3(old.RawForceX,old.RawForceY,old.RawForceZ);
-			MoveGyro = Vector3(-old.RawGyroPitch,old.RawGyroYaw,-old.RawGyroRoll);
-			MoveMag = Vector3(0,0,0);
+			Vec3 MoveAcc, MoveGyro, MoveMag;
+			MoveAcc = Vec3(old.RawForceX,old.RawForceY,old.RawForceZ);
+			MoveGyro = Vec3(-old.RawGyroPitch,old.RawGyroYaw,-old.RawGyroRoll);
+			MoveMag = Vec3(0,0,0);
 
 			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
 			if (calibration->isCalibrated())
 				orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
-			MoveAcc = Vector3(m.RawForceX,m.RawForceY,m.RawForceZ);
-			MoveGyro = Vector3(-m.RawGyroPitch,m.RawGyroYaw,-m.RawGyroRoll);
-			MoveMag = Vector3(m.RawMagnetX,m.RawMagnetY,m.RawMagnetZ);
+			MoveAcc = Vec3(m.RawForceX,m.RawForceY,m.RawForceZ);
+			MoveGyro = Vec3(-m.RawGyroPitch,m.RawGyroYaw,-m.RawGyroRoll);
+			MoveMag = Vec3(m.RawMagnetX,m.RawMagnetY,m.RawMagnetZ);
 
 			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
@@ -124,8 +123,8 @@ namespace Move
 				data.isOnDisplay=false;
 				if (manager->getEye()->balls[id].ballFoundOut)
 				{
-					Vector3 previousPosition=data.position;
-					Vector3 previousVelocity=data.velocity;
+					Vec3 previousPosition=data.position;
+					Vec3 previousVelocity=data.velocity;
 					Eye::Ball* ball=&(manager->getEye()->balls[id]);
 					data.position.x=ball->ballX - offsetX;
 					data.position.y=ball->ballY - offsetY;
@@ -137,11 +136,11 @@ namespace Move
 					if (data.position.x>-50.0f && data.position.x<50.0f && data.position.y>-50.0f && data.position.y<50.0f)
 					{
 						data.isOnDisplay=true;
-						data.displayPos=(data.position+Vector3(50.0f,50.0f,0.0f))/100.0f;
+						data.displayPos=(data.position+Vec3(50.0f,50.0f,0.0f))/100.0f;
 					}
 				}
 				else
-					data.position=Vector3(0,0,0);
+					data.position=Vec3(0,0,0);
 
 				MoveDevice::SetMoveColour(id,manager->getEye()->balls[id].ballOutColor.r,manager->getEye()->balls[id].ballOutColor.g,manager->getEye()->balls[id].ballOutColor.b);
 			}

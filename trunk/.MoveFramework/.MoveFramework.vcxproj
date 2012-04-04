@@ -11,30 +11,35 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\ConfigMath.h" />
-    <ClInclude Include="include\EyeImage.h" />
-    <ClInclude Include="include\EyeInterface.h" />
-    <ClInclude Include="include\Helpers.h" />
-    <ClInclude Include="include\hidapi.h" />
-    <ClInclude Include="include\IMoveCalibrationObserver.h" />
-    <ClInclude Include="include\IMoveManager.h" />
-    <ClInclude Include="include\IMoveObserver.h" />
-    <ClInclude Include="include\IniFile.h" />
-    <ClInclude Include="include\kalman.h" />
-    <ClInclude Include="include\MadgwickAHRS.h" />
-    <ClInclude Include="include\MoveCalibration.h" />
-    <ClInclude Include="include\MoveController.h" />
-    <ClInclude Include="include\MoveData.h" />
-    <ClInclude Include="include\MoveExceptions.h" />
-    <ClInclude Include="include\MoveManager.h" />
-    <ClInclude Include="include\MoveFactory.h" />
-    <ClInclude Include="include\MoveDevice.h" />
-    <ClInclude Include="include\MoveOrientation.h" />
-    <ClInclude Include="include\MovePrecompiled.h" />
-    <ClInclude Include="include\MoveRawCalibration.h" />
-    <ClInclude Include="include\simplex.h" />
+    <ClInclude Include="src\MoveExceptions.h" />
+    <ClInclude Include="public_include\Mat3.h" />
+    <ClInclude Include="public_include\MoveConfig.h" />
+    <ClInclude Include="public_include\Quat.h" />
+    <ClInclude Include="src\EyeImage.h" />
+    <ClInclude Include="src\EyeInterface.h" />
+    <ClInclude Include="src\Helpers.h" />
+    <ClInclude Include="src\hidapi.h" />
+    <ClInclude Include="public_include\IMoveManager.h" />
+    <ClInclude Include="public_include\IMoveObserver.h" />
+    <ClInclude Include="src\IniFile.h" />
+    <ClInclude Include="src\kalman.h" />
+    <ClInclude Include="src\MadgwickAHRS.h" />
+    <ClInclude Include="src\MoveCalibration.h" />
+    <ClInclude Include="src\MoveController.h" />
+    <ClInclude Include="public_include\MoveData.h" />
+    <ClInclude Include="src\MoveIncludes.h" />
+    <ClInclude Include="src\MoveManager.h" />
+    <ClInclude Include="public_include\MoveFactory.h" />
+    <ClInclude Include="public_include\MoveDevice.h" />
+    <ClInclude Include="src\MoveOrientation.h" />
+    <ClInclude Include="src\MoveRawCalibration.h" />
+    <ClInclude Include="src\simplex.h" />
+    <ClInclude Include="public_include\Vec3.h" />
+    <ClInclude Include="public_include\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Mat3.cpp" />
+    <ClCompile Include="src\Quat.cpp" />
     <ClCompile Include="src\EyeImage.cpp" />
     <ClCompile Include="src\EyeInterface.cpp" />
     <ClCompile Include="src\MadgwickAHRS.cpp" />
@@ -44,8 +49,9 @@
     <ClCompile Include="src\MoveManager.cpp" />
     <ClCompile Include="src\MoveFactory.cpp" />
     <ClCompile Include="src\MoveOrientation.cpp" />
-    <ClCompile Include="src\MovePrecompiled.cpp" />
     <ClCompile Include="src\MoveRawCalibration.cpp" />
+    <ClCompile Include="src\Vec3.cpp" />
+    <ClCompile Include="src\Vec2.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B755AD10-0F2C-4363-A9FE-70BAB6BF9350}</ProjectGuid>
@@ -94,9 +100,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PrecompiledHeader>Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>MovePrecompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>public_include</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,7 +120,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>public_include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

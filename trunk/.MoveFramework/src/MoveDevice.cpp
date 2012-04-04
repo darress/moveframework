@@ -9,13 +9,10 @@
    to help kill people, sorry.
 */
 
-#include "MovePrecompiled.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "MoveIncludes.h"
 #include "MoveDevice.h"
 #include "hidapi.h"
+
 
 #include <bthsdpdef.h>
 #include <BluetoothAPIs.h>
@@ -52,7 +49,7 @@ namespace MoveDevice
 	  return MoveCount;
 	}
 
-	void getHostBtAddress(unsigned char* addr)
+	bool getHostBtAddress(unsigned char* addr)
 	{
 		HANDLE hRadio;
 		BLUETOOTH_FIND_RADIO_PARAMS btfrp = { sizeof(btfrp) };
@@ -69,9 +66,10 @@ namespace MoveDevice
 			}
 			CloseHandle( hRadio );
 			BluetoothFindRadioClose( hFind );
+			return true;
 		}
 		else
-			throw MoveNoBTDongleFound();
+			return false;
 	}
 
 	int PairMoves() {
@@ -82,7 +80,8 @@ namespace MoveDevice
 		hid_device *handle;
 		unsigned char hostAddr[6];
 		unsigned char curAddr[6];
-		getHostBtAddress(hostAddr);
+		if (!getHostBtAddress(hostAddr))
+			return -1;
 		devs = hid_enumerate(0x054c, 0x03d5);
 		cur_dev = devs;	
 		while (cur_dev) {

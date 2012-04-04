@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "MoveDevice.h"
 
 Game::Game()
 {
@@ -97,33 +98,25 @@ void Game::guiExitClick(MyGUI::Widget* _widget)
 	mShutDown=true;
 }
 
-void Game::calibrationDone(int moveId)
-{
-	state=GameState::Normal;
-	mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Calibration done. To calibrate again,\npress the CIRCLE button on a device!");
-}
-
 bool Game::keyPressed( const OIS::KeyEvent &arg )
 {
 	if (arg.key == OIS::KC_P)
     {
-		try
+
+		int num = move->pairMoves();
+		if (num==0)
 		{
-			int num = move->pairMoves();
-			if (num==0)
-			{
-				mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No new device has been paired, to try again, press P.");
-			}
-			else
-			{
-				char tmp[100];
-				sprintf(tmp,"%d new devices has been paired, to pair again, press P.",num);
-				mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption(tmp);
-			}
+			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No new device has been paired, to try again, press P.");
 		}
-		catch(MoveNoBTDongleFound)
+		else if (num==-1)
 		{
 			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No Bluetooth dongle found, please connect one!");
+		}
+		else
+		{
+			char tmp[100];
+			sprintf(tmp,"%d new devices has been paired, to pair again, press P.",num);
+			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption(tmp);
 		}
 	}
 	else if (arg.key==OIS::KC_M)
@@ -137,7 +130,6 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 	else if (arg.key==OIS::KC_ESCAPE)
 	{
 		move->unsubsribeMove(this);
-		move->unsubsribeCalibration(this);
 		guiInitialized=false;
 	}
 	return BaseApplication::keyPressed(arg);
@@ -197,11 +189,11 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 		{
 			sprintf(tmp+ strlen(tmp), "The device is calibrated.\n");
 
-			Move::Vector3 pos = move->getPosition(i);
+			Move::Vec3 pos = move->getPosition(i);
 			sprintf(tmp+ strlen(tmp), "Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
 
-			Move::Quaternion quat = move->getOrientation(i);
-			sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.x,quat.y,quat.z);
+			Move::Quat quat = move->getOrientation(i);
+			sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.v.x,quat.v.y,quat.v.z);
 		}
 	}
 	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
@@ -217,11 +209,11 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	//TODO: testing the move orientation
 	for (int i=0; i<numMoves; i++)
 	{
-		Move::Quaternion moveOri = move->getOrientation(i);
-		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.x, moveOri.y, moveOri.z);
+		Move::Quat moveOri = move->getOrientation(i);
+		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
 		moveNode[i]->setOrientation(ori);
 
-		Move::Vector3 movePos = move->getPosition(i);
+		Move::Vec3 movePos = move->getPosition(i);
 		Ogre::Vector3 pos = Ogre::Vector3(movePos.x, movePos.y, movePos.z);
 		pos*=4.0f;
 		pos.z-=800.0f;
@@ -272,7 +264,6 @@ bool Game::initMove()
 	cameraWorks=move->initCamera(numMoves);
 
 	move->subsribeMove(this);
-	move->subsribeCalibration(this);
 
 	return true;
 }
