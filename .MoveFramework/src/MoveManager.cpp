@@ -1,4 +1,3 @@
-#include "MovePrecompiled.h"
 #include "MoveManager.h"
 #include "MoveDevice.h"
 #include "MoveRawCalibration.h"
@@ -59,18 +58,18 @@ namespace Move
 		}
 	}
 
-	Quaternion MoveManager::getOrientation(int id)
+	Quat MoveManager::getOrientation(int id)
 	{
 		if(id>=moveCount)
-			return Move::Quaternion(0,0,0,0);
+			return Move::Quat(0,0,0,0);
 		return moves[id]->data.orientation;
 	}
 
-	Vector3 MoveManager::getPosition(int id)
+	Vec3 MoveManager::getPosition(int id)
 	{
 		if(id>=moveCount)
-			return Move::Vector3(0,0,0);
-		Move::Vector3 pos = Move::Vector3(moves[id]->data.position.x,-1.0*moves[id]->data.position.y,moves[id]->data.position.z);
+			return Move::Vec3(0,0,0);
+		Move::Vec3 pos = Move::Vec3(moves[id]->data.position.x,-1.0*moves[id]->data.position.y,moves[id]->data.position.z);
 		return pos;
 	}
 
@@ -110,22 +109,22 @@ namespace Move
 		moves[id]->setRumble(value);
 	}
 
-	Vector3 MoveManager::getAngularVelocity(int id)
+	Vec3 MoveManager::getAngularVelocity(int id)
 	{
 		return moves[id]->data.angularVelocity;
 	}
 
-	Vector3 MoveManager::getAngularAcceleration(int id)
+	Vec3 MoveManager::getAngularAcceleration(int id)
 	{
 		return moves[id]->data.angularAcceleration;
 	}
 
-	Vector3 MoveManager::getVelocity(int id)
+	Vec3 MoveManager::getVelocity(int id)
 	{
 		return moves[id]->data.velocity;
 	}	
 
-	Vector3 MoveManager::getAcceleration(int id)
+	Vec3 MoveManager::getAcceleration(int id)
 	{
 		return moves[id]->data.acceleration;
 	}
@@ -140,7 +139,7 @@ namespace Move
 		return moves[id]->data.isOnDisplay;
 	}
 
-	Vector3 MoveManager::displayPosition(int id)
+	Vec3 MoveManager::displayPosition(int id)
 	{
 		return moves[id]->data.displayPos;
 	}
@@ -186,15 +185,6 @@ namespace Move
 		observers.remove(observer);
 	}
 
-	void MoveManager::subsribeCalibration(IMoveCalibrationObserver* observer)
-	{
-		calibrationObservers.push_back(observer);
-	}
-	void MoveManager::unsubsribeCalibration(IMoveCalibrationObserver* observer)
-	{
-		calibrationObservers.remove(observer);
-	}
-
 	void MoveManager::moveUpdated(int moveId, MoveData data)
 	{
 		std::list<IMoveObserver*>::iterator it;
@@ -217,15 +207,6 @@ namespace Move
 		for ( it=observers.begin() ; it != observers.end(); it++ )
 		{
 			(*it)->moveKeyReleased(moveId, keyCode);
-		}
-	}
-
-	void MoveManager::calibrationDone(int moveId)
-	{
-		std::list<IMoveCalibrationObserver*>::iterator it;
-		for ( it=calibrationObservers.begin() ; it != calibrationObservers.end(); it++ )
-		{
-			(*it)->calibrationDone(moveId);
 		}
 	}
 }

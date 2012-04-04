@@ -1,5 +1,4 @@
 
-#include "MovePrecompiled.h"
 #include "IMoveManager.h"
 #include "MoveFactory.h"
 #include "MoveData.h"
@@ -7,22 +6,22 @@
 Move::IMoveManager* move;
 int numMoves;
 
-typedef struct tagVector3
+typedef struct tagVec3
 { 
 	float x;
 	float y;
 	float z;
-} Vector3; 
+} Vec3; 
 
-typedef struct tagQuaternion
+typedef struct tagQuat
 { 
 	float w;
 	float x;
 	float y;
 	float z;
-} Quaternion; 
+} Quat; 
 
-typedef void (__stdcall *UPDATE_CALLBACK)(int id, Vector3 position, Quaternion orientation, int trigger);
+typedef void (__stdcall *UPDATE_CALLBACK)(int id, Vec3 position, Quat orientation, int trigger);
 UPDATE_CALLBACK registered_callback;
 
 typedef void (__stdcall *KEY_CALLBACK)(int id, int keyCode);
@@ -43,16 +42,16 @@ class MoveObserver : public Move::IMoveObserver
 
 	void moveUpdated(int moveId, Move::MoveData data)
 	{
-		Vector3 pos;
+		Vec3 pos;
 		pos.x=data.position.x;
 		pos.y=data.position.y;
 		pos.z=data.position.z;
 
-		Quaternion q;
+		Quat q;
 		q.w=data.orientation.w;
-		q.x=data.orientation.x;
-		q.y=data.orientation.y;
-		q.z=data.orientation.z;
+		q.x=data.orientation.v.x;
+		q.y=data.orientation.v.y;
+		q.z=data.orientation.v.z;
 
 		(*registered_callback)(moveId, pos, q, data.trigger);
 	}
@@ -85,21 +84,21 @@ extern "C" __declspec(dllexport) void __stdcall unsubscribeMove()
 	move->unsubsribeMove(observer);
 }
 
-extern "C" __declspec(dllexport) Quaternion __stdcall getOrientation(int id) 
+extern "C" __declspec(dllexport) Quat __stdcall getOrientation(int id) 
 {
-	Move::Quaternion ori = move->getOrientation(id);
-	Quaternion q;
+	Move::Quat ori = move->getOrientation(id);
+	Quat q;
 	q.w=ori.w;
-	q.x=ori.x;
-	q.y=ori.y;
-	q.z=ori.z;
+	q.x=ori.v.x;
+	q.y=ori.v.y;
+	q.z=ori.v.z;
 	return q;
 }
 
-extern "C" __declspec(dllexport) Vector3 __stdcall getPosition(int id) 
+extern "C" __declspec(dllexport) Vec3 __stdcall getPosition(int id) 
 {
-	Move::Vector3 pos = move->getPosition(id);
-	Vector3 v;
+	Move::Vec3 pos = move->getPosition(id);
+	Vec3 v;
 	v.x=pos.x;
 	v.y=pos.y;
 	v.z=pos.z;

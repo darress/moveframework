@@ -2,13 +2,12 @@
 #include "BaseApplication.h"
 #include "IMoveManager.h"
 #include "IMoveObserver.h"
-#include "IMoveCalibrationObserver.h"
 #include "MoveFactory.h"
 #include "MoveData.h"
 
 #include "stdafx.h"
 
-class Game : public BaseApplication, Move::IMoveObserver, Move::IMoveCalibrationObserver
+class Game : public BaseApplication, Move::IMoveObserver
 {
 	struct GameState
 	{
@@ -61,8 +60,6 @@ private:
 	void guiCalibrateClick(MyGUI::Widget* _widget);
 
 public:
-	void calibrationDone(int moveId);
-
 	void moveKeyPressed(int moveId, int keyCode);
 	void moveKeyReleased(int moveId, int keyCode);
 	void moveUpdated(int moveId, Move::MoveData data);

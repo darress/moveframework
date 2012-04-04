@@ -1,11 +1,11 @@
-#include "MovePrecompiled.h"
 #include "EyeImage.h"
 #include "Helpers.h"
 #include "simplex.h"
+#include "MoveExceptions.h"
 
 namespace Eye
 {
-	std::vector<glm::vec2> EyeImage::currentBallContour;
+	std::vector<Vec2> EyeImage::currentBallContour;
 	float EyeImage::currentBallSize;
 
 	EyeImage::EyeImage(int w, int h, PBYTE data)
@@ -18,36 +18,36 @@ namespace Eye
 	{
 	}
 
-	void EyeImage::setPixel(Vector2 pos, ColorRgb col)
+	void EyeImage::setPixel(Vec2 pos, ColorRgb col)
 	{
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 			throw MoveOutOfImageRangeException();
-		data[pos.y*w*4+pos.x*4+0]=col.b; // B
-		data[pos.y*w*4+pos.x*4+1]=col.g; // G
-		data[pos.y*w*4+pos.x*4+2]=col.r; // R
+		data[(int)pos.y*w*4+(int)pos.x*4+0]=col.b; // B
+		data[(int)pos.y*w*4+(int)pos.x*4+1]=col.g; // G
+		data[(int)pos.y*w*4+(int)pos.x*4+2]=col.r; // R
 	}
 
-	ColorRgb EyeImage::getPixel(Vector2 pos)
+	ColorRgb EyeImage::getPixel(Vec2 pos)
 	{
 		ColorRgb col;
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 		{
 			throw MoveOutOfImageRangeException();
 		}
-		col.b=data[pos.y*w*4+pos.x*4+0]; // B
-		col.g=data[pos.y*w*4+pos.x*4+1]; // G
-		col.r=data[pos.y*w*4+pos.x*4+2]; // R
+		col.b=data[(int)pos.y*w*4+(int)pos.x*4+0]; // B
+		col.g=data[(int)pos.y*w*4+(int)pos.x*4+1]; // G
+		col.r=data[(int)pos.y*w*4+(int)pos.x*4+2]; // R
 		return col;
 	}
 
-	void EyeImage::drawCircle(Vector2 center, int r, ColorRgb col)
+	void EyeImage::drawCircle(Vec2 center, int r, ColorRgb col)
 	{
-		Vector2 pix;
+		Vec2 pix;
 		float d; //detail
 		for(d=0; d<=2*Move::PI; d+=0.01f) //you can play with the value to be added to d
 		{
-			pix.x=(int)(center.x+sin(d)*r);
-			pix.y=(int)(center.y+sin(d+(Move::PI/2))*r);
+			pix.x=center.x+sin(d)*r;
+			pix.y=center.y+sin(d+(Move::PI/2))*r;
 			if(!(pix.x>=w || pix.y>=h || pix.x<0 || pix.y<0))
 				setPixel(pix,col);
 
@@ -61,7 +61,7 @@ namespace Eye
 		{
 			if (balls[i].ballFound && pixelMatches(balls[i].position, balls[i].ballPerceptedColor))
 			{
-				while (pixelMatches(Vector2(balls[i].position.x-1,balls[i].position.y), balls[i].ballPerceptedColor))
+				while (pixelMatches(Vec2(balls[i].position.x-1,balls[i].position.y), balls[i].ballPerceptedColor))
 				{
 					balls[i].position.x--;
 				}
@@ -103,7 +103,7 @@ namespace Eye
 		
 		int skipmax=4;
 		int skip=skipmax;
-		std::list<Vector2>::iterator it;
+		std::list<Vec2>::iterator it;
 		for ( it=ball->ballContour.begin() ; it != ball->ballContour.end(); it++ )
 		{
 			skip--;
@@ -111,10 +111,10 @@ namespace Eye
 				skip=skipmax;
 			else
 				continue;
-			Vector2 p=*it;
+			Vec2 p=*it;
 			if (p.x>2 && p.y>1 && p.x<w-1 && p.y<h-1)
 			{
-				glm::vec2 pp=glm::vec2(p.x,p.y);
+				Vec2 pp=Vec2(p.x,p.y);
 				currentBallContour.push_back(pp);
 			}
 		}
@@ -134,10 +134,10 @@ namespace Eye
 
 		float size=0;
 		int nums=0;
-		glm::vec2 midp=glm::vec2(result[0],result[1]);
+		Vec2 midp=Vec2(result[0],result[1]);
 		for (unsigned int i=0; i<currentBallContour.size(); i++)
 		{
-			float dis=glm::distance(midp,currentBallContour[i]);
+			float dis=midp.distance(currentBallContour[i]);
 			if (dis>currentBallSize*0.9f)
 			{
 				size+=dis;
@@ -151,11 +151,11 @@ namespace Eye
 	{
 		double error=0.0f;
 
-		glm::vec2 midp=glm::vec2(x[0],x[1]);
+		Vec2 midp=Vec2(x[0],x[1]);
 
 		for (unsigned int i=0; i<currentBallContour.size(); i++)
 		{
-			float dis=glm::distance2(midp,currentBallContour[i]);
+			float dis=midp.distance2(currentBallContour[i]);
 			error+=abs(dis-currentBallSize*currentBallSize);
 		}
 
@@ -164,9 +164,9 @@ namespace Eye
 
 	void EyeImage::findContour(Ball* ball)
 	{
-		Vector2 init=ball->position;
+		Vec2 init=ball->position;
 		ball->ballContour.clear();
-		Vector2 current;
+		Vec2 current;
 		if (!checkIfContour(init, ball))
 		{
 			ball->ballFound=false;
@@ -181,7 +181,7 @@ namespace Eye
 			return;
 		}
 
-		Vector2 min, max;
+		Vec2 min, max;
 		min=max=current;
 		for (int i=0;i<10000;i++)
 		{
@@ -191,7 +191,7 @@ namespace Eye
 			if (current.y<min.y) min.y=current.y;
 			if (current.x>max.x) max.x=current.x;
 			if (current.y>max.y) max.y=current.y;
-			Vector2 dis = Vector2(current.x-init.x,current.y-init.y);
+			Vec2 dis = Vec2(current.x-init.x,current.y-init.y);
 			if (dis.x*dis.x+dis.y*dis.y<4 && ball->ballContour.size()>6)
 				break;
 			current = findNeighbor(current, ball);
@@ -199,7 +199,7 @@ namespace Eye
 			{
 				while ( !ball->ballContour.empty() )
 				{
-					Vector2 cnt = ball->ballContour.back();
+					Vec2 cnt = ball->ballContour.back();
 					ball->ballContour.pop_back();
 					current = findNeighbor(cnt, ball);
 					if (current.x!=-1)
@@ -219,39 +219,39 @@ namespace Eye
 			ball->ballSize=(float)(max.y-min.y);
 	}
 
-	Vector2 EyeImage::findNeighbor(Vector2 pos, Ball* ball)
+	Vec2 EyeImage::findNeighbor(Vec2 pos, Ball* ball)
 	{
-		Vector2 search;
+		Vec2 search;
 
-		search=Vector2(pos.x+1,pos.y+1);
+		search=Vec2(pos.x+1,pos.y+1);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x+1,pos.y);
+		search=Vec2(pos.x+1,pos.y);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x+1,pos.y-1);
+		search=Vec2(pos.x+1,pos.y-1);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x,pos.y-1);
+		search=Vec2(pos.x,pos.y-1);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x-1,pos.y-1);
+		search=Vec2(pos.x-1,pos.y-1);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x-1,pos.y);
+		search=Vec2(pos.x-1,pos.y);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x-1,pos.y+1);
+		search=Vec2(pos.x-1,pos.y+1);
 		if (checkIfContour(search, ball))
 			return search;
-		search=Vector2(pos.x,pos.y+1);
+		search=Vec2(pos.x,pos.y+1);
 		if (checkIfContour(search, ball))
 			return search;
 
-		return Vector2(-1,-1);
+		return Vec2(-1,-1);
 	}
 
-	bool EyeImage::checkIfContour(Vector2 pos, Ball* ball)
+	bool EyeImage::checkIfContour(Vec2 pos, Ball* ball)
 	{
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 			return false;
@@ -260,13 +260,13 @@ namespace Eye
 			return false;
 		if (pixelAlreadyFound(pos))
 			return false;
-		if (!pixelMatches(Vector2(pos.x-1,pos.y), ball->ballPerceptedColor))
+		if (!pixelMatches(Vec2(pos.x-1,pos.y), ball->ballPerceptedColor))
 			return true;
-		if (!pixelMatches(Vector2(pos.x+1,pos.y), ball->ballPerceptedColor))
+		if (!pixelMatches(Vec2(pos.x+1,pos.y), ball->ballPerceptedColor))
 			return true;
-		if (!pixelMatches(Vector2(pos.x,pos.y-1), ball->ballPerceptedColor))
+		if (!pixelMatches(Vec2(pos.x,pos.y-1), ball->ballPerceptedColor))
 			return true;
-		if (!pixelMatches(Vector2(pos.x,pos.y+1), ball->ballPerceptedColor))
+		if (!pixelMatches(Vec2(pos.x,pos.y+1), ball->ballPerceptedColor))
 			return true;
 		return false;
 	}
@@ -274,7 +274,7 @@ namespace Eye
 	void EyeImage::combImage(Ball* balls, int numBalls)
 	{
 		float searchGap=(float)h;
-		Vector2 found;
+		Vec2 found;
 		float searchY;
 		while (searchGap>4)
 		{
@@ -289,12 +289,12 @@ namespace Eye
 		}
 	}
 
-	bool EyeImage::searchRow(int y, Vector2& found, Ball* balls, int numBalls)
+	bool EyeImage::searchRow(int y, Vec2& found, Ball* balls, int numBalls)
 	{
 		//search in row
 		for (int x=0;x<w;++x)
 		{
-			Vector2 currentPos=Vector2(x,y);
+			Vec2 currentPos=Vec2(x,y);
 			ColorRgb pCol=getPixel(currentPos);
 			bool allFound=true;
 			for (int i=0; i<numBalls; i++)
@@ -350,7 +350,7 @@ namespace Eye
 		return false;
 	}
 
-	bool EyeImage::pixelMatches(Vector2 pos, ColorHsv ballColor)
+	bool EyeImage::pixelMatches(Vec2 pos, ColorHsv ballColor)
 	{
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 			return false;
@@ -359,7 +359,7 @@ namespace Eye
 		return colorMatches(pixel, ballColor);
 	}
 
-	bool EyeImage::pixelAlreadyFound(Vector2 pos)
+	bool EyeImage::pixelAlreadyFound(Vec2 pos)
 	{
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 			return false;

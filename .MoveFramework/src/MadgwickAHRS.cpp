@@ -14,7 +14,6 @@
 //---------------------------------------------------------------------------------------------------
 // Header files
 
-#include "MovePrecompiled.h"
 #include "MadgwickAHRS.h"
 #include <math.h>
 
@@ -29,7 +28,7 @@ namespace Madgwick
 	AHRS::AHRS()
 	{
 		beta = 0.1f;								// 2 * proportional gain (Kp)
-		q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// quaternion of sensor frame relative to auxiliary frame
+		q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;	// Quat of sensor frame relative to auxiliary frame
 	}
 	//---------------------------------------------------------------------------------------------------
 	// Function declarations
@@ -55,7 +54,7 @@ namespace Madgwick
 			return;
 		}
 
-		// Rate of change of quaternion from gyroscope
+		// Rate of change of Quat from gyroscope
 		qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
 		qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
 		qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
@@ -118,13 +117,13 @@ namespace Madgwick
 			qDot4 -= beta * s3;
 		}
 
-		// Integrate rate of change of quaternion to yield quaternion
+		// Integrate rate of change of Quat to yield Quat
 		q0 += qDot1 * dt;
 		q1 += qDot2 * dt;
 		q2 += qDot3 * dt;
 		q3 += qDot4 * dt;
 
-		// Normalise quaternion
+		// Normalise Quat
 		recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
 		q0 *= recipNorm;
 		q1 *= recipNorm;
@@ -141,7 +140,7 @@ namespace Madgwick
 		float qDot1, qDot2, qDot3, qDot4;
 		float _2q0, _2q1, _2q2, _2q3, _4q0, _4q1, _4q2 ,_8q1, _8q2, q0q0, q1q1, q2q2, q3q3;
 
-		// Rate of change of quaternion from gyroscope
+		// Rate of change of Quat from gyroscope
 		qDot1 = 0.5f * (-q1 * gx - q2 * gy - q3 * gz);
 		qDot2 = 0.5f * (q0 * gx + q2 * gz - q3 * gy);
 		qDot3 = 0.5f * (q0 * gy - q1 * gz + q3 * gx);
@@ -189,13 +188,13 @@ namespace Madgwick
 			qDot4 -= beta * s3;
 		}
 
-		// Integrate rate of change of quaternion to yield quaternion
+		// Integrate rate of change of Quat to yield Quat
 		q0 += qDot1 * dt;
 		q1 += qDot2 * dt;
 		q2 += qDot3 * dt;
 		q3 += qDot4 * dt;
 
-		// Normalise quaternion
+		// Normalise Quat
 		recipNorm = invSqrt(q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3);
 		q0 *= recipNorm;
 		q1 *= recipNorm;

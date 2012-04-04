@@ -1,6 +1,5 @@
-#include "MovePrecompiled.h"
 #include "MoveFactory.h"
-#include "IniFile.h"
+#include "MoveManager.h"
 
 namespace Move
 {
