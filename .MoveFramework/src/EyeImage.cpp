@@ -9,14 +9,16 @@ namespace Move
 	std::vector<Vec2> EyeImage::currentBallContour;
 	float EyeImage::currentBallSize;
 
-	EyeImage::EyeImage(int w, int h, PBYTE data)
-		:w(w),h(h),data(data)
+	EyeImage::EyeImage(int w, int h)
+		:w(w),h(h)
 	{
+		data = new BYTE[w*h*4];
 	}
 
 
 	EyeImage::~EyeImage(void)
 	{
+		delete[] data;
 	}
 
 	void EyeImage::setPixel(Vec2 pos, ColorRgb col)
@@ -57,9 +59,12 @@ namespace Move
 
 	void EyeImage::findBalls(std::vector<MoveBall>& balls, int numBalls)
 	{
+		
+
 		bool needToComb = false;
 		for (int i=0; i<numBalls; i++)
 		{
+			memset(balls[i].mask,0,w*h);
 			if (balls[i].ballFound && pixelMatches(balls[i].position, balls[i].ballPerceptedColor))
 			{
 				while (pixelMatches(Vec2(balls[i].position.x-1,balls[i].position.y), balls[i].ballPerceptedColor))

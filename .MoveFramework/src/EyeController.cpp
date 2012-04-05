@@ -9,7 +9,6 @@ namespace Move
 	{
 		this->manager=manager;
 		img=0;
-		pCapBuffer=0;
 		_cam=0;
 		ballManager=0;
 	}
@@ -26,8 +25,6 @@ namespace Move
 			CLEyeCameraStop(_cam);
 			CLEyeDestroyCamera(_cam);
 		}
-		if (pCapBuffer)
-			delete[] pCapBuffer;
 
 		if (ballManager)
 			delete ballManager;
@@ -67,14 +64,13 @@ namespace Move
 		CLEyeCameraStart(_cam);
 		Sleep(100);
 
-		pCapBuffer=new BYTE[width*height*4];
-		img = new EyeImage(width,height,pCapBuffer);
+		img = new EyeImage(width,height);
 
 		ballManager= new BallManager(numMoves, img);
 
 		while(true)
 		{
-			bool ret = CLEyeCameraGetFrame(_cam, pCapBuffer);
+			bool ret = CLEyeCameraGetFrame(_cam, img->data);
 
 			std::vector<Vec3> positions = ballManager->findBalls();
 			
@@ -96,7 +92,16 @@ namespace Move
 
 	unsigned char* EyeController::getEyeBuffer(void)
 	{
+		if (!img)
+			return 0;
 		return img->data;
+	}
+
+	unsigned char* EyeController::getMaskBuffer(int moveId)
+	{
+		if (!ballManager)
+			return 0;
+		return ballManager->getMaskBuffer(moveId);
 	}
 
 	void EyeController::getEyeDimensions(int &x, int &y)

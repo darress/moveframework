@@ -16,9 +16,7 @@ namespace Move
 		MoveManager* manager;
 
 		HANDLE _hThread;
-		PBYTE pCapBuffer;
 		CLEyeCameraInstance _cam;
-		Kalman kballz[2];
 
 		int width, height;
 		int numMoves;
@@ -37,6 +35,7 @@ namespace Move
 		bool initCamera(int numMoves);
 
 		unsigned char* getEyeBuffer();
+		unsigned char* getMaskBuffer(int moveId);
 		void getEyeDimensions(int &x, int &y);
 
 		void useAutomaticColors(bool use);

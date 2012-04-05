@@ -67,7 +67,17 @@ void Game::initGui()
 			Ogre::TEX_TYPE_2D,      // type
 			eyeX, eyeY,         // width & height
 			0,                // number of mipmaps
-			Ogre::PF_B8G8R8A8,     // pixel format
+			Ogre::PF_X8R8G8B8,     // pixel format
+			Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
+
+		//create texture for camera image
+		maskImage = Ogre::TextureManager::getSingleton().createManual(
+			"MaskImage", // name
+			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+			Ogre::TEX_TYPE_2D,      // type
+			eyeX, eyeY,         // width & height
+			0,                // number of mipmaps
+			Ogre::PF_L8,     // pixel format
 			Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
 
 		//create material from texture
@@ -77,6 +87,14 @@ void Game::initGui()
 
 		//set texture of eye image
 		mGUI->findWidget<MyGUI::ImageBox>("Eye Image")->setImageTexture("CameraImage");
+
+		//create material from texture
+		Ogre::MaterialPtr lMaterial2 = Ogre::MaterialManager::getSingleton().create("MaskMaterial",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+		lMaterial2->getTechnique(0)->getPass(0)->createTextureUnitState("MaskImage");
+		lMaterial2->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+
+		//set texture of eye image
+		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setImageTexture("MaskImage");
 	}
 	else
 	{
@@ -198,13 +216,13 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	if (cameraWorks)
 	{
 		//showing the camera image of the Eye
-		copyCameraImageToTexture(camImage);
+		copyCameraImageToTexture();
 	}
 
     return true;
 }
 
-void Game::copyCameraImageToTexture(Ogre::TexturePtr texture)
+void Game::copyCameraImageToTexture()
 {
 	int eyeX, eyeY;
 	move->getEye()->getEyeDimensions(eyeX,eyeY);
@@ -212,20 +230,22 @@ void Game::copyCameraImageToTexture(Ogre::TexturePtr texture)
 	PBYTE eyeBuffer=move->getEye()->getEyeBuffer();
 	if (eyeBuffer)
 	{
-		Ogre::HardwarePixelBufferSharedPtr buffer = texture->getBuffer();
+		Ogre::HardwarePixelBufferSharedPtr buffer = camImage->getBuffer();
 		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 		const Ogre::PixelBox &pb = buffer->getCurrentLock();
 		PBYTE data = static_cast<PBYTE>(pb.data);
 		memcpy(data,eyeBuffer,eyeX*eyeY*4);
+		buffer->unlock();
+	}
 
-		for (size_t j = 0; j < eyeX; j++)
-			for(size_t i = 0; i < eyeY; i++)
-			{
-				*data++; // B
-				*data++; // G
-				*data++; // R
-				*data++ = 255; // A
-			}
+	PBYTE maskBuffer=move->getEye()->getMaskBuffer(0);
+	if (maskBuffer)
+	{
+		Ogre::HardwarePixelBufferSharedPtr buffer = maskImage->getBuffer();
+		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+		const Ogre::PixelBox &pb = buffer->getCurrentLock();
+		PBYTE data = static_cast<PBYTE>(pb.data);
+		memcpy(data,maskBuffer,eyeX*eyeY);
 		buffer->unlock();
 	}
 }
