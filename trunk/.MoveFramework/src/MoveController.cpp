@@ -1,4 +1,7 @@
 #include "MoveController.h"
+#include "MoveButton.h"
+#include "MoveLock.h"
+
 
 namespace Move
 {
@@ -34,6 +37,11 @@ namespace Move
 		delete orientation;
 	}
 
+	MoveData MoveController::getMoveData()
+	{
+		return manager->getMoveDataEx(id);
+	}
+
 	void MoveController::Update()
 	{
 		while (true)
@@ -45,7 +53,9 @@ namespace Move
 			{
 				lastSeqNumber = m.SeqNumber;
 				lastTimestamp = m.Timestamp;
-				data.buttons = m.Buttons;
+				MoveLock flock(id);
+				manager->getMoveDataEx(id).buttons = m.Buttons;
+				flock.release();
 				firstPackage=false;
 				continue;
 			}
@@ -75,40 +85,42 @@ namespace Move
 
 			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
+			MoveLock lock(id);
 			if (calibration->isCalibrated())
 			{
 				orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
-				data.orientation=orientation->GetOrientation();
-				data.angularVelocity=orientation->GetAngularVelocity();
-				data.angularAcceleration=orientation->GetAngularAcceleration();
+				manager->getMoveDataEx(id).orientation=orientation->GetOrientation();
+				manager->getMoveDataEx(id).angularVelocity=orientation->GetAngularVelocity();
+				manager->getMoveDataEx(id).angularAcceleration=orientation->GetAngularAcceleration();
 			}
 			for (int i=0; i<17; i++)
 			{
 				int key=0x10<<i;
-				if ((m.Buttons & key) && !(data.buttons & key))
+				if ((m.Buttons & key) && !(manager->getMoveDataEx(id).buttons & key))
 				{
 					manager->moveKeyPressed(id, key);
 				}
-				if (!(m.Buttons & key) && (data.buttons & key))
+				if (!(m.Buttons & key) && (manager->getMoveDataEx(id).buttons & key))
 				{
 					manager->moveKeyReleased(id, key);
 				}
 			}
-			data.buttons = m.Buttons;
-			data.trigger = m.TAnalog;
+			manager->getMoveDataEx(id).buttons = m.Buttons;
+			manager->getMoveDataEx(id).trigger = m.TAnalog;
+
+			manager->moveUpdated(id);
+
+			lock.release();
 
 			//handle resets
-			if (m.Buttons & MoveDevice::B_PS)
+			if (m.Buttons & Move::B_PS)
 			{
 				resetTimer+=timeEllapsed;
 				orientation->Reset();
 				if (resetTimer>2.0f && manager->getEye())
 				{
-					Eye::Ball* ball=&(manager->getEye()->balls[id]);
-					offsetX=ball->ballX;
-					offsetY=ball->ballY;
-					offsetZ=ball->ballZ;
+					manager->getEye()->resetPosition(id);
 					resetTimer=0;
 				}
 			}
@@ -117,59 +129,22 @@ namespace Move
 				resetTimer=0;
 			}
 
-			//if camera is capturing
-			if (manager->getEye())
-			{
-				data.isOnDisplay=false;
-				if (manager->getEye()->balls[id].ballFoundOut)
-				{
-					Vec3 previousPosition=data.position;
-					Vec3 previousVelocity=data.velocity;
-					Eye::Ball* ball=&(manager->getEye()->balls[id]);
-					data.position.x=ball->ballX - offsetX;
-					data.position.y=ball->ballY - offsetY;
-					data.position.z=ball->ballZ - offsetZ;
-					data.velocity=(data.position-previousPosition)/timeEllapsed;
-					data.acceleration=(data.velocity-previousVelocity)/timeEllapsed;
-
-					//TODO: initial solution
-					if (data.position.x>-50.0f && data.position.x<50.0f && data.position.y>-50.0f && data.position.y<50.0f)
-					{
-						data.isOnDisplay=true;
-						data.displayPos=(data.position+Vec3(50.0f,50.0f,0.0f))/100.0f;
-					}
-				}
-				else
-					data.position=Vec3(0,0,0);
-
-				MoveDevice::SetMoveColour(id,manager->getEye()->balls[id].ballOutColor.r,manager->getEye()->balls[id].ballOutColor.g,manager->getEye()->balls[id].ballOutColor.b);
-			}
-			manager->moveUpdated(id, data);
+			
 		}
 	}
 
-	void MoveController::UseMagnetometer(bool value)
+	void MoveController::useMagnetometers(bool value)
 	{
 		orientation->UseMagnetometer(value);
-	}
-
-	bool MoveController::isCalibrated()
-	{
-		return calibration->isCalibrated();
-	}
-
-	bool MoveController::StartCalibration()
-	{
-		return calibration->startCalibration();
-	}
-
-	void MoveController::EndCalibration()
-	{
-		calibration->endCalibration();
 	}
 
 	void MoveController::setRumble(int value)
 	{
 		MoveDevice::SetMoveRumble(id, value);
+	}
+
+	void MoveController::setOrientationGain(float gain)
+	{
+
 	}
 }

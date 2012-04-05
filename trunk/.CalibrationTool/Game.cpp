@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
-#include "MoveDevice.h"
+#include "MoveButton.h"
+#include "MoveData.h"
 
 Game::Game()
 {
@@ -57,7 +58,7 @@ void Game::initGui()
 	if (cameraWorks)
 	{
 		int eyeX, eyeY;
-		move->getEyeDimensions(eyeX,eyeY);
+		move->getEye()->getEyeDimensions(eyeX,eyeY);
 
 		//create texture for camera image
 		camImage = Ogre::TextureManager::getSingleton().createManual(
@@ -124,12 +125,12 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 		useMagnetometers=!useMagnetometers;
 		for (int i=0; i<numMoves; i++)
 		{
-			move->useMagnetometer(i,useMagnetometers);
+			move->getMove(i)->useMagnetometers(useMagnetometers);
 		}
 	}
 	else if (arg.key==OIS::KC_ESCAPE)
 	{
-		move->unsubsribeMove(this);
+		move->unsubsribe(this);
 		guiInitialized=false;
 	}
 	return BaseApplication::keyPressed(arg);
@@ -137,30 +138,7 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 
 void Game::moveKeyPressed(int moveId, int keyCode)
 {
-	if (keyCode==MoveDevice::B_CROSS && calibratingMove==moveId)
-	{
-		if (state==GameState::WaitForXBeforeCalibration)
-		{
-			state=GameState::Calibrating;
-			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please rotate the Move in every possible directions,\nthen press the Cross button again.");
-			move->startCalibration(moveId);
-		}
-		else if (state==GameState::Calibrating)
-		{
-			state=GameState::Calculating;
-			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please wait until the calculation process ends.");
-			move->endCalibration(moveId);
-		}
-	}
-	if (keyCode==MoveDevice::B_CIRCLE)
-	{
-		if (state==GameState::Normal)
-		{
-			mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("To calibrate the magnetic sensor, please press the Cross button,\nthen rotate the Move in every possible directions!");
-			state=GameState::WaitForXBeforeCalibration;
-			calibratingMove=moveId;
-		}
-	}
+
 }
 
 void Game::moveKeyReleased(int moveId, int keyCode)
@@ -181,22 +159,16 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 	for (int i=0; i<numMoves; i++)
 	{
 		sprintf(tmp+ strlen(tmp), "\n");
-		if (!move->isCalibrated(i))
-		{
-			sprintf(tmp+ strlen(tmp), "The device is not calibrated.\n");
-		}
-		else
-		{
-			sprintf(tmp+ strlen(tmp), "The device is calibrated.\n");
 
-			Move::Vec3 pos = move->getPosition(i);
-			sprintf(tmp+ strlen(tmp), "Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
+		sprintf(tmp+ strlen(tmp), "The device is calibrated.\n");
 
-			Move::Quat quat = move->getOrientation(i);
-			sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.v.x,quat.v.y,quat.v.z);
-		}
+		Move::Vec3 pos = data.position;
+		sprintf(tmp+ strlen(tmp), "Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
+
+		Move::Quat quat = data.orientation;
+		sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.v.x,quat.v.y,quat.v.z);
 	}
-	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
+	//mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
 }
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -209,11 +181,13 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	//TODO: testing the move orientation
 	for (int i=0; i<numMoves; i++)
 	{
-		Move::Quat moveOri = move->getOrientation(i);
+		Move::MoveData data = move->getMove(i)->getMoveData();
+
+		Move::Quat moveOri = data.orientation;
 		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
 		moveNode[i]->setOrientation(ori);
 
-		Move::Vec3 movePos = move->getPosition(i);
+		Move::Vec3 movePos = data.position;
 		Ogre::Vector3 pos = Ogre::Vector3(movePos.x, movePos.y, movePos.z);
 		pos*=4.0f;
 		pos.z-=800.0f;
@@ -233,9 +207,9 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 void Game::copyCameraImageToTexture(Ogre::TexturePtr texture)
 {
 	int eyeX, eyeY;
-	move->getEyeDimensions(eyeX,eyeY);
+	move->getEye()->getEyeDimensions(eyeX,eyeY);
 
-	PBYTE eyeBuffer=move->getEyeBuffer();
+	PBYTE eyeBuffer=move->getEye()->getEyeBuffer();
 	if (eyeBuffer)
 	{
 		Ogre::HardwarePixelBufferSharedPtr buffer = texture->getBuffer();
@@ -263,7 +237,7 @@ bool Game::initMove()
 	numMoves=move->initMoves();
 	cameraWorks=move->initCamera(numMoves);
 
-	move->subsribeMove(this);
+	move->subsribe(this);
 
 	return true;
 }

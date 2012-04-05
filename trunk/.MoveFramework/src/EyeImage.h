@@ -2,109 +2,11 @@
 
 #include "MoveIncludes.h"
 #include "Vec2.h"
+#include "MoveBall.h"
+#include "MoveColors.h"
 
-using namespace Move;
-
-
-namespace Eye
+namespace Move
 {
-	struct ColorRgb
-	{
-		int r,g,b;
-		ColorRgb()
-			:r(0),g(0),b(0) {}
-		ColorRgb(int r, int g, int b)
-			:r(r),g(g),b(b) {}
-	};
-
-	struct ColorHsv
-	{
-		float h,s,v;
-		ColorHsv()
-			:h(0),s(0),v(0) {}
-		ColorHsv(float h, float s, float v)
-			:h(h),s(s),v(v) {}
-
-		float similarity(ColorHsv other)
-		{
-			if (other.v<0.7f)
-				return 0.0f;
-			float sim;
-			sim = abs(h-other.h);
-			if (sim>360.0f-sim)
-				sim=360.0f-sim;
-			if (sim>100)
-				return 0.0f;
-			sim=100-sim;
-			sim=sim*other.s;
-			return sim;
-		}
-
-		ColorHsv(ColorRgb rgb)
-		{
-			float r=((float)rgb.r)/255;
-			float g=((float)rgb.g)/255;
-			float b=((float)rgb.b)/255;
-
-			// RGB are from 0..1, H is from 0..360, SV from 0..1
-			float maxC = b;
-			if (maxC < g) maxC = g;
-			if (maxC < r) maxC = r;
-			float minC = b;
-			if (minC > g) minC = g;
-			if (minC > r) minC = r;
-
-			float delta = maxC - minC;
-
-			v = maxC;
-			s = 0;
-			h = 0;
-
-			if (delta == 0)
-			{
-				h = 0;
-				s = 0;
-			}
-			else
-			{
-				s = delta / maxC;
-				float dR = 60*(maxC - r)/delta + 180;
-				float dG = 60*(maxC - g)/delta + 180;
-				float dB = 60*(maxC - b)/delta + 180;
-				if (r == maxC)
-					h = dB - dG;
-				else if (g == maxC)
-					h = 120 + dR - dB;
-				else
-					h = 240 + dG - dR;
-			}
-
-			if (h<0)
-				h+=360;
-			if (h>=360)
-				h-=360;
-		}
-	};
-
-	struct Ball
-	{
-		Vec2 position;
-		float positionX, positionY;
-		float ballSize;
-		volatile float ballX,ballY,ballZ;
-		ColorRgb ballOutColor;
-		ColorHsv ballPerceptedColor;
-		volatile bool ballFoundOut;
-		bool ballFound;
-		std::list<Vec2> ballContour;
-
-		Ball()
-		{
-			ballSize=0;
-			ballX=ballY=ballZ=0;
-			ballFound=ballFoundOut=false;
-		}
-	};
 
 	struct EyeImage
 	{
@@ -117,24 +19,22 @@ namespace Eye
 		void setPixel(Vec2 pos, ColorRgb rgb);
 		ColorRgb getPixel(Vec2 pos);
 		void drawCircle(Vec2 center, int r, ColorRgb col);
-		void findBalls(Ball* balls, int numBalls);
+		void findBalls(std::vector<MoveBall>& balls, int numBalls);
 
 	private:
-		void combImage(Ball* balls, int numBalls);
-		bool searchRow(int y, Vec2 &found, Ball* balls, int numBalls);
+		void combImage(std::vector<MoveBall>& balls, int numBalls);
+		bool searchRow(int y, Vec2 &found, std::vector<MoveBall>& balls, int numBalls);
 		bool colorMatches(ColorRgb pixelColor, ColorHsv ballColor);
 		bool pixelMatches(Vec2 pos, ColorHsv ballColor);
 		bool pixelAlreadyFound(Vec2 pos);
-		void findContour(Ball* ball);
-		void fitCircle(Ball* ball);
+		void findContour(MoveBall* ball);
+		void fitCircle(MoveBall* ball);
 
 		static std::vector<Vec2> currentBallContour;
 		static float currentBallSize;
 		static double integrateCircleError(std::vector<double> x);
 
-		Vec2 findNeighbor(Vec2 pos, Ball* ball);
-		bool checkIfContour(Vec2 pos, Ball* ball);
+		Vec2 findNeighbor(Vec2 pos, MoveBall* ball);
+		bool checkIfContour(Vec2 pos, MoveBall* ball);
 	};
 }
-
-

@@ -2,8 +2,9 @@
 #include "Helpers.h"
 #include "simplex.h"
 #include "MoveExceptions.h"
+#include "MoveColors.h"
 
-namespace Eye
+namespace Move
 {
 	std::vector<Vec2> EyeImage::currentBallContour;
 	float EyeImage::currentBallSize;
@@ -54,7 +55,7 @@ namespace Eye
 		}
 	}
 
-	void EyeImage::findBalls(Ball* balls, int numBalls)
+	void EyeImage::findBalls(std::vector<MoveBall>& balls, int numBalls)
 	{
 		bool needToComb = false;
 		for (int i=0; i<numBalls; i++)
@@ -97,7 +98,7 @@ namespace Eye
 		}
 	}
 
-	void EyeImage::fitCircle(Ball* ball)
+	void EyeImage::fitCircle(MoveBall* ball)
 	{
 		currentBallContour.clear();
 		
@@ -122,15 +123,15 @@ namespace Eye
 		std::vector<double> init;
 		std::vector<double> result;
 
-		init.push_back(ball->positionX);
-		init.push_back(ball->positionY);
+		init.push_back(ball->position.x);
+		init.push_back(ball->position.y);
 		currentBallSize= (ball->ballSize)*0.5f;
 
 		result.clear();
-		result=BT::Simplex(&Eye::EyeImage::integrateCircleError, init, 30);
+		result=BT::Simplex(&EyeImage::integrateCircleError, init, 30);
 
-		ball->positionX=(float)result[0];
-		ball->positionY=(float)result[1];
+		ball->position.x=(float)result[0];
+		ball->position.y=(float)result[1];
 
 		float size=0;
 		int nums=0;
@@ -162,7 +163,7 @@ namespace Eye
 		return error;
 	}
 
-	void EyeImage::findContour(Ball* ball)
+	void EyeImage::findContour(MoveBall* ball)
 	{
 		Vec2 init=ball->position;
 		ball->ballContour.clear();
@@ -211,15 +212,15 @@ namespace Eye
 			if (ball->ballContour.size()>2500)
 				break;
 		}
-		ball->positionX=0.5f*(float)(max.x+min.x);
-		ball->positionY=0.5f*(float)(max.y+min.y);
+		ball->position.x=0.5f*(float)(max.x+min.x);
+		ball->position.y=0.5f*(float)(max.y+min.y);
 		if (max.x-min.x>max.y-min.y)
 			ball->ballSize=(float)(max.x-min.x);
 		else
 			ball->ballSize=(float)(max.y-min.y);
 	}
 
-	Vec2 EyeImage::findNeighbor(Vec2 pos, Ball* ball)
+	Vec2 EyeImage::findNeighbor(Vec2 pos, MoveBall* ball)
 	{
 		Vec2 search;
 
@@ -251,7 +252,7 @@ namespace Eye
 		return Vec2(-1,-1);
 	}
 
-	bool EyeImage::checkIfContour(Vec2 pos, Ball* ball)
+	bool EyeImage::checkIfContour(Vec2 pos, MoveBall* ball)
 	{
 		if(pos.x>=w || pos.y>=h || pos.x<0 || pos.y<0)
 			return false;
@@ -271,7 +272,7 @@ namespace Eye
 		return false;
 	}
 
-	void EyeImage::combImage(Ball* balls, int numBalls)
+	void EyeImage::combImage(std::vector<MoveBall>& balls, int numBalls)
 	{
 		float searchGap=(float)h;
 		Vec2 found;
@@ -289,7 +290,7 @@ namespace Eye
 		}
 	}
 
-	bool EyeImage::searchRow(int y, Vec2& found, Ball* balls, int numBalls)
+	bool EyeImage::searchRow(int y, Vec2& found, std::vector<MoveBall>& balls, int numBalls)
 	{
 		//search in row
 		for (int x=0;x<w;++x)

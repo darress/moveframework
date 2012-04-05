@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MoveConfig.h"
 #include "MoveData.h"
 
 namespace Move
@@ -10,5 +11,6 @@ namespace Move
 		virtual void moveUpdated(int moveId, MoveData data){}
 		virtual void moveKeyPressed(int moveId, int keyCode){}
 		virtual void moveKeyReleased(int moveId, int keyCode){}
+		virtual void moveConnected(int numAllMoves){}
 	};
 }

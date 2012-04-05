@@ -1,17 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClInclude Include="public_include\IMoveManager.h" />
-    <ClInclude Include="public_include\IMoveObserver.h" />
-    <ClInclude Include="public_include\MoveData.h" />
-    <ClInclude Include="public_include\MoveDevice.h">
-      <Filter>PS Move\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="public_include\MoveFactory.h" />
     <ClInclude Include="src\EyeImage.h">
-      <Filter>PS Move\Eye</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EyeInterface.h">
       <Filter>PS Move\Eye</Filter>
     </ClInclude>
     <ClInclude Include="src\Helpers.h">
@@ -50,7 +40,6 @@
     <ClInclude Include="public_include\Vec3.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="public_include\MoveConfig.h" />
     <ClInclude Include="public_include\Quat.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -62,13 +51,47 @@
     <ClInclude Include="public_include\Vec2.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="src\MoveDevice.h">
+      <Filter>PS Move\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\IEyeController.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\IMoveController.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\IMoveManager.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\IMoveObserver.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\MoveButton.h" />
+    <ClInclude Include="public_include\MoveFactory.h" />
+    <ClInclude Include="public_include\MoveConfig.h" />
+    <ClInclude Include="public_include\MoveData.h" />
+    <ClInclude Include="src\EyeController.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveBall.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BallColorManager.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\MoveColors.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BallManager.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MoveLock.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MoveFactory.cpp" />
     <ClCompile Include="src\EyeImage.cpp">
-      <Filter>PS Move\Eye</Filter>
-    </ClCompile>
-    <ClCompile Include="src\EyeInterface.cpp">
       <Filter>PS Move\Eye</Filter>
     </ClCompile>
     <ClCompile Include="src\MoveCalibration.cpp">
@@ -104,6 +127,21 @@
     <ClCompile Include="src\Vec2.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="src\EyeController.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BallColorManager.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveBall.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BallManager.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MoveLock.cpp">
+      <Filter>Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PS Move">
@@ -126,6 +164,9 @@
     </Filter>
     <Filter Include="Math">
       <UniqueIdentifier>{5b50740f-0e94-4541-b2b7-f4597364e165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{86dd3feb-928e-4f05-90f7-1ec812dffc09}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

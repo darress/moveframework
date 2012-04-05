@@ -11,12 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MoveLock.h" />
+    <ClInclude Include="src\BallManager.h" />
+    <ClInclude Include="public_include\MoveColors.h" />
+    <ClInclude Include="src\MoveBall.h" />
+    <ClInclude Include="src\BallColorManager.h" />
+    <ClInclude Include="public_include\IEyeController.h" />
+    <ClInclude Include="public_include\IMoveController.h" />
+    <ClInclude Include="public_include\MoveButton.h" />
     <ClInclude Include="src\MoveExceptions.h" />
     <ClInclude Include="public_include\Mat3.h" />
     <ClInclude Include="public_include\MoveConfig.h" />
     <ClInclude Include="public_include\Quat.h" />
     <ClInclude Include="src\EyeImage.h" />
-    <ClInclude Include="src\EyeInterface.h" />
+    <ClInclude Include="src\EyeController.h" />
     <ClInclude Include="src\Helpers.h" />
     <ClInclude Include="src\hidapi.h" />
     <ClInclude Include="public_include\IMoveManager.h" />
@@ -30,7 +38,7 @@
     <ClInclude Include="src\MoveIncludes.h" />
     <ClInclude Include="src\MoveManager.h" />
     <ClInclude Include="public_include\MoveFactory.h" />
-    <ClInclude Include="public_include\MoveDevice.h" />
+    <ClInclude Include="src\MoveDevice.h" />
     <ClInclude Include="src\MoveOrientation.h" />
     <ClInclude Include="src\MoveRawCalibration.h" />
     <ClInclude Include="src\simplex.h" />
@@ -38,10 +46,14 @@
     <ClInclude Include="public_include\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\MoveLock.cpp" />
+    <ClCompile Include="src\BallManager.cpp" />
+    <ClCompile Include="src\MoveBall.cpp" />
+    <ClCompile Include="src\BallColorManager.cpp" />
     <ClCompile Include="src\Mat3.cpp" />
     <ClCompile Include="src\Quat.cpp" />
     <ClCompile Include="src\EyeImage.cpp" />
-    <ClCompile Include="src\EyeInterface.cpp" />
+    <ClCompile Include="src\EyeController.cpp" />
     <ClCompile Include="src\MadgwickAHRS.cpp" />
     <ClCompile Include="src\MoveDevice.cpp" />
     <ClCompile Include="src\MoveCalibration.cpp" />
