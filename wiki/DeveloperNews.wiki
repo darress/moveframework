@@ -1,5 +1,10 @@
 #summary We will publish information about the development here.
 
+= Developing version 3.0 =
+ * Yeah, the big and unnecessary opengl math library was removed and replaced with my own math library
+ * Only a small part of include files are published now
+ * The precompiled headers were removed, so you don't have to include all the MoveFramework includes in your project, only what you need. :) This will make the library more portable.
+
 = Initial class diagram for version 3.0 =
 I made a UML class diagram, so everybody can see what's going on in the code. The classes above the thick line can be seen from outside of the dll.
 
