@@ -28,6 +28,7 @@ class Game : public BaseApplication, Move::IMoveObserver
 	Ogre::SceneNode* moveNode[2];
 
 	Ogre::TexturePtr camImage;
+	Ogre::TexturePtr maskImage;
 
 	int calibratingMove;
 
@@ -51,7 +52,7 @@ protected:
 	bool keyPressed( const OIS::KeyEvent &arg );
 
 	bool initMove();
-	void copyCameraImageToTexture(Ogre::TexturePtr texture);
+	void copyCameraImageToTexture();
 
 private:
 	void initGui();

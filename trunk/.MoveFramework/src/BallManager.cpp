@@ -11,6 +11,10 @@ namespace Move
 		offset=Vec3::ZERO;
 
 		balls.resize(numMoves);
+		for (int i=0; i<numMoves; i++)
+		{
+			balls[i].mask = new BYTE[img->w*img->h];
+		}
 		filter.resize(numMoves);
 
 		colorManager = new BallColorManager(img);
@@ -19,6 +23,10 @@ namespace Move
 
 	BallManager::~BallManager()
 	{
+		for (int i=0; i<numMoves; i++)
+		{
+			delete[] balls[i].mask;
+		}
 		delete colorManager;
 	}
 
@@ -63,6 +71,13 @@ namespace Move
 		else
 			return Vec3::ZERO;
 
+	}
+
+	unsigned char* BallManager::getMaskBuffer(int moveId)
+	{
+		if (balls.size()<=moveId)
+			return 0;
+		return balls[moveId].mask;
 	}
 
 }

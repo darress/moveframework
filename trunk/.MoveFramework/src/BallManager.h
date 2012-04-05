@@ -24,6 +24,7 @@ namespace Move
 		~BallManager();
 
 		std::vector<Vec3> findBalls();
+		unsigned char* getMaskBuffer(int moveId);
 
 	private:
 		Vec3 calculateRealWorldPosition(MoveBall& ball, Kalman& filter);

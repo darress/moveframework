@@ -10,10 +10,10 @@ namespace Move
 
 	struct EyeImage
 	{
-		volatile PBYTE data;
-		volatile int w,h;
+		PBYTE data;
+		int w,h;
 
-		EyeImage(int w, int h, PBYTE imgBuffer);
+		EyeImage(int w, int h);
 		~EyeImage(void);
 
 		void setPixel(Vec2 pos, ColorRgb rgb);
