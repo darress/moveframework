@@ -5,6 +5,7 @@
  * The whole architecture was redefined. It is now almost like in the class diagram.
  * New advanced synchronizing class (MoveLock)
  * New classes for the planned features
+ * Mask added for each ball, the ball algorithm will be not binary any more
 
 *2012-04-04*
  * Yeah, the big and unnecessary opengl math library was removed and replaced with my own math library
