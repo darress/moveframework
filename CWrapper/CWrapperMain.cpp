@@ -76,17 +76,18 @@ extern "C" __declspec(dllexport) void __stdcall subscribeMove(UPDATE_CALLBACK up
 	registered_callback=updateCallback;
 	registered_keyup=keyUpCallback;
 	registered_keydown=keyDownCallback;
-	move->subsribeMove(observer);
+	move->subsribe(observer);
 }
 
 extern "C" __declspec(dllexport) void __stdcall unsubscribeMove() 
 {
-	move->unsubsribeMove(observer);
+	move->unsubsribe(observer);
 }
 
 extern "C" __declspec(dllexport) Quat __stdcall getOrientation(int id) 
 {
-	Move::Quat ori = move->getOrientation(id);
+	Move::MoveData data = move->getMove(id)->getMoveData();
+	Move::Quat ori = data.orientation;
 	Quat q;
 	q.w=ori.w;
 	q.x=ori.v.x;
@@ -97,7 +98,8 @@ extern "C" __declspec(dllexport) Quat __stdcall getOrientation(int id)
 
 extern "C" __declspec(dllexport) Vec3 __stdcall getPosition(int id) 
 {
-	Move::Vec3 pos = move->getPosition(id);
+	Move::MoveData data = move->getMove(id)->getMoveData();
+	Move::Vec3 pos = data.position;
 	Vec3 v;
 	v.x=pos.x;
 	v.y=pos.y;
@@ -107,15 +109,17 @@ extern "C" __declspec(dllexport) Vec3 __stdcall getPosition(int id)
 
 extern "C" __declspec(dllexport) bool __stdcall getButtonState(int id, int keyId) 
 {
-	return move->getButtonState(id, keyId);
+	Move::MoveData data = move->getMove(id)->getMoveData();
+	return data.isButtonPressed((Move::MoveButton)keyId);
 }
 
 extern "C" __declspec(dllexport) int __stdcall getTriggerValue(int id) 
 {
-	return move->getTriggerValue(id);
+	Move::MoveData data = move->getMove(id)->getMoveData();
+	return data.trigger;
 }
 
 extern "C" __declspec(dllexport) void __stdcall setRumble(int id, int value) 
 {
-	move->setRumble(id, value);
+	move->getMove(id)->setRumble(value);
 }

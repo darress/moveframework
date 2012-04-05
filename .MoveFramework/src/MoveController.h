@@ -3,7 +3,8 @@
 #include "MoveOrientation.h"
 #include "MoveCalibration.h"
 #include "MoveData.h"
-#include "EyeInterface.h"
+#include "EyeController.h"
+#include "IMoveController.h"
 
 namespace Move
 {
@@ -12,7 +13,7 @@ namespace Move
 	class MoveOrientation;
 	class MoveCalibration;
 
-	class MoveController
+	class MoveController : public IMoveController
 	{
 		HANDLE _hThread;
 
@@ -30,17 +31,15 @@ namespace Move
 
 		static float offsetX,offsetY,offsetZ;
 	public:
-		MoveData data;
 
 		MoveController(int p_id, MoveManager* p_manager);
 		~MoveController(void);
 
 		void Update();
-		bool isCalibrated();
-		bool StartCalibration();
-		void EndCalibration();
-		void UseMagnetometer(bool value);
+		void useMagnetometers(bool value);
 		void setRumble(int value);
+		void setOrientationGain(float gain);
+		MoveData getMoveData();
 
 	private:
 		static DWORD WINAPI controlThread(LPVOID instance);

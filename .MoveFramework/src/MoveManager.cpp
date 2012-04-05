@@ -1,13 +1,14 @@
 #include "MoveManager.h"
 #include "MoveDevice.h"
 #include "MoveRawCalibration.h"
+#include "MoveLock.h"
 
 namespace Move
 {
 	MoveManager::MoveManager(void)
 	{
 		FPS=0;
-		eyeInt=0;
+		eye=0;
 		moveCount=-1;
 	}
 
@@ -18,10 +19,11 @@ namespace Move
 		{
 			delete moves[i];
 		}
-		if (eyeInt)
+		if (eye)
 		{
-			delete eyeInt;
+			delete eye;
 		}
+		MoveLock::deinit();
 		MoveDevice::CloseMoves();
 	}
 
@@ -38,110 +40,54 @@ namespace Move
 		}
 		moveCount = MoveDevice::GetMoveCount();
 
+		MoveLock::init(moveCount);
+
+		moveData.resize(moveCount);
+
 		for (int i=0;i<moveCount;++i)
 		{
 			MoveController* ctrl=new MoveController(i, this);
 			moves.push_back(ctrl);
 		}
+
 		return moveCount;
 	}
 
-	void MoveManager::getEyeDimensions(int &x, int &y)
+	void MoveManager::closeMoves(void)
 	{
-		if (eyeInt)
-		{
-			eyeInt->getDimensions(x,y);
-		}
-		else
-		{
-			x=y=0;
-		}
-	}
-
-	Quat MoveManager::getOrientation(int id)
-	{
-		if(id>=moveCount)
-			return Move::Quat(0,0,0,0);
-		return moves[id]->data.orientation;
-	}
-
-	Vec3 MoveManager::getPosition(int id)
-	{
-		if(id>=moveCount)
-			return Move::Vec3(0,0,0);
-		Move::Vec3 pos = Move::Vec3(moves[id]->data.position.x,-1.0*moves[id]->data.position.y,moves[id]->data.position.z);
-		return pos;
-	}
-
-	int MoveManager::getFrameRate()
-	{
-		return FPS;
+	
 	}
 
 	bool MoveManager::initCamera(int numMoves)
 	{
-		eyeInt=new Eye::EyeInterface(numMoves);
-		if (!eyeInt->initCamera())
+		eye=new EyeController(this);
+		if (!eye->initCamera(numMoves))
 		{
-			delete eyeInt;
-			eyeInt=0;
+			delete eye;
+			eye=0;
 			return false;
 		}
 		return true;
 	}
 
-	PBYTE MoveManager::getEyeBuffer()
+	void MoveManager::closeCamera()
 	{
-		if (eyeInt && eyeInt->img)
-		{
-			return eyeInt->img->data;
-		}
+
+	}
+
+	int MoveManager::getNumUsedMoves()
+	{
+		return moveCount;
+	}
+
+	int MoveManager::getNumAllMoves()
+	{
 		return 0;
 	}
 
-	int MoveManager::getTriggerValue(int id)
+	MoveData& MoveManager::getMoveDataEx(int moveId)
 	{
-		return moves[id]->data.trigger;
-	}
-
-	void MoveManager::setRumble(int id, int value)
-	{
-		moves[id]->setRumble(value);
-	}
-
-	Vec3 MoveManager::getAngularVelocity(int id)
-	{
-		return moves[id]->data.angularVelocity;
-	}
-
-	Vec3 MoveManager::getAngularAcceleration(int id)
-	{
-		return moves[id]->data.angularAcceleration;
-	}
-
-	Vec3 MoveManager::getVelocity(int id)
-	{
-		return moves[id]->data.velocity;
-	}	
-
-	Vec3 MoveManager::getAcceleration(int id)
-	{
-		return moves[id]->data.acceleration;
-	}
-
-	bool MoveManager::getButtonState(int id, int buttonId)
-	{
-		return (moves[id]->data.buttons & buttonId)!=0;
-	}
-
-	bool MoveManager::pointingToDisplay(int id)
-	{
-		return moves[id]->data.isOnDisplay;
-	}
-
-	Vec3 MoveManager::displayPosition(int id)
-	{
-		return moves[id]->data.displayPos;
+		return moveData[moveId];
 	}
 
 	int MoveManager::pairMoves()
@@ -149,48 +95,32 @@ namespace Move
 		return MoveDevice::PairMoves();
 	}
 
-	void MoveManager::useMagnetometer(int id, bool value)
+	IMoveController* MoveManager::getMove(int moveId)
 	{
-		moves[id]->UseMagnetometer(value);
+		MoveLock lock(moveId);
+		return moves[moveId];
 	}
 
-	bool MoveManager::isCalibrated(int id)
+	IEyeController* MoveManager::getEye()
 	{
-		return moves[id]->isCalibrated();
+		return eye;
 	}
 
-	bool MoveManager::startCalibration(int id)
-	{
-		return moves[id]->StartCalibration();
-	}
-
-	void MoveManager::endCalibration(int id)
-	{
-		moves[id]->EndCalibration();
-		//TODO: event handling
-		//eventCalibrationDone();
-	}
-
-	Eye::EyeInterface* MoveManager::getEye()
-	{
-		return eyeInt;
-	}
-
-	void MoveManager::subsribeMove(IMoveObserver* observer)
+	void MoveManager::subsribe(IMoveObserver* observer)
 	{
 		observers.push_back(observer);
 	}
-	void MoveManager::unsubsribeMove(IMoveObserver* observer)
+	void MoveManager::unsubsribe(IMoveObserver* observer)
 	{
 		observers.remove(observer);
 	}
 
-	void MoveManager::moveUpdated(int moveId, MoveData data)
+	void MoveManager::moveUpdated(int moveId)
 	{
 		std::list<IMoveObserver*>::iterator it;
 		for ( it=observers.begin() ; it != observers.end(); it++ )
 		{
-			(*it)->moveUpdated(moveId, data);
+			(*it)->moveUpdated(moveId, moveData[moveId]);
 		}
 	}
 	void MoveManager::moveKeyPressed(int moveId, int keyCode)

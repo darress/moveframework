@@ -1,7 +1,7 @@
 #pragma once
 
-#include "IMoveManager.h"
 #include "MoveConfig.h"
+#include "IMoveManager.h"
 
 namespace Move
 {
