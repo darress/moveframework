@@ -1,6 +1,7 @@
 #include "BallManager.h"
 #include "MoveDevice.h"
 #include "MoveExceptions.h"
+#include "MoveLock.h"
 
 namespace Move
 {
@@ -10,6 +11,8 @@ namespace Move
 		this->numMoves=numMoves;
 		this->img=img;
 		offset=Vec3::ZERO;
+
+		resetPosition=-1;
 
 		balls.resize(numMoves);
 		for (int i=0; i<numMoves; i++)
@@ -37,64 +40,57 @@ namespace Move
 
 	std::vector<Vec3> BallManager::findBalls()
 	{
-		std::vector<Vec3> positions;
 		colorManager->calculateColors(balls);
-
+		
 		contourFinder->findBalls(balls, numMoves);
 
+		std::vector<Vec3> positions;
 		for (int i=0; i<numMoves; i++)
 		{
+			MoveDevice::SetMoveColour(i,balls[i].ballOutColor.r,balls[i].ballOutColor.g,balls[i].ballOutColor.b);
+
 			Vec3 pos;
 			if (balls[i].ballFound)
 			{
 				ballFitAlgorithm->fitCircle(&(balls[i]));
 
-				//TODO: ha a lentit megcsinálom, nem kell a try
-				if (balls[i].ballSize>15) //TODO: && pixelMatches(balls[i].position, balls[i].ballPerceptedColor))
+				if (balls[i].ballSize>15 && contourFinder->getMask(balls[i].position,balls[i])>BALL_MARGIN)
 				{
-					try
-					{
-						balls[i].ballPerceptedColor=ColorHsv(img->getPixel(balls[i].position));
-					}
-					catch(MoveOutOfImageRangeException){}
+					balls[i].ballPerceptedColor=ColorHsv(img->getPixel(balls[i].position));
 				}
 
 				pos=calculateRealWorldPosition(balls[i], filter[i]);
+
+				if (resetPosition==i)
+				{
+					offset=pos;
+					resetPosition=-1;
+				}
+
+				pos-=offset;
 			}
 			positions.push_back(pos);
-
-			MoveDevice::SetMoveColour(i,balls[i].ballOutColor.r,balls[i].ballOutColor.g,balls[i].ballOutColor.b);
 		}
 		return positions;
 	}
 
 	Vec3 BallManager::calculateRealWorldPosition(MoveBall& ball, Kalman& filter)
 	{
-		
-		if (ball.ballFound)
-		{
-			float x,y,size;
-			x=ball.position.x;
-			y=ball.position.y;
-			size=ball.ballSize;
+		float x,y,size;
+		x=ball.position.x;
+		y=ball.position.y;
+		size=ball.ballSize;
 
-			img->drawCircle(Vec2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));
+		img->drawCircle(Vec2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));
 
-			Vec3 position;
+		Vec3 position;
 
-			position.z=filter.update(2500/size);
-			//position.z=2500/size;
-			position.x=(x-((float)img->w/2))*position.z/400;
-			position.y=(y-((float)img->h/2))*position.z/-400;
+		position.z=filter.update(2500/size);
+		//position.z=2500/size;
+		position.x=(x-((float)img->w/2))*position.z/400;
+		position.y=(y-((float)img->h/2))*position.z/-400;
 
-			position.x -= offset.x;
-			position.y -= offset.y;
-			position.z -= offset.z;
-			return position;
-		}
-		else
-			return Vec3::ZERO;
-
+		return position;
 	}
 
 	unsigned char* BallManager::getMaskBuffer(int moveId)
@@ -102,6 +98,17 @@ namespace Move
 		if (balls.size()<=moveId)
 			return 0;
 		return (unsigned char*)(balls[moveId].mask);
+	}
+
+	void BallManager::useAutomaticColors(bool use)
+	{
+		colorManager->useAutomaticColors(use);
+	}
+
+	void BallManager::setColor(int moveId, int r, int g, int b)
+	{
+		MoveLock m(moveId);
+		colorManager->setColor(balls[moveId], r, g, b);
 	}
 
 }

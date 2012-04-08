@@ -112,17 +112,17 @@ namespace Move
 
 	void EyeController::useAutomaticColors(bool use)
 	{
-	
+		ballManager->useAutomaticColors(use);
 	}
 
 	void EyeController::setColor(int moveId, int r, int g, int b)
 	{
-	
+		ballManager->setColor(moveId, r, g, b);
 	}
 
 	void EyeController::resetPosition(int moveId)
 	{
-
+		ballManager->resetPosition=moveId;
 	}
 
 }

@@ -9,6 +9,8 @@ Game::Game()
 	guiInitialized=false;
 	useMagnetometers=true;
 	cameraWorks=false;
+	automaticColors=true;
+	r=g=b=0;
 }
 
 Game::~Game()
@@ -136,6 +138,11 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 			move->getMove(i)->useMagnetometers(useMagnetometers);
 		}
 	}
+	else if (arg.key==OIS::KC_A)
+	{
+		automaticColors=!automaticColors;
+		move->getEye()->useAutomaticColors(automaticColors);
+	}
 	else if (arg.key==OIS::KC_ESCAPE)
 	{
 		move->unsubsribe(this);
@@ -177,6 +184,19 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 		sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.v.x,quat.v.y,quat.v.z);
 	}
 	//mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
+	
+	if (!automaticColors)
+	{
+		if (data.isButtonPressed(Move::B_CIRCLE))
+			r=data.trigger;
+		if (data.isButtonPressed(Move::B_TRIANGLE))
+			g=data.trigger;
+		if (data.isButtonPressed(Move::B_CROSS))
+			b=data.trigger;
+		move->getEye()->setColor(moveId,r,g,b);
+	}
+	if (data.isButtonPressed(Move::B_SQUARE))
+		move->getMove(moveId)->setRumble(data.trigger);
 }
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)

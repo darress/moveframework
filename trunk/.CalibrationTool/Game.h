@@ -39,6 +39,9 @@ class Game : public BaseApplication, Move::IMoveObserver
 
 	bool cameraWorks;
 
+	bool automaticColors;
+	int r,g,b;
+
 	bool guiInitialized;
 
 public:
