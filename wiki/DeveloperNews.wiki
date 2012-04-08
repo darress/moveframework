@@ -1,6 +1,14 @@
 #summary We will publish information about the development here.
 
 = Developing version 3.0 =
+
+*2012-04-08*
+ * New sub-pixel accurate algorithm
+ * More robust masking
+ * Better performance
+ * Less jitter
+ * Less dependence from environment lights and colors
+
 *2012-04-05*
  * The whole architecture was redefined. It is now almost like in the class diagram.
  * New advanced synchronizing class (MoveLock)
