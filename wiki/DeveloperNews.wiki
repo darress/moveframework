@@ -4,10 +4,10 @@
 
 *2012-04-08*
  * New sub-pixel accurate ball algorithm
- * More robust masking
- * Better performance
- * Less jitter
- * Less dependence from environment lights and colors
+  * More robust masking
+  * Better performance
+  * Less jitter
+  * Less dependence from environment lights and colors
 
 *2012-04-05*
  * The whole architecture was redefined. It is now almost like in the class diagram.
