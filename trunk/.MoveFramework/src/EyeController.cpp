@@ -45,7 +45,8 @@ namespace Move
 		CLEyeCameraGetFrameDimensions(_cam, width, height);
 
 		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
-		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, true);
+		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, false);
+		CLEyeSetCameraParameter(_cam, CLEYE_EXPOSURE, 200);
 		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, true);
 		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);
 		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_GREEN, 255);

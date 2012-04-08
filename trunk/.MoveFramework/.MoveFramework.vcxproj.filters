@@ -88,6 +88,12 @@
     <ClInclude Include="src\MoveLock.h">
       <Filter>Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="src\ContourFinder.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BallFitAlgorithm.h">
+      <Filter>PS Move\Eye</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MoveFactory.cpp" />
@@ -141,6 +147,12 @@
     </ClCompile>
     <ClCompile Include="src\MoveLock.cpp">
       <Filter>Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ContourFinder.cpp">
+      <Filter>PS Move\Eye</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BallFitAlgorithm.cpp">
+      <Filter>PS Move\Eye</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
