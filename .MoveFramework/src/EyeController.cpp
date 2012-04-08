@@ -1,6 +1,7 @@
 
 #include "EyeController.h"
 #include "MoveLock.h"
+#include "IniFile.h"
 
 namespace Move
 {
@@ -46,11 +47,16 @@ namespace Move
 
 		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
 		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, false);
-		CLEyeSetCameraParameter(_cam, CLEYE_EXPOSURE, 200);
-		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, true);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_GREEN, 255);
-		//CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_BLUE, 255);
+		int exp=50;
+		try
+		{
+			exp = IniFile::GetInt("CameraExposure", "Tracking", "settings.cfg");
+		}catch(MoveConfigFileRecordNotFoundException){}
+		CLEyeSetCameraParameter(_cam, CLEYE_EXPOSURE, exp);
+		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, false);
+		CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);
+		CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_GREEN, 255);
+		CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_BLUE, 255);
 		CLEyeSetCameraParameter(_cam, CLEYE_HFLIP, true);
 		//CLEyeSetCameraParameter(_cam, CLEYE_VFLIP, true);
 

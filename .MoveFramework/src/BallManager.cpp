@@ -21,7 +21,7 @@ namespace Move
 		}
 		filter.resize(numMoves);
 
-		colorManager = new BallColorManager(img);
+		colorManager = new BallColorManager(img, balls);
 		contourFinder = new ContourFinder(img);
 		ballFitAlgorithm = new BallFitAlgorithm(img);
 	}
