@@ -1,5 +1,6 @@
 #include "BallManager.h"
 #include "MoveDevice.h"
+#include "MoveExceptions.h"
 
 namespace Move
 {
@@ -13,11 +14,13 @@ namespace Move
 		balls.resize(numMoves);
 		for (int i=0; i<numMoves; i++)
 		{
-			balls[i].mask = new BYTE[img->w*img->h];
+			balls[i].mask = new unsigned short[img->w*img->h*2];
 		}
 		filter.resize(numMoves);
 
 		colorManager = new BallColorManager(img);
+		contourFinder = new ContourFinder(img);
+		ballFitAlgorithm = new BallFitAlgorithm(img);
 	}
 
 
@@ -28,6 +31,8 @@ namespace Move
 			delete[] balls[i].mask;
 		}
 		delete colorManager;
+		delete contourFinder;
+		delete ballFitAlgorithm;
 	}
 
 	std::vector<Vec3> BallManager::findBalls()
@@ -35,10 +40,28 @@ namespace Move
 		std::vector<Vec3> positions;
 		colorManager->calculateColors(balls);
 
-		img->findBalls(balls, numMoves);
+		contourFinder->findBalls(balls, numMoves);
+
 		for (int i=0; i<numMoves; i++)
 		{
-			positions.push_back(calculateRealWorldPosition(balls[i], filter[i]));
+			Vec3 pos;
+			if (balls[i].ballFound)
+			{
+				ballFitAlgorithm->fitCircle(&(balls[i]));
+
+				//TODO: ha a lentit megcsinálom, nem kell a try
+				if (balls[i].ballSize>15) //TODO: && pixelMatches(balls[i].position, balls[i].ballPerceptedColor))
+				{
+					try
+					{
+						balls[i].ballPerceptedColor=ColorHsv(img->getPixel(balls[i].position));
+					}
+					catch(MoveOutOfImageRangeException){}
+				}
+
+				pos=calculateRealWorldPosition(balls[i], filter[i]);
+			}
+			positions.push_back(pos);
 
 			MoveDevice::SetMoveColour(i,balls[i].ballOutColor.r,balls[i].ballOutColor.g,balls[i].ballOutColor.b);
 		}
@@ -60,6 +83,7 @@ namespace Move
 			Vec3 position;
 
 			position.z=filter.update(2500/size);
+			//position.z=2500/size;
 			position.x=(x-((float)img->w/2))*position.z/400;
 			position.y=(y-((float)img->h/2))*position.z/-400;
 
@@ -77,7 +101,7 @@ namespace Move
 	{
 		if (balls.size()<=moveId)
 			return 0;
-		return balls[moveId].mask;
+		return (unsigned char*)(balls[moveId].mask);
 	}
 
 }

@@ -77,23 +77,13 @@ void Game::initGui()
 			Ogre::TEX_TYPE_2D,      // type
 			eyeX, eyeY,         // width & height
 			0,                // number of mipmaps
-			Ogre::PF_L8,     // pixel format
+			Ogre::PF_L16,     // pixel format
 			Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-
-		//create material from texture
-		Ogre::MaterialPtr lMaterial = Ogre::MaterialManager::getSingleton().create("CamMaterial",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		lMaterial->getTechnique(0)->getPass(0)->createTextureUnitState("CameraImage");
-		lMaterial->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
 
 		//set texture of eye image
 		mGUI->findWidget<MyGUI::ImageBox>("Eye Image")->setImageTexture("CameraImage");
 
-		//create material from texture
-		Ogre::MaterialPtr lMaterial2 = Ogre::MaterialManager::getSingleton().create("MaskMaterial",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-		lMaterial2->getTechnique(0)->getPass(0)->createTextureUnitState("MaskImage");
-		lMaterial2->getTechnique(0)->getPass(0)->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
-
-		//set texture of eye image
+		//set texture of mask image
 		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setImageTexture("MaskImage");
 	}
 	else
@@ -245,7 +235,7 @@ void Game::copyCameraImageToTexture()
 		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 		const Ogre::PixelBox &pb = buffer->getCurrentLock();
 		PBYTE data = static_cast<PBYTE>(pb.data);
-		memcpy(data,maskBuffer,eyeX*eyeY);
+		memcpy(data,maskBuffer,eyeX*eyeY*2);
 		buffer->unlock();
 	}
 }

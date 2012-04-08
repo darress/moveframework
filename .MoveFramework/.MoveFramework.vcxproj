@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BallFitAlgorithm.h" />
+    <ClInclude Include="src\ContourFinder.h" />
     <ClInclude Include="src\MoveLock.h" />
     <ClInclude Include="src\BallManager.h" />
     <ClInclude Include="public_include\MoveColors.h" />
@@ -46,6 +48,8 @@
     <ClInclude Include="public_include\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BallFitAlgorithm.cpp" />
+    <ClCompile Include="src\ContourFinder.cpp" />
     <ClCompile Include="src\MoveLock.cpp" />
     <ClCompile Include="src\BallManager.cpp" />
     <ClCompile Include="src\MoveBall.cpp" />

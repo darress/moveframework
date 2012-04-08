@@ -19,7 +19,7 @@ namespace Move
 		ColorHsv ballPerceptedColor;
 		bool ballFound;
 		std::list<Vec2> ballContour;
-		PBYTE mask;
+		unsigned short* mask;
 	};
 
 }

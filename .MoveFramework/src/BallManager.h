@@ -5,6 +5,8 @@
 #include "BallColorManager.h"
 #include "Vec3.h"
 #include "kalman.h"
+#include "ContourFinder.h"
+#include "BallFitAlgorithm.h" 
 
 namespace Move
 {
@@ -13,8 +15,12 @@ namespace Move
 	{
 		int numMoves;
 		std::vector<MoveBall> balls;
+		
 		EyeImage* img;
 		BallColorManager* colorManager;
+		ContourFinder* contourFinder;
+		BallFitAlgorithm* ballFitAlgorithm;
+
 		Vec3 offset;
 
 		std::vector<Kalman> filter;
