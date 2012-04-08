@@ -13,7 +13,7 @@ namespace Move
 		volatile bool automaticColors;
 
 	public:
-		BallColorManager(EyeImage* image);
+		BallColorManager(EyeImage* image, std::vector<MoveBall>& balls);
 		~BallColorManager();
 
 		void calculateColors(std::vector<MoveBall>& balls);

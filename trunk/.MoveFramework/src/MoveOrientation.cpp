@@ -17,7 +17,7 @@ namespace Move
 		AEq_1 = 1, AEq_2 = 0, AEq_3 = 0, AEq_4 = 0;
 		try
 		{
-			ahrs.beta = CIniFile::GetFloat("algorithmGain", "Tracking", "settings.cfg");
+			ahrs.beta = IniFile::GetFloat("AHRSalgorithmGain", "Tracking", "settings.cfg");
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{}

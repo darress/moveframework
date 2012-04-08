@@ -5,7 +5,7 @@
 #include "Mat3.h"
 #include "Quat.h"
 
-class MOVE_EXPORT CIniFile
+class IniFile
 {
 
 public:

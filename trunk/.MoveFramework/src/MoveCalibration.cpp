@@ -23,11 +23,11 @@ namespace Move
 
 		try
 		{
-			data.gyroGain=CIniFile::GetMat3("gyroGain", deviceName, fileName);
-			data.accBias=CIniFile::GetVec3("accBias", deviceName, fileName);
-			data.accGain=CIniFile::GetMat3("accGain", deviceName, fileName);
-			data.magBias=CIniFile::GetVec3("magBias", deviceName, fileName);
-			data.magGain=CIniFile::GetVec3("magGain", deviceName, fileName);
+			data.gyroGain=IniFile::GetMat3("gyroGain", deviceName, fileName);
+			data.accBias=IniFile::GetVec3("accBias", deviceName, fileName);
+			data.accGain=IniFile::GetMat3("accGain", deviceName, fileName);
+			data.magBias=IniFile::GetVec3("magBias", deviceName, fileName);
+			data.magGain=IniFile::GetVec3("magGain", deviceName, fileName);
 			calibrated=true;
 		}
 		catch(MoveConfigFileRecordNotFoundException)
@@ -244,11 +244,11 @@ namespace Move
 
 
 		////save calibration
-		CIniFile::SetValue("gyroGain", data.gyroGain, deviceName, "settings.cfg");
-		CIniFile::SetValue("accBias", data.accBias, deviceName, "settings.cfg");
-		CIniFile::SetValue("accGain", data.accGain, deviceName, "settings.cfg");
-		CIniFile::SetValue("magBias", data.magBias, deviceName, "settings.cfg");
-		CIniFile::SetValue("magGain", data.magGain, deviceName, "settings.cfg");
+		IniFile::SetValue("gyroGain", data.gyroGain, deviceName, "settings.cfg");
+		IniFile::SetValue("accBias", data.accBias, deviceName, "settings.cfg");
+		IniFile::SetValue("accGain", data.accGain, deviceName, "settings.cfg");
+		IniFile::SetValue("magBias", data.magBias, deviceName, "settings.cfg");
+		IniFile::SetValue("magGain", data.magGain, deviceName, "settings.cfg");
 		
 		delete[] magBuf;
 		delete rawData;

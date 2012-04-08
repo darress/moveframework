@@ -1,12 +1,25 @@
 #include "BallColorManager.h"
 #include "MoveColors.h"
+#include "IniFile.h"
 
 namespace Move
 {
 
-	BallColorManager::BallColorManager(EyeImage* image):image(image)
+	BallColorManager::BallColorManager(EyeImage* image, std::vector<MoveBall>& balls):image(image)
 	{
 		automaticColors=true;
+		for (int i=0; i<balls.size(); i++)
+		{
+			char tmp[20];
+			sprintf_s(tmp,"BallColor%d",i);
+			try
+			{
+				Vec3 ballColor=IniFile::GetVec3(tmp, "Tracking", "settings.cfg");
+				automaticColors=false;
+				balls[i].ballOutColor=ColorRgb((int)ballColor.x, (int)ballColor.y, (int)ballColor.z);
+
+			}catch(MoveConfigFileRecordNotFoundException){}
+		}
 	}
 
 
