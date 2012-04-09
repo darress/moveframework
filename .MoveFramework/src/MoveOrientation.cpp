@@ -5,7 +5,18 @@ namespace Move
 {
 	MoveOrientation::MoveOrientation(MoveCalibration* calib)
 	{
-		InitializeCriticalSection(&criticalSection);
+		try
+		{
+			int predictionBufferSize = IniFile::GetInt("PredictionBufferSize", "Tracking", "settings.cfg");
+			f1=PredictionFilter(20);
+			f2=PredictionFilter(20);
+			f3=PredictionFilter(20);
+			f4=PredictionFilter(20);
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{}
+
+
 
 		calibration=calib;
 
@@ -26,7 +37,6 @@ namespace Move
 
 	MoveOrientation::~MoveOrientation(void)
 	{
-		DeleteCriticalSection(&criticalSection);
 	}
 
 	void MoveOrientation::UseMagnetometer(bool value)
@@ -69,32 +79,32 @@ namespace Move
 		ASq_3 = ESq_1 * AEq_3 - ESq_2 * AEq_4 + ESq_3 * AEq_1 + ESq_4 * AEq_2;
 		ASq_4 = ESq_1 * AEq_4 + ESq_2 * AEq_3 - ESq_3 * AEq_2 + ESq_4 * AEq_1;
 
-		EnterCriticalSection(&criticalSection);
-			orientation = Quat((float)ASq_1,(float)ASq_2,(float)ASq_3,-(float)ASq_4);
-			angularAcc=(gyro-angularVel)/deltat;
-			angularVel=gyro;
-		LeaveCriticalSection(&criticalSection);
+		orientation = Quat(ASq_1,ASq_2,ASq_3,-ASq_4);
+		orientation.Normalize();
+
+		orientation.w=f1.filter(orientation.w,deltat);
+		orientation.v.x=f2.filter(orientation.v.x,deltat);
+		orientation.v.y=f3.filter(orientation.v.y,deltat);
+		orientation.v.z=f4.filter(orientation.v.z,deltat);
+
+		
+		angularAcc=(gyro-angularVel)/deltat;
+		angularVel=gyro;
 	}
 
 	Quat MoveOrientation::GetOrientation()
 	{
-		EnterCriticalSection(&criticalSection);
 		return orientation;
-		LeaveCriticalSection(&criticalSection);
 	}
 
 	Vec3 MoveOrientation::GetAngularVelocity()
 	{
-		EnterCriticalSection(&criticalSection);
 		return angularVel;
-		LeaveCriticalSection(&criticalSection);
 	}
 
 	Vec3 MoveOrientation::GetAngularAcceleration()
 	{
-		EnterCriticalSection(&criticalSection);
 		return angularAcc;
-		LeaveCriticalSection(&criticalSection);
 	}
 
 	void MoveOrientation::Reset()

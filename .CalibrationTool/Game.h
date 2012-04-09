@@ -9,22 +9,6 @@
 
 class Game : public BaseApplication, Move::IMoveObserver
 {
-	struct GameState
-	{
-		enum Enum
-		{
-			Normal,
-			WaitForXBeforeCalibration,
-			Calibrating,
-			Calculating
-		};
-		GameState(Enum _value = Normal) : value(_value) { }
-		friend bool operator == (GameState const& a, GameState const& b) { return a.value == b.value; }
-		friend bool operator != (GameState const& a, GameState const& b) { return a.value != b.value; }
-	private:
-		Enum value;
-	};
-
 	Ogre::SceneNode* moveNode[2];
 
 	Ogre::TexturePtr camImage;
@@ -33,7 +17,6 @@ class Game : public BaseApplication, Move::IMoveObserver
 	int calibratingMove;
 
 	Move::IMoveManager* move;
-	GameState state;
 	int numMoves;
 	bool useMagnetometers;
 
@@ -41,6 +24,8 @@ class Game : public BaseApplication, Move::IMoveObserver
 
 	bool automaticColors;
 	int r,g,b;
+
+	bool cameraControl;
 
 	bool guiInitialized;
 

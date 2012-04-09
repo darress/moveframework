@@ -97,7 +97,6 @@ namespace Move
 
 	IMoveController* MoveManager::getMove(int moveId)
 	{
-		MoveLock lock(moveId);
 		return moves[moveId];
 	}
 

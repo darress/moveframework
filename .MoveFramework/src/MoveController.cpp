@@ -39,6 +39,7 @@ namespace Move
 
 	MoveData MoveController::getMoveData()
 	{
+		MoveLock lock(id);
 		return manager->getMoveDataEx(id);
 	}
 

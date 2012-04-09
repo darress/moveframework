@@ -1,4 +1,5 @@
 #include "Quat.h"
+#include "MoveIncludes.h"
 
 namespace Move
 {
@@ -13,4 +14,9 @@ namespace Move
 	Quat::Quat(float w, float x, float y, float z):w(w),v(Vec3(x,y,z))
 	{}
 
+	void Quat::Normalize()
+	{
+		float fInvLen = 1.0f/sqrt( v.x*v.x + v.y*v.y + v.z*v.z + w*w );
+		v.x*=fInvLen; v.y*=fInvLen; v.z*=fInvLen; w *= fInvLen;
+	}
 }

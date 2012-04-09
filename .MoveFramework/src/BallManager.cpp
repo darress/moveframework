@@ -2,6 +2,7 @@
 #include "MoveDevice.h"
 #include "MoveExceptions.h"
 #include "MoveLock.h"
+#include "IniFile.h"
 
 namespace Move
 {
@@ -24,6 +25,16 @@ namespace Move
 		colorManager = new BallColorManager(img, balls);
 		contourFinder = new ContourFinder(img);
 		ballFitAlgorithm = new BallFitAlgorithm(img);
+
+		try
+		{
+			returnZeroIfNotFound=IniFile::GetInt("ReturnZeroIfNotFound", "Tracking", "settings.cfg");
+
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{
+			returnZeroIfNotFound=false;
+		}
 	}
 
 
@@ -68,7 +79,20 @@ namespace Move
 				}
 
 				pos-=offset;
+				//check for NaN
+				if (pos.x!=pos.x)
+					pos.x=balls[i].previousPosition.x;
+				if (pos.y!=pos.y)
+					pos.y=balls[i].previousPosition.y;
+				if (pos.z!=pos.z)
+					pos.z=balls[i].previousPosition.z;
+				balls[i].previousPosition=pos;
 			}
+			else if (returnZeroIfNotFound)
+				pos=Vec3::ZERO;
+			else
+				pos=balls[i].previousPosition;
+
 			positions.push_back(pos);
 		}
 		return positions;

@@ -29,6 +29,8 @@ namespace Move
 
 		float update(float measurement)
 		{
+			if (measurement!=measurement)
+				return x;
 			if (firstValue)
 			{
 				firstValue=false;

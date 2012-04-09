@@ -6,8 +6,6 @@ using namespace std;
 
 namespace Move
 {
-	MoveCalibration* MoveCalibration::instance = 0;
-
 	MoveCalibration::MoveCalibration(int id, MoveManager* manager)
 	{
 		this->id=id;
@@ -77,10 +75,9 @@ namespace Move
 		return true;
 	}
 
-	double MoveCalibration::integrateGyroError(std::vector<double> x)
+	float MoveCalibration::integrateGyroError(std::vector<float> x)
 	{
-		double error=0.0;
-		MoveRawCalibration* rawData=MoveCalibration::instance->rawData;
+		float error=0.0;
 
 		Vec3 point;
 
@@ -100,45 +97,44 @@ namespace Move
 			//calculate error vector
 			point=point*gain-objective[i];
 			//integrate the error
-			error+=fabs((double)point.length2());
+			error+=fabs(point.length2());
 		}
 
 		return error;
 	}
 
-	double MoveCalibration::integrateMagError(std::vector<double> x)
+	float MoveCalibration::integrateMagError(std::vector<float> x)
 	{
-		double error=0.0f;
+		float error=0.0f;
 		Vec3 point;
 
 		Vec3 bias=Vec3(x[0],x[1],x[2]);
 		Vec3 gain=Vec3(x[3],x[4],x[5]);
 
-		for (int i=1; i<MoveCalibration::instance->bufLength; i++)
+		for (int i=1; i<bufLength; i++)
 		{
 			//calculate calibrated point
-			point=(MoveCalibration::instance->magBuf[i]-bias)*gain;
+			point=(magBuf[i]-bias)*gain;
 			//integrate the error
-			error+=fabs(1.0-(double)point.length2());
+			error+=fabs(1.0f-point.length2());
 		}
-		return error/(double)MoveCalibration::instance->bufLength;
+		return error/(float)bufLength;
 	}
 
-	double MoveCalibration::integrateAccError(std::vector<double> x)
+	float MoveCalibration::integrateAccError(std::vector<float> x)
 	{
-		double error=0.0f;
-		MoveRawCalibration* rawData=MoveCalibration::instance->rawData;
+		float error=0.0f;
 
 		Vec3 point;
 
 		Vec3 objective[6];
 
-		objective[0]=Vec3( -9.81, 0, 0 );
-		objective[1]=Vec3( 9.81, 0, 0 );
-		objective[2]=Vec3( 0, -9.81, 0 );
-		objective[3]=Vec3( 0, 9.81, 0 );
-		objective[4]=Vec3( 0, 0, -9.81 );
-		objective[5]=Vec3( 0, 0, 9.81);
+		objective[0]=Vec3( -9.81f, 0, 0 );
+		objective[1]=Vec3( 9.81f, 0, 0 );
+		objective[2]=Vec3( 0, -9.81f, 0 );
+		objective[3]=Vec3( 0, 9.81f, 0 );
+		objective[4]=Vec3( 0, 0, -9.81f );
+		objective[5]=Vec3( 0, 0, 9.81f);
 
 		Mat3 gain=Mat3(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8]);
 		Vec3 bias=Vec3(x[9],x[10],x[11]);
@@ -148,7 +144,7 @@ namespace Move
 			//calculate error vector
 			point=(rawData->AccVectors[i]-bias)*gain-objective[i];
 			//integrate the error
-			error+=fabs((double)point.length2());
+			error+=fabs(point.length2());
 		}
 		return error;
 	}
@@ -158,12 +154,10 @@ namespace Move
 	{
 		isCalibrating=false;
 
-		MoveCalibration::instance=this;
+		std::vector<float> init;
+		std::vector<float> result;
 
-		std::vector<double> init;
-		std::vector<double> result;
-
-		double error1, error2;
+		float error1, error2;
 
 		//MAGNETOMETER
 		//initialize the algorithm
@@ -192,7 +186,8 @@ namespace Move
 
 
 		result.clear();
-		result=BT::Simplex(&Move::MoveCalibration::integrateMagError, init);
+		SpecVectorFunctor<float,MoveCalibration> ft(this, &MoveCalibration::integrateMagError);
+		result=BT::Simplex(ft, init);
 
 		data.magBias=Vec3(result[0],result[1],result[2]);
 		data.magGain=Vec3(result[3],result[4],result[5]);
@@ -216,7 +211,8 @@ namespace Move
 
 		error1=integrateAccError(init);
 		result.clear();
-		result=BT::Simplex(&Move::MoveCalibration::integrateAccError, init);
+		SpecVectorFunctor<float,MoveCalibration> ft2(this, &MoveCalibration::integrateAccError);
+		result=BT::Simplex(ft2, init);
 		error2=integrateAccError(result);
 
 		data.accGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
@@ -237,7 +233,8 @@ namespace Move
 
 		error1=integrateGyroError(init);
 		result.clear();
-		result=BT::Simplex(&Move::MoveCalibration::integrateGyroError, init);
+		SpecVectorFunctor<float,MoveCalibration> ft3(this, &MoveCalibration::integrateGyroError);
+		result=BT::Simplex(ft3, init);
 		error2=integrateGyroError(result);
 		data.gyroGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
 
