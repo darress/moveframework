@@ -2,6 +2,12 @@
 
 = Developing version 3.0 =
 
+*2012-04-09*
+ * Prediction filter added to the orientation tracking
+  * It's buffer can be set from settings.cfg
+ * External color control
+ * Colors can be controlled from CalibrationTool
+
 *2012-04-08*
  * New sub-pixel accurate ball algorithm
   * More robust masking
