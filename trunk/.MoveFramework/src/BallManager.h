@@ -25,6 +25,8 @@ namespace Move
 
 		std::vector<Kalman> filter;
 
+		bool returnZeroIfNotFound;
+
 	public:
 		/**
 		 * If this variable is set to a moveId, the offset will be set to the position of ball with that moveId.

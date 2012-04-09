@@ -5,12 +5,12 @@
 
 Game::Game()
 {
-	state = GameState::Normal;
 	guiInitialized=false;
 	useMagnetometers=true;
 	cameraWorks=false;
 	automaticColors=true;
 	r=g=b=0;
+	cameraControl=false;
 }
 
 Game::~Game()
@@ -143,6 +143,10 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 		automaticColors=!automaticColors;
 		move->getEye()->useAutomaticColors(automaticColors);
 	}
+	else if (arg.key==OIS::KC_C)
+	{
+		cameraControl=!cameraControl;
+	}
 	else if (arg.key==OIS::KC_ESCAPE)
 	{
 		move->unsubsribe(this);
@@ -213,14 +217,25 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 		Move::Quat moveOri = data.orientation;
 		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
-		moveNode[i]->setOrientation(ori);
 
 		Move::Vec3 movePos = data.position;
 		Ogre::Vector3 pos = Ogre::Vector3(movePos.x, movePos.y, movePos.z);
-		pos*=4.0f;
-		pos.z-=800.0f;
+
+		if (cameraControl && i==0)
+		{
+			mCamera->setOrientation(ori);
+		}
+		else
+		{
+			mCamera->lookAt(Ogre::Vector3(0,0,0));
+
+			moveNode[i]->setOrientation(ori);
+
+			pos*=4.0f;
+			pos.z-=800.0f;
 	
-		moveNode[i]->setPosition(pos);
+			moveNode[i]->setPosition(pos);
+		}
 	}
 
 	if (cameraWorks)

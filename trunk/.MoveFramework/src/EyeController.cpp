@@ -47,11 +47,15 @@ namespace Move
 
 		CLEyeSetCameraParameter(_cam, CLEYE_GAIN, 0);
 		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_EXPOSURE, false);
-		int exp=50;
+		int exp;
 		try
 		{
 			exp = IniFile::GetInt("CameraExposure", "Tracking", "settings.cfg");
-		}catch(MoveConfigFileRecordNotFoundException){}
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{
+			exp = 50;
+		}
 		CLEyeSetCameraParameter(_cam, CLEYE_EXPOSURE, exp);
 		CLEyeSetCameraParameter(_cam, CLEYE_AUTO_WHITEBALANCE, false);
 		CLEyeSetCameraParameter(_cam, CLEYE_WHITEBALANCE_RED, 255);

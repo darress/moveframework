@@ -3,6 +3,7 @@
 #include "MoveCalibration.h"
 #include "MadgwickAHRS.h"
 #include "MoveIncludes.h"
+#include "PredictionFilter.h"
 
 namespace Move
 {
@@ -20,9 +21,11 @@ namespace Move
 
 		Madgwick::AHRS ahrs;
 
-		CRITICAL_SECTION criticalSection;
-
 		float AEq_1, AEq_2, AEq_3, AEq_4;  // Quat orientation of earth frame relative to auxiliary frame
+		PredictionFilter f1;
+		PredictionFilter f2;
+		PredictionFilter f3;
+		PredictionFilter f4;
 
 	public:
 		MoveOrientation(MoveCalibration* calib);

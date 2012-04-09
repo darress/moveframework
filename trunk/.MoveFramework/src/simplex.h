@@ -45,11 +45,12 @@ The order of the parameter is the same as in the vector<Type> init.
 #include <algorithm>
 #include <functional>
 #include <iostream>
+#include "Functor.h"
 
 namespace BT{
 
-  template<class D, class OP>
-  std::vector<D> Simplex(OP f,                   //target function
+  template<class D>
+  std::vector<D> Simplex(Move::VectorFunctor<D>& f,                   //target function
 			 std::vector<D> init,    //initial guess of the parameters
 			 int iterations=1E5, //iteration step number
 			 D tol=1E8*std::numeric_limits<D>::epsilon(), //termination criteria

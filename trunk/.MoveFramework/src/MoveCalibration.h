@@ -55,11 +55,10 @@ namespace Move
 		void endCalibration();
 		bool isCalibrated(){return calibrated;}
 
-	public:
-		static MoveCalibration* instance;
-		static double integrateMagError(std::vector<double> x);
-		static double integrateAccError(std::vector<double> x);
-		static double integrateGyroError(std::vector<double> x);
+	private:
+		float integrateMagError(std::vector<float> x);
+		float integrateAccError(std::vector<float> x);
+		float integrateGyroError(std::vector<float> x);
 	};
 
 }

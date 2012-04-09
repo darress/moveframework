@@ -17,5 +17,6 @@ namespace Move
 		Quat();
 		Quat(float w, Vec3 v);
 		Quat(float w, float x, float y, float z);
+		void Normalize();
 	};
 }
