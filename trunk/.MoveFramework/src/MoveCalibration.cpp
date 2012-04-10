@@ -6,11 +6,9 @@ using namespace std;
 
 namespace Move
 {
-	MoveCalibration::MoveCalibration(int id, MoveManager* manager)
+	MoveCalibration::MoveCalibration(int moveId)
 	{
-		this->id=id;
-		isCalibrating=false;
-		this->manager=manager;
+		this->id=moveId;
 
 		char fileName[]="settings.cfg";
 
@@ -25,31 +23,103 @@ namespace Move
 			data.accBias=IniFile::GetVec3("accBias", deviceName, fileName);
 			data.accGain=IniFile::GetMat3("accGain", deviceName, fileName);
 			data.magBias=IniFile::GetVec3("magBias", deviceName, fileName);
-			data.magGain=IniFile::GetVec3("magGain", deviceName, fileName);
+			data.magGain=IniFile::GetMat3("magGain", deviceName, fileName);
 			calibrated=true;
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{
 			calibrated=false;
 		}
-		magBuf=0;
 		rawData=0;
+
+		magPosition=-1;
+		timer=5.0f;
 	}
 
 	MoveCalibration::~MoveCalibration(void)
 	{
 	}
 
-	void MoveCalibration::Update(Vec3 acc, Vec3 gyro, Vec3 mag, float deltat)
+	void MoveCalibration::Update(Vec3 mag, Quat ref, float deltat)
 	{
-		// if there is no phase running
-		if (!isCalibrating) return;
-		
-		if (bufLength<2000 && (skipData--)<=0)
+		if (timer>0.0f)
 		{
-			magBuf[bufLength]=mag;
-			bufLength++;
-			skipData=SKIPDATA;
+			timer-=deltat;
+			return;
+		}
+		if (mag.x==0 && mag.y==0 && mag.z==0)
+			return;
+
+		if (magPosition==-1)
+		{
+			lastOri=ref;
+			magBuf[++magPosition]=mag;
+			Vec3 front=ref.GetColumn2();
+			magRef[magPosition]=Vec3(front.x,front.y,front.z);
+			return;
+		}
+
+		ref.Normalize();
+
+		// calculate relative vector between previous measure point and the current orientation
+		if ((ref|lastOri)<0)
+			ref=Quat(-ref.w,-1.0f*ref.v);
+		Vec3 axis=(!ref*lastOri).v;
+
+		// if there is enough turn between 2 measure points
+		if (axis.length()>.3f)
+		{
+			lastOri=ref;
+			magBuf[++magPosition]=mag;
+			Vec3 front=ref.GetColumn2();
+			magRef[magPosition]=Vec3(front.x,front.x,front.y);
+		}
+
+		if (magPosition>=MAG_ITERATIONS-1)
+		{
+			//initialize the algorithm
+			Vec3 min, max, bias, gain;
+			min=magBuf[0];
+			max=magBuf[0];
+			for (int i=1; i<MAG_ITERATIONS; i++)
+			{
+				SWAP_MIN(min.x,magBuf[i].x);
+				SWAP_MIN(min.y,magBuf[i].y);
+				SWAP_MIN(min.z,magBuf[i].z);
+				SWAP_MAX(max.x,magBuf[i].x);
+				SWAP_MAX(max.y,magBuf[i].y);
+				SWAP_MAX(max.z,magBuf[i].z);
+			}
+			bias=(max+min)*0.5f;
+			gain=2.0f/(max-min);
+
+			std::vector<double> init;
+			std::vector<double> result;
+
+			init.clear();
+
+			init.push_back(gain.x);
+			init.push_back(0.00001);
+			init.push_back(0.00001);
+			init.push_back(0.00001);
+			init.push_back(gain.y);
+			init.push_back(0.00001);
+			init.push_back(0.00001);
+			init.push_back(0.00001);
+			init.push_back(gain.z);
+			init.push_back(bias.x);
+			init.push_back(bias.y);
+			init.push_back(bias.z);
+
+			result.clear();
+			SpecVectorFunctor<double,MoveCalibration> ft(this, &MoveCalibration::integrateMagError);
+			result=BT::Simplex(ft, init);
+
+			data.magGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
+			data.magBias=Vec3(result[9],result[10],result[11]);
+
+			magPosition=-1;
+			timer=1000;
 		}
 	}
 
@@ -58,26 +128,9 @@ namespace Move
 		return data;
 	}
 
-	//move calibration
-	bool MoveCalibration::startCalibration()
+	double MoveCalibration::integrateGyroError(std::vector<double> x)
 	{
-		MoveDevice::TMoveCalib calib;
-		if (!MoveDevice::ReadMoveCalibration(id,&calib))
-			return false;
-		rawData=new MoveRawCalibration(calib);
-
-		isCalibrating=true;
-
-		magBuf=new Vec3[2000];
-
-		bufLength=0;
-
-		return true;
-	}
-
-	float MoveCalibration::integrateGyroError(std::vector<float> x)
-	{
-		float error=0.0;
+		double error=0.0;
 
 		Vec3 point;
 
@@ -97,33 +150,33 @@ namespace Move
 			//calculate error vector
 			point=point*gain-objective[i];
 			//integrate the error
-			error+=fabs(point.length2());
+			error+=abs((double)point.length2());
 		}
 
 		return error;
 	}
 
-	float MoveCalibration::integrateMagError(std::vector<float> x)
+	double MoveCalibration::integrateMagError(std::vector<double> x)
 	{
-		float error=0.0f;
+		double error=0.0;
 		Vec3 point;
 
-		Vec3 bias=Vec3(x[0],x[1],x[2]);
-		Vec3 gain=Vec3(x[3],x[4],x[5]);
+		Mat3 gain=Mat3(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8]);
+		Vec3 bias=Vec3(x[9],x[10],x[11]);
 
-		for (int i=1; i<bufLength; i++)
+		for (int i=1; i<MAG_ITERATIONS; i++)
 		{
 			//calculate calibrated point
 			point=(magBuf[i]-bias)*gain;
 			//integrate the error
-			error+=fabs(1.0f-point.length2());
+			error+=(magRef[i]-point).length2();
 		}
-		return error/(float)bufLength;
+		return error/(double)MAG_ITERATIONS;
 	}
 
-	float MoveCalibration::integrateAccError(std::vector<float> x)
+	double MoveCalibration::integrateAccError(std::vector<double> x)
 	{
-		float error=0.0f;
+		double error=0.0;
 
 		Vec3 point;
 
@@ -144,53 +197,24 @@ namespace Move
 			//calculate error vector
 			point=(rawData->AccVectors[i]-bias)*gain-objective[i];
 			//integrate the error
-			error+=fabs(point.length2());
+			error+=abs((double)point.length2());
 		}
 		return error;
 	}
 
-
-	void MoveCalibration::endCalibration()
+	//move calibration
+	bool MoveCalibration::initialCalibration()
 	{
-		isCalibrating=false;
+		MoveDevice::TMoveCalib calib;
+		if (!MoveDevice::ReadMoveCalibration(id,&calib))
+			return false;
+		rawData=new MoveRawCalibration(calib);
 
-		std::vector<float> init;
-		std::vector<float> result;
+		std::vector<double> init;
+		std::vector<double> result;
 
-		float error1, error2;
-
-		//MAGNETOMETER
-		//initialize the algorithm
-		Vec3 min, max, bias, gain;
-		min=magBuf[0];
-		max=magBuf[0];
-		for (int i=1; i<bufLength; i++)
-		{
-			SWAP_MIN(min.x,magBuf[i].x);
-			SWAP_MIN(min.y,magBuf[i].y);
-			SWAP_MIN(min.z,magBuf[i].z);
-			SWAP_MAX(max.x,magBuf[i].x);
-			SWAP_MAX(max.y,magBuf[i].y);
-			SWAP_MAX(max.z,magBuf[i].z);
-		}
-		bias=(max+min)*0.5f;
-		gain=2.0f/(max-min);
-
-		init.clear();
-		init.push_back(bias.x);
-		init.push_back(bias.y);
-		init.push_back(bias.z);
-		init.push_back(gain.x);
-		init.push_back(gain.y);
-		init.push_back(gain.z);
-
-
-		result.clear();
-		SpecVectorFunctor<float,MoveCalibration> ft(this, &MoveCalibration::integrateMagError);
-		result=BT::Simplex(ft, init);
-
-		data.magBias=Vec3(result[0],result[1],result[2]);
-		data.magGain=Vec3(result[3],result[4],result[5]);
+		data.magBias=Vec3::ZERO;
+		data.magGain=Mat3();
 
 
 		//ACCELEROMETER
@@ -209,11 +233,9 @@ namespace Move
 		init.push_back(0.0001);
 
 
-		error1=integrateAccError(init);
 		result.clear();
-		SpecVectorFunctor<float,MoveCalibration> ft2(this, &MoveCalibration::integrateAccError);
+		SpecVectorFunctor<double,MoveCalibration> ft2(this, &MoveCalibration::integrateAccError);
 		result=BT::Simplex(ft2, init);
-		error2=integrateAccError(result);
 
 		data.accGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
 		data.accBias=Vec3(result[9],result[10],result[11]);
@@ -231,15 +253,12 @@ namespace Move
 		init.push_back(0.0001);
 		init.push_back(0.0016);
 
-		error1=integrateGyroError(init);
 		result.clear();
-		SpecVectorFunctor<float,MoveCalibration> ft3(this, &MoveCalibration::integrateGyroError);
+		SpecVectorFunctor<double,MoveCalibration> ft3(this, &MoveCalibration::integrateGyroError);
 		result=BT::Simplex(ft3, init);
-		error2=integrateGyroError(result);
+
 		data.gyroGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
-
-
-
+		
 		////save calibration
 		IniFile::SetValue("gyroGain", data.gyroGain, deviceName, "settings.cfg");
 		IniFile::SetValue("accBias", data.accBias, deviceName, "settings.cfg");
@@ -247,7 +266,6 @@ namespace Move
 		IniFile::SetValue("magBias", data.magBias, deviceName, "settings.cfg");
 		IniFile::SetValue("magGain", data.magGain, deviceName, "settings.cfg");
 		
-		delete[] magBuf;
 		delete rawData;
 		calibrated=true;
 	}

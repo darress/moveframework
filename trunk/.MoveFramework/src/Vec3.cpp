@@ -11,22 +11,22 @@ namespace Move
 	Vec3::Vec3(float x, float y, float z):x(x),y(y),z(z)
 	{}
 
-	float Vec3::length()
+	float Vec3::length() const
 	{
 		return sqrt(length2());
 	}
 
-	float Vec3::length2()
+	float Vec3::length2() const
 	{
 		return x*x+y*y+z*z;
 	}
 
-	float Vec3::distance(Vec3 other)
+	float Vec3::distance(Vec3 other) const
 	{
 		return (*this-other).length();
 	}
 
-	float Vec3::distance2(Vec3 other)
+	float Vec3::distance2(Vec3 other) const
 	{
 		return (*this-other).length2();
 	}

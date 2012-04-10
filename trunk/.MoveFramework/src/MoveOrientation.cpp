@@ -3,8 +3,10 @@
 
 namespace Move
 {
-	MoveOrientation::MoveOrientation(MoveCalibration* calib)
+	MoveOrientation::MoveOrientation(int moveId)
 	{
+		calibration = new MoveCalibration(moveId);
+
 		try
 		{
 			int predictionBufferSize = IniFile::GetInt("PredictionBufferSize", "Tracking", "settings.cfg");
@@ -15,10 +17,6 @@ namespace Move
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{}
-
-
-
-		calibration=calib;
 
 		useMagnetometer=true;
 
@@ -37,6 +35,7 @@ namespace Move
 
 	MoveOrientation::~MoveOrientation(void)
 	{
+		delete calibration;
 	}
 
 	void MoveOrientation::UseMagnetometer(bool value)
@@ -46,16 +45,21 @@ namespace Move
 
 	void MoveOrientation::Update(Vec3 acc, Vec3 gyro, Vec3 mag, float deltat)
 	{
+		Vec3 oldMag=mag;
+		if (!calibration->isCalibrated())
+			calibration->initialCalibration();
+
 		if (deltat==0.0f) return;
 
 		MoveCalibrationData calib = calibration->getCalibrationData();
 
 		acc=(acc-calib.accBias)*calib.accGain;
 		gyro=gyro*calib.gyroGain;
+		mag=(mag-calib.magBias)*calib.magGain;
 
 		if (useMagnetometer && (mag.x!=0 || mag.y!=0 || mag.z!=0))
 		{
-			mag=calib.magGain*(mag-calib.magBias);
+			
 			ahrs.MadgwickAHRSupdate(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,mag.x,mag.y,mag.z,deltat);
 		}
 		else
@@ -70,6 +74,9 @@ namespace Move
 		ESq_2 = -ahrs.q1;
 		ESq_3 = -ahrs.q2;
 		ESq_4 = -ahrs.q3;
+
+		Quat frameOri=Quat(ESq_1,ESq_2,ESq_3,-ESq_4);
+		calibration->Update(oldMag,frameOri,deltat);
 
 		float ASq_1, ASq_2, ASq_3, ASq_4;
 
@@ -86,7 +93,6 @@ namespace Move
 		orientation.v.x=f2.filter(orientation.v.x,deltat);
 		orientation.v.y=f3.filter(orientation.v.y,deltat);
 		orientation.v.z=f4.filter(orientation.v.z,deltat);
-
 		
 		angularAcc=(gyro-angularVel)/deltat;
 		angularVel=gyro;
@@ -115,5 +121,10 @@ namespace Move
 		AEq_2 = ahrs.q1;
 		AEq_3 = ahrs.q2;
 		AEq_4 = ahrs.q3;
+	}
+
+	void MoveOrientation::setOrientationGain(float gain)
+	{
+		ahrs.beta=gain;
 	}
 }

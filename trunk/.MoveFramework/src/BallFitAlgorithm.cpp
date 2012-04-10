@@ -35,15 +35,15 @@ namespace Move
 			}
 		}
 
-		std::vector<float> init;
-		std::vector<float> result;
+		std::vector<double> init;
+		std::vector<double> result;
 
 		init.push_back(ball->position.x);
 		init.push_back(ball->position.y);
 		currentBallSize= (ball->ballSize)*0.5f;
 
 		result.clear();
-		SpecVectorFunctor<float,BallFitAlgorithm> ft(this, &BallFitAlgorithm::integrateCircleError);
+		SpecVectorFunctor<double,BallFitAlgorithm> ft(this, &BallFitAlgorithm::integrateCircleError);
 		result=BT::Simplex(ft, init, 30);
 
 		ball->position.x=(float)result[0];
@@ -64,15 +64,15 @@ namespace Move
 		ball->ballSize=(size/(float)nums)*2.0f;
 	}
 
-	float BallFitAlgorithm::integrateCircleError(std::vector<float> x)
+	double BallFitAlgorithm::integrateCircleError(std::vector<double> x)
 	{
-		float error=0.0f;
+		double error=0.0;
 
 		Vec2 midp=Vec2(x[0],x[1]);
 
 		for (unsigned int i=0; i<currentBallContour.size(); i++)
 		{
-			float dis=midp.distance2(currentBallContour[i]);
+			double dis=midp.distance2(currentBallContour[i]);
 			error+=abs(dis-currentBallSize*currentBallSize);
 		}
 
