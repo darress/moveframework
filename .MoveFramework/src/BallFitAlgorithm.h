@@ -22,7 +22,7 @@ namespace Move
 	private:
 		std::vector<Vec2> currentBallContour;
 		float currentBallSize;
-		float integrateCircleError(std::vector<float> x);
+		double integrateCircleError(std::vector<double> x);
 	};
 
 }

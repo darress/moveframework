@@ -12,10 +12,10 @@ namespace Move
 
 		Vec3();
 		Vec3(float x, float y, float z);
-		float length();
-		float length2();
-		float distance(Vec3 other);
-		float distance2(Vec3 other);
+		float length() const;
+		float length2() const;
+		float distance(Vec3 other) const;
+		float distance2(Vec3 other) const;
 	};
 
 	Vec3 operator+(const Vec3 &a, const Vec3 &b);

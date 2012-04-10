@@ -28,7 +28,7 @@ namespace Move
 		PredictionFilter f4;
 
 	public:
-		MoveOrientation(MoveCalibration* calib);
+		MoveOrientation(int moveId);
 		~MoveOrientation(void);
 		void Update(Vec3 acc, Vec3 gyro, Vec3 mag, float deltat);
 		Quat GetOrientation();
@@ -36,5 +36,7 @@ namespace Move
 		Vec3 GetAngularAcceleration();
 		void UseMagnetometer(bool value);
 		void Reset();
+
+		void setOrientationGain(float gain);
 	};
 }

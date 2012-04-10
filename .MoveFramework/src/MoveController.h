@@ -11,7 +11,6 @@ namespace Move
 	//forward decleration
 	class MoveManager;
 	class MoveOrientation;
-	class MoveCalibration;
 
 	class MoveController : public IMoveController
 	{
@@ -21,7 +20,6 @@ namespace Move
 		MoveManager* manager;
 
 		MoveOrientation* orientation;
-		MoveCalibration* calibration;
 
 		int lastSeqNumber;
 		int lastTimestamp;

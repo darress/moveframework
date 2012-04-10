@@ -11,8 +11,7 @@ namespace Move
 		this->id=id;
 		this->manager=manager;
 
-		calibration = new MoveCalibration(id, manager);
-		orientation = new MoveOrientation(calibration);
+		orientation = new MoveOrientation(id);
 
 		lastSeqNumber=-1;
 		firstPackage=true;
@@ -33,7 +32,6 @@ namespace Move
 	MoveController::~MoveController(void)
 	{
 		TerminateThread(_hThread, 0);
-		delete calibration;
 		delete orientation;
 	}
 
@@ -74,27 +72,17 @@ namespace Move
 			MoveAcc = Vec3(old.RawForceX,old.RawForceY,old.RawForceZ);
 			MoveGyro = Vec3(-old.RawGyroPitch,old.RawGyroYaw,-old.RawGyroRoll);
 			MoveMag = Vec3(0,0,0);
-
-			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
-
-			if (calibration->isCalibrated())
-				orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
+			orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
 			MoveAcc = Vec3(m.RawForceX,m.RawForceY,m.RawForceZ);
 			MoveGyro = Vec3(-m.RawGyroPitch,m.RawGyroYaw,-m.RawGyroRoll);
 			MoveMag = Vec3(m.RawMagnetX,m.RawMagnetY,m.RawMagnetZ);
-
-			calibration->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
+			orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
 
 			MoveLock lock(id);
-			if (calibration->isCalibrated())
-			{
-				orientation->Update(MoveAcc,MoveGyro,MoveMag,timeEllapsed/2.0f);
-
-				manager->getMoveDataEx(id).orientation=orientation->GetOrientation();
-				manager->getMoveDataEx(id).angularVelocity=orientation->GetAngularVelocity();
-				manager->getMoveDataEx(id).angularAcceleration=orientation->GetAngularAcceleration();
-			}
+			manager->getMoveDataEx(id).orientation=orientation->GetOrientation();
+			manager->getMoveDataEx(id).angularVelocity=orientation->GetAngularVelocity();
+			manager->getMoveDataEx(id).angularAcceleration=orientation->GetAngularAcceleration();
 			for (int i=0; i<17; i++)
 			{
 				int key=0x10<<i;
@@ -146,6 +134,6 @@ namespace Move
 
 	void MoveController::setOrientationGain(float gain)
 	{
-
+		orientation->setOrientationGain(gain);
 	}
 }

@@ -7,7 +7,7 @@
 
 #define SWAP_MIN(min,value) if(min>value) min=value
 #define SWAP_MAX(max,value) if(max<value) max=value
-#define SKIPDATA 2
+
 #define MAG_ITERATIONS 100
 
 namespace Move
@@ -22,7 +22,7 @@ namespace Move
 		Mat3 accGain;
 
 		Vec3 magBias;
-		Vec3 magGain;
+		Mat3 magGain;
 	};
 
 	class MoveCalibration
@@ -30,35 +30,33 @@ namespace Move
 	private:
 		int id;
 		char deviceName[25];
-		MoveManager* manager;
 
 		bool calibrated;
-		bool isCalibrating;
 
-		int bufLength;
-		Vec3* magBuf;
-		int skipData;
+		Vec3 magBuf[MAG_ITERATIONS];
+		Vec3 magRef[MAG_ITERATIONS];
+		Quat lastOri;
+		int magPosition;
+		float timer;
 
 		MoveCalibrationData data;	
 		MoveRawCalibration* rawData;
 
 	public:
-		MoveCalibration(int id, MoveManager* manager);
+		MoveCalibration(int id);
 		//MoveCalibration(char btMac[18]);
 		~MoveCalibration(void);
 
-		void Update(Vec3 acc, Vec3 gyro, Vec3 mag, float deltat);
+		void Update(Vec3 mag, Quat ref, float deltat);
 		MoveCalibrationData getCalibrationData();
 
-		//move calibration
-		bool startCalibration();
-		void endCalibration();
 		bool isCalibrated(){return calibrated;}
-
-	private:
-		float integrateMagError(std::vector<float> x);
-		float integrateAccError(std::vector<float> x);
-		float integrateGyroError(std::vector<float> x);
+		bool initialCalibration();
+	private:		
+		
+		double integrateMagError(std::vector<double> x);
+		double integrateAccError(std::vector<double> x);
+		double integrateGyroError(std::vector<double> x);
 	};
 
 }
