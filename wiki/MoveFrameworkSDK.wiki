@@ -29,7 +29,7 @@ API comming soon.
 
 The filename is always settings.cfg
 
-The most of the file is generated through the calibration process (Move_ sections), but you can set a few things manually.
+The most of the file is generated through the calibration process (Move`_` sections), but you can set a few things manually.
 These things are in the [Tracking] section.
 
 AHRSalgorithmGain (default: 0.1): This is the gain of the orientation tracking algorithm. If you set this high, there will be less drift but the jitter will be higher. With a low value there will be more drift but less jitter.
