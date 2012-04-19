@@ -69,6 +69,12 @@ namespace Madgwick
 			ay *= recipNorm;
 			az *= recipNorm;   
 
+			// Normalise magnetometer measurement
+			recipNorm = invSqrt(mx * mx + my * my + mz * mz);
+			mx *= recipNorm;
+			my *= recipNorm;
+			mz *= recipNorm;
+			
 			// Auxiliary variables to avoid repeated arithmetic
 			_2q0mx = 2.0f * q0 * mx;
 			_2q0my = 2.0f * q0 * my;
