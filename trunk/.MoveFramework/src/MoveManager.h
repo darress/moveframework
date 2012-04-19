@@ -26,9 +26,19 @@ namespace Move
 
 		volatile int FPS;
 
+		static MoveManager* instance;
+
+	private:
+		MoveManager();
 	public:
-		MoveManager(void);
-		~MoveManager(void);
+		~MoveManager();
+
+		static MoveManager* getInstance()
+		{
+			if (instance==0)
+				instance=new MoveManager();
+			return instance;
+		}
 
 		//initialization
 		int initMoves();
@@ -50,8 +60,10 @@ namespace Move
 		IEyeController* getEye();
 
 		void moveUpdated(int moveId);
-		void moveKeyPressed(int moveId, int keyCode);
-		void moveKeyReleased(int moveId, int keyCode);
+		void moveKeyPressed(int moveId, MoveButton button);
+		void moveKeyReleased(int moveId, MoveButton button);
+
+		void notify(int moveId, MoveMessage message);
 
 		MoveData& getMoveDataEx(int moveId);
 	};

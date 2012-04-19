@@ -17,7 +17,6 @@ namespace Move
 		HANDLE _hThread;
 
 		int id;
-		MoveManager* manager;
 
 		MoveOrientation* orientation;
 
@@ -30,13 +29,14 @@ namespace Move
 		static float offsetX,offsetY,offsetZ;
 	public:
 
-		MoveController(int p_id, MoveManager* p_manager);
+		MoveController(int moveId);
 		~MoveController(void);
 
 		void Update();
 		void useMagnetometers(bool value);
 		void setRumble(int value);
 		void setOrientationGain(float gain);
+		void calibrateMagnetometer();
 		MoveData getMoveData();
 
 	private:

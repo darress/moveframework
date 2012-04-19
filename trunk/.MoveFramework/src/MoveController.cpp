@@ -6,11 +6,9 @@
 namespace Move
 {
 	float MoveController::offsetX, MoveController::offsetY, MoveController::offsetZ;
-	MoveController::MoveController(int id, MoveManager* manager)
+	MoveController::MoveController(int moveId)
+		:id(moveId)
 	{
-		this->id=id;
-		this->manager=manager;
-
 		orientation = new MoveOrientation(id);
 
 		lastSeqNumber=-1;
@@ -38,11 +36,12 @@ namespace Move
 	MoveData MoveController::getMoveData()
 	{
 		MoveLock lock(id);
-		return manager->getMoveDataEx(id);
+		return MoveManager::getInstance()->getMoveDataEx(id);
 	}
 
 	void MoveController::Update()
 	{
+		MoveManager* manager=MoveManager::getInstance();
 		while (true)
 		{
 			MoveDevice::TMove m, old;
@@ -88,11 +87,11 @@ namespace Move
 				int key=0x10<<i;
 				if ((m.Buttons & key) && !(manager->getMoveDataEx(id).buttons & key))
 				{
-					manager->moveKeyPressed(id, key);
+					manager->moveKeyPressed(id, (MoveButton)key);
 				}
 				if (!(m.Buttons & key) && (manager->getMoveDataEx(id).buttons & key))
 				{
-					manager->moveKeyReleased(id, key);
+					manager->moveKeyReleased(id, (MoveButton)key);
 				}
 			}
 			manager->getMoveDataEx(id).buttons = m.Buttons;
@@ -135,5 +134,10 @@ namespace Move
 	void MoveController::setOrientationGain(float gain)
 	{
 		orientation->setOrientationGain(gain);
+	}
+
+	void MoveController::calibrateMagnetometer()
+	{
+		orientation->calibrateMagnetometer();
 	}
 }

@@ -5,6 +5,6 @@ namespace Move
 {
 	IMoveManager* createDevice()
 	{
-		return new MoveManager;
+		return MoveManager::getInstance();
 	}
 }

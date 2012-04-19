@@ -21,8 +21,6 @@ bool Game::configure()
 {
 	bool ret = BaseApplication::configure();
 	
-	initMove();
-
 	int height = mWindow->getHeight();
 	int width = mWindow->getWidth();
 
@@ -31,6 +29,9 @@ bool Game::configure()
 
 void Game::createScene()
 {
+	MyGUI::LayoutManager::getInstance().loadLayout("main.layout");
+	initMove();
+
 	for (int i=0; i<numMoves; i++)
 	{
 		// a demo to show how skeletal animation works if joints must be moved by piece
@@ -55,8 +56,6 @@ void Game::createScene()
 
 void Game::initGui()
 {
-	MyGUI::LayoutManager::getInstance().loadLayout("main.layout");
-
 	if (cameraWorks)
 	{
 		int eyeX, eyeY;
@@ -93,11 +92,7 @@ void Game::initGui()
 		mGUI->findWidget<MyGUI::TextBox>("CameraInfo")->setCaption("No PS Eye found.");
 	}
 	mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.");
-	if (numMoves>0)
-	{
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("To calibrate a device, press\nthe CIRCLE button on that device!");
-	}
-	else
+	if (numMoves<1)
 	{
 		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected via Bluetooth. Nothing to calibrate.");
 		mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption("No device is found.");
@@ -155,14 +150,29 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 	return BaseApplication::keyPressed(arg);
 }
 
-void Game::moveKeyPressed(int moveId, int keyCode)
+void Game::moveKeyPressed(int moveId, Move::MoveButton button)
+{
+	if (button==Move::B_START)
+	{
+		move->getMove(moveId)->calibrateMagnetometer();
+	}
+}
+
+void Game::moveKeyReleased(int moveId, Move::MoveButton button)
 {
 
 }
 
-void Game::moveKeyReleased(int moveId, int keyCode)
+void Game::moveNotify(int moveId, Move::MoveMessage message)
 {
-
+	if (message==Move::M_Calibrated)
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Magnetometers calibrated!");
+	if (message==Move::M_CalibrationProcessing)
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Processing calibration data, please wait!");
+	if (message==Move::M_InitialCalibratingDone)
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Acc, Gyro calibrated!");
+	if (message==Move::M_RotateMove)
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please rotate your device in every possible direction!");
 }
 
 void Game::moveUpdated(int moveId, Move::MoveData data)
@@ -279,10 +289,12 @@ bool Game::initMove()
 {
 	move = Move::createDevice();
 
+	move->subsribe(this);
+
 	numMoves=move->initMoves();
 	cameraWorks=move->initCamera(numMoves);
 
-	move->subsribe(this);
+	
 
 	return true;
 }

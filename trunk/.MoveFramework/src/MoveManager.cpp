@@ -5,7 +5,9 @@
 
 namespace Move
 {
-	MoveManager::MoveManager(void)
+	MoveManager* MoveManager::instance=0;
+
+	MoveManager::MoveManager()
 	{
 		FPS=0;
 		eye=0;
@@ -13,7 +15,7 @@ namespace Move
 	}
 
 
-	MoveManager::~MoveManager(void)
+	MoveManager::~MoveManager()
 	{
 		for (int i=0;i<moveCount;++i)
 		{
@@ -46,7 +48,7 @@ namespace Move
 
 		for (int i=0;i<moveCount;++i)
 		{
-			MoveController* ctrl=new MoveController(i, this);
+			MoveController* ctrl=new MoveController(i);
 			moves.push_back(ctrl);
 		}
 
@@ -60,7 +62,7 @@ namespace Move
 
 	bool MoveManager::initCamera(int numMoves)
 	{
-		eye=new EyeController(this);
+		eye=new EyeController();
 		if (!eye->initCamera(numMoves))
 		{
 			delete eye;
@@ -83,6 +85,15 @@ namespace Move
 	int MoveManager::getNumAllMoves()
 	{
 		return 0;
+	}
+
+	void MoveManager::notify(int moveId, MoveMessage message)
+	{
+		std::list<IMoveObserver*>::iterator it;
+		for ( it=observers.begin() ; it != observers.end(); it++ )
+		{
+			(*it)->moveNotify(moveId, message);
+		}
 	}
 
 	MoveData& MoveManager::getMoveDataEx(int moveId)
@@ -122,20 +133,20 @@ namespace Move
 			(*it)->moveUpdated(moveId, moveData[moveId]);
 		}
 	}
-	void MoveManager::moveKeyPressed(int moveId, int keyCode)
+	void MoveManager::moveKeyPressed(int moveId, MoveButton button)
 	{
 		std::list<IMoveObserver*>::iterator it;
 		for ( it=observers.begin() ; it != observers.end(); it++ )
 		{
-			(*it)->moveKeyPressed(moveId, keyCode);
+			(*it)->moveKeyPressed(moveId, button);
 		}
 	}
-	void MoveManager::moveKeyReleased(int moveId, int keyCode)
+	void MoveManager::moveKeyReleased(int moveId, MoveButton button)
 	{
 		std::list<IMoveObserver*>::iterator it;
 		for ( it=observers.begin() ; it != observers.end(); it++ )
 		{
-			(*it)->moveKeyReleased(moveId, keyCode);
+			(*it)->moveKeyReleased(moveId, button);
 		}
 	}
 }

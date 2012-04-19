@@ -49,9 +49,10 @@ private:
 	void guiCalibrateClick(MyGUI::Widget* _widget);
 
 public:
-	void moveKeyPressed(int moveId, int keyCode);
-	void moveKeyReleased(int moveId, int keyCode);
+	void moveKeyPressed(int moveId, Move::MoveButton button);
+	void moveKeyReleased(int moveId, Move::MoveButton button);
 	void moveUpdated(int moveId, Move::MoveData data);
+	void moveNotify(int moveId, Move::MoveMessage message);
 };
 
 

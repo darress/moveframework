@@ -21,6 +21,9 @@ namespace Move
 
 		Madgwick::AHRS ahrs;
 
+		float gain;
+		bool highGain;
+
 		float AEq_1, AEq_2, AEq_3, AEq_4;  // Quat orientation of earth frame relative to auxiliary frame
 		PredictionFilter f1;
 		PredictionFilter f2;
@@ -36,7 +39,9 @@ namespace Move
 		Vec3 GetAngularAcceleration();
 		void UseMagnetometer(bool value);
 		void Reset();
+		void calibrateMagnetometer();
 
 		void setOrientationGain(float gain);
+		void useHighGain(bool use);
 	};
 }

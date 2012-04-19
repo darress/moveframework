@@ -5,7 +5,7 @@ namespace Move
 {
 	const Quat Quat::IDENTITY=Quat(1.0f,Vec3::ZERO);
 
-	Quat::Quat():w(0.0f),v(Vec3::ZERO)
+	Quat::Quat():w(1.0f),v(Vec3::ZERO)
 	{}
 
 	Quat::Quat(float w, Vec3 v):w(w),v(v)

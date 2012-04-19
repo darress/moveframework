@@ -5,7 +5,9 @@ namespace Move
 {
 	MoveOrientation::MoveOrientation(int moveId)
 	{
-		calibration = new MoveCalibration(moveId);
+		highGain=false;
+
+		calibration = new MoveCalibration(moveId, this);
 
 		try
 		{
@@ -18,15 +20,19 @@ namespace Move
 		catch(MoveConfigFileRecordNotFoundException)
 		{}
 
-		useMagnetometer=true;
-
 		angularVel=Vec3(0,0,0);
 		angularAcc=Vec3(0,0,0);
 
 		AEq_1 = 1, AEq_2 = 0, AEq_3 = 0, AEq_4 = 0;
 		try
 		{
-			ahrs.beta = IniFile::GetFloat("AHRSalgorithmGain", "Tracking", "settings.cfg");
+			setOrientationGain( IniFile::GetFloat("AHRSalgorithmGain", "Tracking", "settings.cfg") );
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{}
+		try
+		{
+			useMagnetometer = IniFile::GetInt("UseMagnetometers", "Tracking", "settings.cfg")!=0;
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{}
@@ -55,17 +61,20 @@ namespace Move
 
 		acc=(acc-calib.accBias)*calib.accGain;
 		gyro=gyro*calib.gyroGain;
-		mag=(mag-calib.magBias)*calib.magGain;
 
 		if (useMagnetometer && (mag.x!=0 || mag.y!=0 || mag.z!=0))
 		{
-			
+			mag=(mag-calib.magBias)*calib.magGain;
 			ahrs.MadgwickAHRSupdate(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,mag.x,mag.y,mag.z,deltat);
 		}
 		else
 		{
 			ahrs.MadgwickAHRSupdateIMU(gyro.x,gyro.y,gyro.z,acc.x,acc.y,acc.z,deltat);
 		}
+
+		// calibration
+		Quat frameOri=Quat(ahrs.q0,ahrs.q1,ahrs.q2,ahrs.q3);
+		calibration->Update(oldMag,frameOri,deltat);
 
 		float ESq_1, ESq_2, ESq_3, ESq_4;                              // Quat describing orientation of sensor relative to earth
 
@@ -74,9 +83,6 @@ namespace Move
 		ESq_2 = -ahrs.q1;
 		ESq_3 = -ahrs.q2;
 		ESq_4 = -ahrs.q3;
-
-		Quat frameOri=Quat(ESq_1,ESq_2,ESq_3,-ESq_4);
-		calibration->Update(oldMag,frameOri,deltat);
 
 		float ASq_1, ASq_2, ASq_3, ASq_4;
 
@@ -125,6 +131,22 @@ namespace Move
 
 	void MoveOrientation::setOrientationGain(float gain)
 	{
-		ahrs.beta=gain;
+		this->gain=gain;
+		if (!highGain)
+			ahrs.beta=gain;
+	}
+
+	void MoveOrientation::useHighGain(bool use)
+	{
+		highGain=use;
+		if (highGain)
+			ahrs.beta=5.0f;
+		else
+			ahrs.beta=gain;
+	}
+
+	void MoveOrientation::calibrateMagnetometer()
+	{
+		calibration->calibrateMagnetometer();
 	}
 }
