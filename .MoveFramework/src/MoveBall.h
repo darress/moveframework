@@ -4,14 +4,17 @@
 #include "Vec3.h"
 #include "MoveColors.h"
 #include "MoveIncludes.h"
+#include "EyeImage.h"
 
 namespace Move
 {
-
 	class MoveBall
 	{
+		EyeImage* img;
+		unsigned short* mask;
+
 	public:
-		MoveBall();
+		MoveBall(EyeImage* img);
 		~MoveBall();
 
 		Vec2 position;
@@ -20,8 +23,11 @@ namespace Move
 		ColorRgb ballOutColor;
 		ColorHsv ballPerceptedColor;
 		bool ballFound;
-		std::list<Vec2> ballContour;
-		unsigned short* mask;
+		std::list<Vec2> ballContour;	
+		
+		float getMask(Vec2 pos);
+		void resetMask();
+		unsigned char* getMaskBuffer();
 	};
 
 }

@@ -5,13 +5,13 @@
     <Widget type="TextBox" skin="TextBox" position="80 110 300 20" layer="Back" name="CameraInfo">
         <Property key="TextColour" value="1 1 1"/>
     </Widget>
-    <Widget type="TextBox" skin="TextBox" position="336 10 648 20" layer="Back" name="PairInfo">
+    <Widget type="TextBox" skin="TextBox" position="336 10 648 40" layer="Back" name="PairInfo">
         <Property key="TextColour" value="1 1 1"/>
     </Widget>
-    <Widget type="TextBox" skin="TextBox" position="336 40 648 50" layer="Back" name="Info">
+    <Widget type="TextBox" skin="TextBox" position="336 50 648 50" layer="Back" name="Info">
         <Property key="TextColour" value="1 1 1"/>
     </Widget>
-    <Widget type="TextBox" skin="TextBox" position="10 496 300 600" layer="Back" name="Moves">
+    <Widget type="TextBox" skin="TextBox" position="10 250 300 600" layer="Back" name="Moves">
         <Property key="TextColour" value="1 1 1"/>
     </Widget>
     <CodeGeneratorSettings/>

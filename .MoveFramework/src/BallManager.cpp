@@ -12,14 +12,17 @@ namespace Move
 		this->numMoves=numMoves;
 		this->img=img;
 		offset=Vec3::ZERO;
+		maskTimer = new short[numMoves];
 
 		resetPosition=-1;
 
 		balls.resize(numMoves);
 		for (int i=0; i<numMoves; i++)
 		{
-			balls[i].mask = new unsigned short[img->w*img->h*2];
+			balls[i]=new MoveBall(img);
+			maskTimer[i]=0;
 		}
+
 		filter.resize(numMoves);
 
 		colorManager = new BallColorManager(img, balls);
@@ -40,34 +43,49 @@ namespace Move
 
 	BallManager::~BallManager()
 	{
-		for (int i=0; i<numMoves; i++)
-		{
-			delete[] balls[i].mask;
-		}
 		delete colorManager;
 		delete contourFinder;
 		delete ballFitAlgorithm;
+		delete[] maskTimer;
 	}
 
 	std::vector<Vec3> BallManager::findBalls()
 	{
-		colorManager->calculateColors(balls);
+		colorManager->calculateColors();
 		
+		for (int i=0; i<numMoves; i++)
+		{
+			balls[i]->resetMask();
+			// calculate whole mask if the timer is positive
+			if (maskTimer[i]>0)
+			{
+				for (int ii=0; ii<640; ii++)
+				{
+					for (int j=0; j<480; j++)
+					{
+						balls[i]->getMask(Vec2(ii,j));
+					}
+				}
+				maskTimer[i]--;
+			}
+
+		}
+
 		contourFinder->findBalls(balls, numMoves);
 
 		std::vector<Vec3> positions;
 		for (int i=0; i<numMoves; i++)
 		{
-			MoveDevice::SetMoveColour(i,balls[i].ballOutColor.r,balls[i].ballOutColor.g,balls[i].ballOutColor.b);
+			MoveDevice::SetMoveColour(i,balls[i]->ballOutColor.r,balls[i]->ballOutColor.g,balls[i]->ballOutColor.b);
 
 			Vec3 pos;
-			if (balls[i].ballFound)
+			if (balls[i]->ballFound)
 			{
-				ballFitAlgorithm->fitCircle(&(balls[i]));
+				ballFitAlgorithm->fitCircle(balls[i]);
 
-				if (balls[i].ballSize>15 && contourFinder->getMask(balls[i].position,balls[i])>BALL_MARGIN)
+				if (balls[i]->ballSize>15 && balls[i]->getMask(balls[i]->position)>BALL_MARGIN)
 				{
-					balls[i].ballPerceptedColor=ColorHsv(img->getPixel(balls[i].position));
+					balls[i]->ballPerceptedColor=ColorHsv(img->getPixel(balls[i]->position));
 				}
 
 				pos=calculateRealWorldPosition(balls[i], filter[i]);
@@ -81,29 +99,29 @@ namespace Move
 				pos-=offset;
 				//check for NaN
 				if (pos.x!=pos.x)
-					pos.x=balls[i].previousPosition.x;
+					pos.x=balls[i]->previousPosition.x;
 				if (pos.y!=pos.y)
-					pos.y=balls[i].previousPosition.y;
+					pos.y=balls[i]->previousPosition.y;
 				if (pos.z!=pos.z)
-					pos.z=balls[i].previousPosition.z;
-				balls[i].previousPosition=pos;
+					pos.z=balls[i]->previousPosition.z;
+				balls[i]->previousPosition=pos;
 			}
 			else if (returnZeroIfNotFound)
 				pos=Vec3::ZERO;
 			else
-				pos=balls[i].previousPosition;
+				pos=balls[i]->previousPosition;
 
 			positions.push_back(pos);
 		}
 		return positions;
 	}
 
-	Vec3 BallManager::calculateRealWorldPosition(MoveBall& ball, Kalman& filter)
+	Vec3 BallManager::calculateRealWorldPosition(MoveBall* ball, Kalman& filter)
 	{
 		float x,y,size;
-		x=ball.position.x;
-		y=ball.position.y;
-		size=ball.ballSize;
+		x=ball->position.x;
+		y=ball->position.y;
+		size=ball->ballSize;
 
 		img->drawCircle(Vec2((int)x,(int)y),(int)(size/2),ColorRgb(255,0,255));
 
@@ -121,7 +139,8 @@ namespace Move
 	{
 		if (balls.size()<=moveId)
 			return 0;
-		return (unsigned char*)(balls[moveId].mask);
+		maskTimer[moveId]=10;
+		return balls[moveId]->getMaskBuffer();
 	}
 
 	void BallManager::useAutomaticColors(bool use)

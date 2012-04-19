@@ -11,6 +11,8 @@ namespace Move
 
 	class MoveOrientation
 	{
+		int moveId;
+
 		Quat orientation;
 		Vec3 angularVel;
 		Vec3 angularAcc;

@@ -2,7 +2,6 @@
 
 #include "MoveIncludes.h"
 #include "Vec2.h"
-#include "MoveBall.h"
 #include "MoveColors.h"
 
 namespace Move

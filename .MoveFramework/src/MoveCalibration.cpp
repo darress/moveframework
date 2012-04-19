@@ -34,13 +34,13 @@ namespace Move
 
 		if (state==InitialCalibrationDone)
 		{
-			MoveManager::getInstance()->notify(id, M_InitialCalibratingDone);
-			orientation->UseMagnetometer(false);
+			MoveManager::getInstance()->notify(moveId, M_InitialCalibratingDone);
+			MoveManager::getInstance()->notify(moveId, M_DoesntUseMagnetometers);
 		}
 		else if (state==Calibrated)
 		{
-			MoveManager::getInstance()->notify(id, M_Calibrated);
-			orientation->UseMagnetometer(true);
+			MoveManager::getInstance()->notify(moveId, M_Calibrated);
+			MoveManager::getInstance()->notify(moveId, M_UseMagnetometers);
 		}
 
 		timer=5.0f;
