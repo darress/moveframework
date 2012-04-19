@@ -4,10 +4,16 @@
 namespace Move
 {
 	MoveOrientation::MoveOrientation(int moveId)
+		:moveId(moveId)
 	{
 		highGain=false;
 
 		calibration = new MoveCalibration(moveId, this);
+
+		if (calibration->isMangetometerCalibrated())
+			useMagnetometer=true;
+		else
+			useMagnetometer=false;
 
 		try
 		{
@@ -46,7 +52,14 @@ namespace Move
 
 	void MoveOrientation::UseMagnetometer(bool value)
 	{
-		useMagnetometer=value;
+		if (useMagnetometer!=value && calibration->isMangetometerCalibrated())
+		{
+			useMagnetometer=value;
+			if (value)
+				MoveManager::getInstance()->notify(moveId, M_UseMagnetometers);
+			else
+				MoveManager::getInstance()->notify(moveId, M_DoesntUseMagnetometers);
+		}
 	}
 
 	void MoveOrientation::Update(Vec3 acc, Vec3 gyro, Vec3 mag, float deltat)

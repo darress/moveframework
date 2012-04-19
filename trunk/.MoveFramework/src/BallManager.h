@@ -14,12 +14,15 @@ namespace Move
 	class BallManager
 	{
 		int numMoves;
-		std::vector<MoveBall> balls;
+		std::vector<MoveBall*> balls;
 		
 		EyeImage* img;
 		BallColorManager* colorManager;
 		ContourFinder* contourFinder;
 		BallFitAlgorithm* ballFitAlgorithm;
+
+		/// an short timer to each move, if the buffer is requested, it is set to 10, if it reaches 0, the mask buffer will be not calculated
+		short* maskTimer;
 
 		Vec3 offset;
 
@@ -45,6 +48,6 @@ namespace Move
 		void setColor(int moveId, int r, int g, int b);
 
 	private:
-		Vec3 calculateRealWorldPosition(MoveBall& ball, Kalman& filter);
+		Vec3 calculateRealWorldPosition(MoveBall* ball, Kalman& filter);
 	};
 }

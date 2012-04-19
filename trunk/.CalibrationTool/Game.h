@@ -14,11 +14,15 @@ class Game : public BaseApplication, Move::IMoveObserver
 	Ogre::TexturePtr camImage;
 	Ogre::TexturePtr maskImage;
 
+	// if -1, show none, otherwise it stores the moveId
+	int showMask;
+
 	int calibratingMove;
 
 	Move::IMoveManager* move;
 	int numMoves;
-	bool useMagnetometers;
+	bool useMagnetometers[2];
+	bool magnetometerCalibrated[2];
 
 	bool cameraWorks;
 

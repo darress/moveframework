@@ -24,8 +24,7 @@ namespace Move
 		 * @param balls The balls.
 		 * @param numBalls Number of balls.
 		 */
-		void findBalls(std::vector<MoveBall>& balls, int numBalls);
-		float getMask(Vec2 pos, MoveBall& ball);
+		void findBalls(std::vector<MoveBall*>& balls, int numBalls);
 
 	private:
 		/**
@@ -34,7 +33,7 @@ namespace Move
 		 * @param balls The balls.
 		 * @param numBalls Number of balls.
 		 */
-		void combImage(std::vector<MoveBall>& balls, int numBalls);
+		void combImage(std::vector<MoveBall*>& balls, int numBalls);
 
 		/**
 		 * Searches in a single row for the balls.
@@ -43,11 +42,11 @@ namespace Move
 		 * @param numBalls Number of balls.
 		 * @return true if it find all the balls.
 		 */
-		bool searchRow(int y, std::vector<MoveBall>& balls, int numBalls);
+		bool searchRow(int y, std::vector<MoveBall*>& balls, int numBalls);
 
-		void findContour(MoveBall& ball);
+		void findContour(MoveBall* ball);
 
-		void searchEdge(MoveBall& ball);
+		void searchEdge(MoveBall* ball);
 
 		struct PixelBox
 		{

@@ -15,6 +15,8 @@ namespace Move
 		M_CalibrationProcessing,
 		M_CantReadCalibration,
 
+		M_UseMagnetometers,
+		M_DoesntUseMagnetometers,
 	};
 
 	class MOVE_EXPORT IMoveObserver

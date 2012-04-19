@@ -2,15 +2,17 @@
 #include "Game.h"
 #include "MoveButton.h"
 #include "MoveData.h"
+#include <iostream>
+#include <iomanip>
 
 Game::Game()
 {
 	guiInitialized=false;
-	useMagnetometers=true;
 	cameraWorks=false;
 	automaticColors=true;
 	r=g=b=0;
 	cameraControl=false;
+	showMask=-1;
 }
 
 Game::~Game()
@@ -86,12 +88,13 @@ void Game::initGui()
 
 		//set texture of mask image
 		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setImageTexture("MaskImage");
+		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
 	}
 	else
 	{
 		mGUI->findWidget<MyGUI::TextBox>("CameraInfo")->setCaption("No PS Eye found.");
 	}
-	mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.");
+	mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.\nTo calibrate the magnetometer of a device, press START on that device.");
 	if (numMoves<1)
 	{
 		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected via Bluetooth. Nothing to calibrate.");
@@ -127,10 +130,14 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 	}
 	else if (arg.key==OIS::KC_M)
 	{
-		useMagnetometers=!useMagnetometers;
+		bool use=true;
 		for (int i=0; i<numMoves; i++)
 		{
-			move->getMove(i)->useMagnetometers(useMagnetometers);
+			use=use && !useMagnetometers[i];
+		}
+		for (int i=0; i<numMoves; i++)
+		{
+			move->getMove(i)->useMagnetometers(use);
 		}
 	}
 	else if (arg.key==OIS::KC_A)
@@ -146,6 +153,24 @@ bool Game::keyPressed( const OIS::KeyEvent &arg )
 	{
 		move->unsubsribe(this);
 		guiInitialized=false;
+	}
+	else if (arg.key==OIS::KC_0)
+	{
+		showMask=-1;
+		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
+	}
+	else if (arg.key==OIS::KC_1 || arg.key==OIS::KC_2)
+	{
+		showMask=int(arg.key)-2;
+		if (showMask>=numMoves)
+		{
+			showMask=-1;
+			mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
+		}
+		else
+		{
+			mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(true);
+		}
 	}
 	return BaseApplication::keyPressed(arg);
 }
@@ -165,39 +190,65 @@ void Game::moveKeyReleased(int moveId, Move::MoveButton button)
 
 void Game::moveNotify(int moveId, Move::MoveMessage message)
 {
+	if (message==Move::M_UseMagnetometers)
+	{
+		useMagnetometers[moveId]=true;
+		return;
+	}
+	if (message==Move::M_DoesntUseMagnetometers)
+	{
+		useMagnetometers[moveId]=false;
+		return;
+	}
+
+	std::stringstream ss;
+	ss << "Device " << moveId << ": ";
+	ss.str();
 	if (message==Move::M_Calibrated)
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Magnetometers calibrated!");
+	{
+		magnetometerCalibrated[moveId]=true;
+		ss << "Magnetometers calibrated!";
+	}
 	if (message==Move::M_CalibrationProcessing)
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Processing calibration data, please wait!");
+		ss << "Processing calibration data, please hold the device still!";
 	if (message==Move::M_InitialCalibratingDone)
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Acc, Gyro calibrated!");
+	{
+		magnetometerCalibrated[moveId]=false;
+		ss << "Acc, Gyro calibrated!";
+	}
 	if (message==Move::M_RotateMove)
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("Please rotate your device in every possible direction!");
+		ss << "Please rotate your device in every possible direction!";
+
+
+	mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption(ss.str());
 }
 
 void Game::moveUpdated(int moveId, Move::MoveData data)
 {
 	if (!guiInitialized)
 		return;
-	char tmp[1000];
-	sprintf(tmp,"%d devices connected.\n",numMoves);
-	if (useMagnetometers)
-		sprintf(tmp+ strlen(tmp), "The algorithm uses magnetometers.\n  Press M to turn it off.\n");
-	else
-		sprintf(tmp+ strlen(tmp), "The algorithm doesnt use magnetometers.\n  Press M to turn it on.\n");
+	std::stringstream ss;
+	ss.precision(2);
+	ss.setf(std::ios_base::fixed);
+	ss << numMoves << " devices connected.\n";
 	for (int i=0; i<numMoves; i++)
 	{
-		sprintf(tmp+ strlen(tmp), "\n");
-
-		sprintf(tmp+ strlen(tmp), "The device is calibrated.\n");
+		ss << std::endl << std::endl;
 
 		Move::Vec3 pos = data.position;
-		sprintf(tmp+ strlen(tmp), "Position: %.2f %.2f %.2f\n",pos.x,pos.y,pos.z);
+		ss <<  "Position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
 
 		Move::Quat quat = data.orientation;
-		sprintf(tmp+ strlen(tmp), "Orient.: %.2f %.2f %.2f %.2f\n",quat.w,quat.v.x,quat.v.y,quat.v.z);
+		ss << "Orient.: " << quat.w << " " << quat.v.x << " " << quat.v.y << " " << quat.v.z << std::endl;
+
+		if (!magnetometerCalibrated[i])
+			ss << "The device' magnetometer is not calibrated.\n   Press START to calibrate it.";
+		else if (useMagnetometers[i])
+			ss << "The device uses magnetometers.\n   Press M to turn it off.\n";
+		else
+			ss << "The device doesnt use magnetometers.\n   Press M to turn it on.\n";
 	}
-	//mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(tmp);
+	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
 	
 	if (!automaticColors)
 	{
@@ -273,15 +324,18 @@ void Game::copyCameraImageToTexture()
 		buffer->unlock();
 	}
 
-	PBYTE maskBuffer=move->getEye()->getMaskBuffer(0);
-	if (maskBuffer)
+	if (showMask>=0)
 	{
-		Ogre::HardwarePixelBufferSharedPtr buffer = maskImage->getBuffer();
-		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-		const Ogre::PixelBox &pb = buffer->getCurrentLock();
-		PBYTE data = static_cast<PBYTE>(pb.data);
-		memcpy(data,maskBuffer,eyeX*eyeY*2);
-		buffer->unlock();
+		PBYTE maskBuffer=move->getEye()->getMaskBuffer(showMask);
+		if (maskBuffer)
+		{
+			Ogre::HardwarePixelBufferSharedPtr buffer = maskImage->getBuffer();
+			buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+			const Ogre::PixelBox &pb = buffer->getCurrentLock();
+			PBYTE data = static_cast<PBYTE>(pb.data);
+			memcpy(data,maskBuffer,eyeX*eyeY*2);
+			buffer->unlock();
+		}
 	}
 }
 
@@ -293,7 +347,6 @@ bool Game::initMove()
 
 	numMoves=move->initMoves();
 	cameraWorks=move->initCamera(numMoves);
-
 	
 
 	return true;
