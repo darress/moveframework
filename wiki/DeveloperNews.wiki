@@ -3,7 +3,7 @@
 = Developing version 3.0 =
 
 *2012-04-19*
- *Version 3.0 is released
+ * Version 3.0 is released
 
 *2012-04-09*
  * Prediction filter added to the orientation tracking
