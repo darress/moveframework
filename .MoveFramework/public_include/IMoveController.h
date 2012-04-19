@@ -14,5 +14,6 @@ namespace Move
 		virtual void setRumble(int value)=0;
 		virtual void useMagnetometers(bool value)=0;
 		virtual void setOrientationGain(float gain)=0;
+		virtual void calibrateMagnetometer()=0;
 	};
 }

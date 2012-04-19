@@ -6,7 +6,8 @@ using namespace std;
 
 namespace Move
 {
-	MoveCalibration::MoveCalibration(int moveId)
+	MoveCalibration::MoveCalibration(int moveId, MoveOrientation* orientation) 
+		:orientation(orientation)
 	{
 		this->id=moveId;
 
@@ -17,23 +18,36 @@ namespace Move
 		//device name
 		sprintf_s(deviceName,"Move_%s",bt.MoveBtMacString);
 
+		state=NotCalibrated;
 		try
 		{
 			data.gyroGain=IniFile::GetMat3("gyroGain", deviceName, fileName);
 			data.accBias=IniFile::GetVec3("accBias", deviceName, fileName);
 			data.accGain=IniFile::GetMat3("accGain", deviceName, fileName);
+			state=InitialCalibrationDone;
 			data.magBias=IniFile::GetVec3("magBias", deviceName, fileName);
 			data.magGain=IniFile::GetMat3("magGain", deviceName, fileName);
-			calibrated=true;
+			state=Calibrated;
 		}
 		catch(MoveConfigFileRecordNotFoundException)
+		{}
+
+		if (state==InitialCalibrationDone)
 		{
-			calibrated=false;
+			MoveManager::getInstance()->notify(id, M_InitialCalibratingDone);
+			orientation->UseMagnetometer(false);
 		}
+		else if (state==Calibrated)
+		{
+			MoveManager::getInstance()->notify(id, M_Calibrated);
+			orientation->UseMagnetometer(true);
+		}
+
+		timer=5.0f;
+		orientation->useHighGain(true);
 		rawData=0;
 
 		magPosition=-1;
-		timer=5.0f;
 	}
 
 	MoveCalibration::~MoveCalibration(void)
@@ -45,81 +59,147 @@ namespace Move
 		if (timer>0.0f)
 		{
 			timer-=deltat;
-			return;
-		}
-		if (mag.x==0 && mag.y==0 && mag.z==0)
-			return;
-
-		if (magPosition==-1)
-		{
-			lastOri=ref;
-			magBuf[++magPosition]=mag;
-			Vec3 front=ref.GetColumn2();
-			magRef[magPosition]=Vec3(front.x,front.y,front.z);
+			if (timer<=2.0f)
+				orientation->useHighGain(false);
 			return;
 		}
 
-		ref.Normalize();
-
-		// calculate relative vector between previous measure point and the current orientation
-		if ((ref|lastOri)<0)
-			ref=Quat(-ref.w,-1.0f*ref.v);
-		Vec3 axis=(!ref*lastOri).v;
-
-		// if there is enough turn between 2 measure points
-		if (axis.length()>.3f)
+		if (state==MagnetometerSphereCalibration || state==MagnetometerRefCalibration)
 		{
-			lastOri=ref;
-			magBuf[++magPosition]=mag;
-			Vec3 front=ref.GetColumn2();
-			magRef[magPosition]=Vec3(front.x,front.x,front.y);
+			if (mag.x==0 && mag.y==0 && mag.z==0)
+				return;
+
+			if (timer>0.0f)
+			{
+				timer-=deltat;
+				if (timer<=2.0f)
+					orientation->useHighGain(false);
+				return;
+			}
+
+			if (magPosition==-1)
+			{
+				MoveManager::getInstance()->notify(id, M_RotateMove);
+				orientation->UseMagnetometer(false);
+				magBuf[++magPosition]=mag;
+				magRef[magPosition]=ref;
+				return;
+			}
+
+			ref.Normalize();
+
+			// calculate relative vector between previous measure point and the current orientation
+			if ((ref|magRef[magPosition])<0)
+				ref=Quat(-ref.w,-1.0f*ref.v);
+			Vec3 axis=(!ref*magRef[magPosition]).v;
+
+			// if there is enough turn between 2 measure points
+			if (axis.length()>.3f)
+			{
+				magBuf[++magPosition]=mag;
+				magRef[magPosition]=ref;
+			}
 		}
 
 		if (magPosition>=MAG_ITERATIONS-1)
 		{
-			//initialize the algorithm
-			Vec3 min, max, bias, gain;
-			min=magBuf[0];
-			max=magBuf[0];
-			for (int i=1; i<MAG_ITERATIONS; i++)
+			if (state==MagnetometerSphereCalibration)
 			{
-				SWAP_MIN(min.x,magBuf[i].x);
-				SWAP_MIN(min.y,magBuf[i].y);
-				SWAP_MIN(min.z,magBuf[i].z);
-				SWAP_MAX(max.x,magBuf[i].x);
-				SWAP_MAX(max.y,magBuf[i].y);
-				SWAP_MAX(max.z,magBuf[i].z);
+				MoveManager::getInstance()->notify(id, M_CalibrationProcessing);
+				//initialize the algorithm
+				Vec3 min, max, bias, gain;
+				min=magBuf[0];
+				max=magBuf[0];
+				for (int i=1; i<MAG_ITERATIONS; i++)
+				{
+					SWAP_MIN(min.x,magBuf[i].x);
+					SWAP_MIN(min.y,magBuf[i].y);
+					SWAP_MIN(min.z,magBuf[i].z);
+					SWAP_MAX(max.x,magBuf[i].x);
+					SWAP_MAX(max.y,magBuf[i].y);
+					SWAP_MAX(max.z,magBuf[i].z);
+				}
+				bias=(max+min)*0.5f;
+				gain=2.0f/(max-min);
+
+				std::vector<double> init;
+				std::vector<double> result;
+
+				init.push_back(gain.x);
+				init.push_back(0.00001);
+				init.push_back(0.00001);
+				init.push_back(0.00001);
+				init.push_back(gain.y);
+				init.push_back(0.00001);
+				init.push_back(0.00001);
+				init.push_back(0.00001);
+				init.push_back(gain.z);
+				init.push_back(bias.x);
+				init.push_back(bias.y);
+				init.push_back(bias.z);
+
+				result.clear();
+				SpecVectorFunctor<double,MoveCalibration> ft(this, &MoveCalibration::integrateMagSphereError);
+				result=BT::Simplex(ft, init, 2000);
+
+				data.magGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
+				data.magBias=Vec3(result[9],result[10],result[11]);
+
+				magPosition=-1;
+				
+				orientation->useHighGain(true);
+				orientation->UseMagnetometer(true);
+				timer=5.0f;
+
+				state=MagnetometerRefCalibration;
 			}
-			bias=(max+min)*0.5f;
-			gain=2.0f/(max-min);
+			else if (state==MagnetometerRefCalibration)
+			{
+				MoveManager::getInstance()->notify(id, M_CalibrationProcessing);
+				// calculate North vector
+				North=Vec3::ZERO;
+				for (int i=1; i<MAG_ITERATIONS; i++)
+				{
+					Vec3 point=(magBuf[i]-data.magBias)*data.magGain;
+					//integrate the error
+					Vec3 north=point*!magRef[i];
+					North+=north;
+				}
+				North/=float(MAG_ITERATIONS);
+				North.y=0;
 
-			std::vector<double> init;
-			std::vector<double> result;
+				std::vector<double> init;
+				std::vector<double> result;
 
-			init.clear();
+				init.push_back(data.magGain.m00);
+				init.push_back(data.magGain.m01);
+				init.push_back(data.magGain.m02);
+				init.push_back(data.magGain.m10);
+				init.push_back(data.magGain.m11);
+				init.push_back(data.magGain.m12);
+				init.push_back(data.magGain.m20);
+				init.push_back(data.magGain.m21);
+				init.push_back(data.magGain.m22);
+				init.push_back(data.magBias.x);
+				init.push_back(data.magBias.y);
+				init.push_back(data.magBias.z);
 
-			init.push_back(gain.x);
-			init.push_back(0.00001);
-			init.push_back(0.00001);
-			init.push_back(0.00001);
-			init.push_back(gain.y);
-			init.push_back(0.00001);
-			init.push_back(0.00001);
-			init.push_back(0.00001);
-			init.push_back(gain.z);
-			init.push_back(bias.x);
-			init.push_back(bias.y);
-			init.push_back(bias.z);
+				result.clear();
+				SpecVectorFunctor<double,MoveCalibration> ft(this, &MoveCalibration::integrateMagRefError);
+				result=BT::Simplex(ft, init, 5000);
 
-			result.clear();
-			SpecVectorFunctor<double,MoveCalibration> ft(this, &MoveCalibration::integrateMagError);
-			result=BT::Simplex(ft, init);
+				data.magGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
+				data.magBias=Vec3(result[9],result[10],result[11]);
 
-			data.magGain=Mat3(result[0],result[1],result[2],result[3],result[4],result[5],result[6],result[7],result[8]);
-			data.magBias=Vec3(result[9],result[10],result[11]);
+				IniFile::SetValue("magBias", data.magBias, deviceName, "settings.cfg");
+				IniFile::SetValue("magGain", data.magGain, deviceName, "settings.cfg");
 
-			magPosition=-1;
-			timer=1000;
+				orientation->UseMagnetometer(true);
+				orientation->useHighGain(true);
+				timer=5.0f;
+				state=Calibrated;
+				MoveManager::getInstance()->notify(id, M_Calibrated);
+			}
 		}
 	}
 
@@ -156,7 +236,26 @@ namespace Move
 		return error;
 	}
 
-	double MoveCalibration::integrateMagError(std::vector<double> x)
+	double MoveCalibration::integrateMagSphereError(std::vector<double> x)
+	{
+		double error=0.0;
+		Vec3 point;
+
+		Mat3 gain=Mat3(x[0],x[1],x[2],x[3],x[4],x[5],x[6],x[7],x[8]);
+		Vec3 bias=Vec3(x[9],x[10],x[11]);
+
+		for (int i=1; i<MAG_ITERATIONS; i++)
+		{
+			//calculate calibrated point
+			point=(magBuf[i]-bias)*gain;
+			//calculate error
+			float diff=point.length()-1.0f;
+			error+=diff*diff;
+		}
+		return error/(double)MAG_ITERATIONS;
+	}
+
+	double MoveCalibration::integrateMagRefError(std::vector<double> x)
 	{
 		double error=0.0;
 		Vec3 point;
@@ -169,7 +268,8 @@ namespace Move
 			//calculate calibrated point
 			point=(magBuf[i]-bias)*gain;
 			//integrate the error
-			error+=(magRef[i]-point).length2();
+			Vec3 calculated=point*!magRef[i];
+			error+=(calculated-North).length2();
 		}
 		return error/(double)MAG_ITERATIONS;
 	}
@@ -203,11 +303,17 @@ namespace Move
 	}
 
 	//move calibration
-	bool MoveCalibration::initialCalibration()
+	void MoveCalibration::initialCalibration()
 	{
 		MoveDevice::TMoveCalib calib;
 		if (!MoveDevice::ReadMoveCalibration(id,&calib))
-			return false;
+		{
+			MoveManager::getInstance()->notify(id, M_CantReadCalibration);
+			return;
+		}
+
+		MoveManager::getInstance()->notify(id, M_CalibrationProcessing);
+
 		rawData=new MoveRawCalibration(calib);
 
 		std::vector<double> init;
@@ -263,10 +369,16 @@ namespace Move
 		IniFile::SetValue("gyroGain", data.gyroGain, deviceName, "settings.cfg");
 		IniFile::SetValue("accBias", data.accBias, deviceName, "settings.cfg");
 		IniFile::SetValue("accGain", data.accGain, deviceName, "settings.cfg");
-		IniFile::SetValue("magBias", data.magBias, deviceName, "settings.cfg");
-		IniFile::SetValue("magGain", data.magGain, deviceName, "settings.cfg");
 		
 		delete rawData;
-		calibrated=true;
+		state=InitialCalibrationDone;
+		MoveManager::getInstance()->notify(id, M_InitialCalibratingDone);
+	}
+
+	void MoveCalibration::calibrateMagnetometer()
+	{
+		state=MagnetometerSphereCalibration;
+		magPosition=-1;
+		timer=0.0f;
 	}
 }

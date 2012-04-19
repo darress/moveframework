@@ -6,15 +6,14 @@
 namespace Move
 {
 
-	EyeController::EyeController(MoveManager* manager)
+	EyeController::EyeController()
 	{
-		this->manager=manager;
 		img=0;
 		_cam=0;
 		ballManager=0;
 	}
 
-	EyeController::~EyeController(void)
+	EyeController::~EyeController()
 	{
 		TerminateThread(_hThread,0);
 
@@ -88,7 +87,7 @@ namespace Move
 			for (int i=0; i<numMoves; i++)
 			{
 				MoveLock lock(i);
-				manager->getMoveDataEx(i).position=positions[i];
+				MoveManager::getInstance()->getMoveDataEx(i).position=positions[i];
 			}
 		}
 	}

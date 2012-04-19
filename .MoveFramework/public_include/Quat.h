@@ -31,5 +31,4 @@ namespace Move
 	float operator|(const Quat &q, const Quat &p);
 	Vec3 operator*(const Vec3 &v, const Quat &q);
 
-
 }

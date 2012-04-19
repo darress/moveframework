@@ -13,8 +13,6 @@ namespace Move
 
 	class EyeController : public IEyeController
 	{
-		MoveManager* manager;
-
 		HANDLE _hThread;
 		CLEyeCameraInstance _cam;
 
@@ -29,7 +27,7 @@ namespace Move
 		
 
 	public:
-		EyeController(MoveManager* manager);
+		EyeController();
 		~EyeController();
 
 		bool initCamera(int numMoves);
