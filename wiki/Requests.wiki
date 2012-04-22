@@ -4,15 +4,15 @@
 
 = Requests =
  * Navigation controller support
-    * I don't have a navigation controller. If I get one from somebody, I will get it work with the framework. Otherwise I can't test.
- * Support for other webcams
-    * I can make it work, but the PS Eye is a very good webcam, the accuracy may be not this good with other webcams
-    * This is not my priority, there are more important changes first
- * OSC support
-    * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
- * Expose the the control of colors
-    * Yes, I will do so. ;) But I don't promise it will be soon.
+    * I don't have a navigation controller. If I get one from somebody, I will get it work with the framework. Otherwise I can't.
 
 = Fulfilled requests =
  * C# support
  * The framework works without a camera
+ * Expose the the control of colors
+
+= Requests that will not be realized =
+ * Support for other webcams
+   * The algorithm is optimized for the Eye, plus other webcams may not give the same control. So it would be really hard to support other webcams. The Eye is not expensive though. Not at all.
+ * OSC support
+    * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
