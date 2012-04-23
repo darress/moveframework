@@ -32,19 +32,19 @@ The filename is always settings.cfg
 The most of the file is generated through the calibration process (Move`_` sections), but you can set a few things manually.
 These things are in the [Tracking] section.
 
-AHRSalgorithmGain (default: 0.1): This is the gain of the orientation tracking algorithm. If you set this high, there will be less drift but the jitter will be higher. With a low value there will be more drift but less jitter.
+*AHRSalgorithmGain* (default: 0.1): This is the gain of the orientation tracking algorithm. If you set this high, there will be less drift but the jitter will be higher. With a low value there will be more drift but less jitter.
 
-CameraExposure (default: 50): This sets the camera exposure. It has an effect on the position tracking. You check the effect by looking at the mask (press 1), it's the best if the ball is very bright and everything else is dark.
+*CameraExposure* (default: 50): This sets the camera exposure. It has an effect on the position tracking. You check the effect by looking at the mask (press 1), it's the best if the ball is very bright and everything else is dark.
 
-BallColorX (default: not set): The color of the x.th Move. It automatically turns of the automatic colors management. Format: RGB
+*BallColorX* (default: not set): The color of the x.th Move. It automatically turns of the automatic color management. Format: RGB
 
-ReturnZeroIfNotFound (default: 0):
+*ReturnZeroIfNotFound* (default: 0):
  if 0: the position will be the last position if the ball is not found
  if not 0: the position will be 0, if not found
 
-PredictionBufferSize (default: not set): if set, there will be a prediction filter on the orientation (less jitter, but slower tracking)
+*PredictionBufferSize* (default: not set): if set, there will be a prediction filter on the orientation (less jitter, but slower tracking)
 
-UseMagnetometers (default: 1): if 0, no Move uses the magnetometers, if not 0, all Moves uses them, if they are calibrated.
+*UseMagnetometers* (default: 1): if 0, no Move uses the magnetometers, if not 0, all Moves uses them, if they are calibrated.
 
 Example file:
 {{{
