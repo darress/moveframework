@@ -1,4 +1,4 @@
-#summary Move Framework SDK
+#summary Move Framework SDK instructions + use of the config file
 
 = Setting up your project =
 
