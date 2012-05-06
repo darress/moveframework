@@ -19,4 +19,4 @@
  * Support for other webcams
    * The algorithm is optimized for the Eye, plus other webcams may not give the same control. So it would be really hard to support other webcams. The Eye is not expensive though. Not at all.
  * OSC support
-    * Sorry, I don't know OSC and I don't intend to do so. But feel free to make an OSC wrapper.
+    * Sorry, I don't know OSC. But feel free to make an OSC wrapper.
