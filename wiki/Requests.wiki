@@ -4,7 +4,11 @@
 
 = Requests =
  * Navigation controller support
-    * I don't have a navigation controller. If I get one from somebody, I will get it work with the framework. Otherwise I can't.
+   * I got a controller. :) Started the work with it, but it seems the same pairing process will not work with the navi controller. Anyone else could connect it? (You can pair the device with MotionInJoy, than remove MIJ and you can try to connect to the native BT stack just like the Move.)
+ * MotionInJoy support
+   * Some of you could not pair with the native stack, so my framework will work with both the native stack and MIJ.
+ * Joystick and mouse emulation
+   * You are not a programmer? No problem, just play your favorite games with the MoveFramework. ;)
 
 = Fulfilled requests =
  * C# support
