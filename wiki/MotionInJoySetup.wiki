@@ -9,4 +9,4 @@
  * Now load the drivers
  * Enjoy
 
-== This version of the MIJ driver is not officially released and may be not stable. Use it for your own risk or wait for the official version! ==
+== This version of the MIJ driver is not officially released and may not be stable. Use it for your own risk or wait for the official version! ==
