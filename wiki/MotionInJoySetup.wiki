@@ -1,0 +1,10 @@
+#summary How to set up MotionInJoy in order to work with the framework.
+
+= Istructions =
+
+ * Download the 7.0 version from here: [http://www.motioninjoy.com/download]
+ * Install MotionInJoy, but don't load the drivers yet!
+ * Download this file: [http://moveframework.googlecode.com/svn/wiki/0.7.0003_a.zip]
+ * Unzip and replace the MijXfilt.sys (C:\Program Files\MotioninJoy\ds3\drivers)
+ * Now load the drivers
+ * Enjoy
