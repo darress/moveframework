@@ -13,7 +13,7 @@
  * The framework works without a camera
  * Expose the the control of colors
  * MotionInJoy support
-   * Works like a charm. Read the MotionInJoySetup for details.
+   * Works like a charm with version 3.1. Read the MotionInJoySetup for details.
 
 = Requests that will not be realized =
  * Support for other webcams
