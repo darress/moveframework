@@ -248,7 +248,7 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 		else
 			ss << "The device doesnt use magnetometers.\n   Press M to turn it on.\n";
 	}
-	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
+	//mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
 	
 	if (!automaticColors)
 	{

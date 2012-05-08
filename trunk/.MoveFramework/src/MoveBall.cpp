@@ -45,6 +45,25 @@ namespace Move
 		return (float)curmask/65535.0f;
 	}
 
+	void MoveBall::showProcessedPixels()
+	{
+		int a=0;
+		for (int i=0; i<640; i++)
+		{
+			for (int j=0; j<480; j++)
+			{
+				Vec2 pos=Vec2(i,j);
+				unsigned short& curmask=mask[(int)pos.y*img->w+(int)pos.x];
+				if (curmask>0)
+				{
+					curmask=65535;
+					a++;
+				}
+			}
+		}
+		int b=4;
+	}
+
 	void MoveBall::resetMask()
 	{
 		memset(mask,0,img->w*img->h*2);

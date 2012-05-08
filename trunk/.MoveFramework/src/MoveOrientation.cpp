@@ -8,6 +8,14 @@ namespace Move
 	{
 		highGain=false;
 
+		gain=ahrs.beta;
+		try
+		{
+			setOrientationGain( IniFile::GetFloat("AHRSalgorithmGain", "Tracking", "settings.cfg") );
+		}
+		catch(MoveConfigFileRecordNotFoundException)
+		{}
+
 		calibration = new MoveCalibration(moveId, this);
 
 		if (calibration->isMangetometerCalibrated())
@@ -18,10 +26,10 @@ namespace Move
 		try
 		{
 			int predictionBufferSize = IniFile::GetInt("PredictionBufferSize", "Tracking", "settings.cfg");
-			f1=PredictionFilter(20);
-			f2=PredictionFilter(20);
-			f3=PredictionFilter(20);
-			f4=PredictionFilter(20);
+			f1=PredictionFilter(predictionBufferSize);
+			f2=PredictionFilter(predictionBufferSize);
+			f3=PredictionFilter(predictionBufferSize);
+			f4=PredictionFilter(predictionBufferSize);
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{}
@@ -30,12 +38,7 @@ namespace Move
 		angularAcc=Vec3(0,0,0);
 
 		AEq_1 = 1, AEq_2 = 0, AEq_3 = 0, AEq_4 = 0;
-		try
-		{
-			setOrientationGain( IniFile::GetFloat("AHRSalgorithmGain", "Tracking", "settings.cfg") );
-		}
-		catch(MoveConfigFileRecordNotFoundException)
-		{}
+
 		try
 		{
 			useMagnetometer = IniFile::GetInt("UseMagnetometers", "Tracking", "settings.cfg")!=0;

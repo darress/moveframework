@@ -28,6 +28,8 @@ namespace Move
 		float getMask(Vec2 pos);
 		void resetMask();
 		unsigned char* getMaskBuffer();
+		// for testing
+		void showProcessedPixels();
 	};
 
 }

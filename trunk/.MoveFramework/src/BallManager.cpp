@@ -81,6 +81,9 @@ namespace Move
 			Vec3 pos;
 			if (balls[i]->ballFound)
 			{
+				// only for testing
+				//balls[i]->showProcessedPixels();
+
 				ballFitAlgorithm->fitCircle(balls[i]);
 
 				if (balls[i]->ballSize>15 && balls[i]->getMask(balls[i]->position)>BALL_MARGIN)
