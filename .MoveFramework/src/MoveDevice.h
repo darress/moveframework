@@ -22,7 +22,8 @@
 
 namespace MoveDevice
 {
-	typedef struct tmove {
+	typedef struct tmove 
+	{
 		int Buttons;
 		int TAnalog;
 		int RawBattery;
@@ -34,28 +35,40 @@ namespace MoveDevice
 		int SeqNumber;
 	} TMove, *PMove;
 
-	typedef struct tmoveoutput {
+	typedef struct tnav 
+	{
+		int Buttons;
+		int L1Analog, L2Analog;
+		int UpAnalog, DownAnalog, LeftAnalog, RightAnalog;
+		int LeftStickX, LeftStickY;
+		unsigned char report[49];
+	} TNav, *PNav;
+
+	typedef struct tmoveoutput 
+	{
 		unsigned char r, g, b;
 		unsigned char rumble;
 		unsigned framecount;
 	} TMoveOutput, *PMoveOutput;
 
-	typedef struct tmovecalib {
-	  short int AccHeader;
-	  short int AccVectors[6][3];
-	  short int GyroBiasHeaders[2];
-	  short int GyroBiasVectors[2][3];
-	  short int GyroHeader;
-	  short int GyroVectors[3][3];
-	  short int UnknownHeader;
-	  float UnknownVectors[2][3];
-	  float UnknownValues[2];
+	typedef struct tmovecalib 
+	{
+		short int AccHeader;
+		short int AccVectors[6][3];
+		short int GyroBiasHeaders[2];
+		short int GyroBiasVectors[2][3];
+		short int GyroHeader;
+		short int GyroVectors[3][3];
+		short int UnknownHeader;
+		float UnknownVectors[2][3];
+		float UnknownValues[2];
 	} TMoveCalib, *PMoveCalib;
 
-	typedef struct tmovebluetooth {
-	  char MoveBtMacString[18], HostBtMacString[18];
-	  unsigned char MoveBtMac[6], HostBtMac[6];
-	  unsigned char unknown[3];
+	typedef struct tmovebluetooth 
+	{
+		char MoveBtMacString[18], HostBtMacString[18];
+		unsigned char MoveBtMac[6], HostBtMac[6];
+		unsigned char unknown[3];
 	} TMoveBluetooth, *PMoveBluetooth;
 
 	int OpenMoves();

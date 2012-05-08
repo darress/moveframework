@@ -30,7 +30,25 @@ namespace MoveDevice
 		unsigned char buf[49];
 		hid_device *handle;
 
+		//standard bt stack
 		devs = hid_enumerate(0x054c, 0x03d5);
+		cur_dev = devs;	
+		while (cur_dev) {
+			handle = hid_open_path(cur_dev->path);
+			if (hid_read_timeout(handle,buf,49,500)>0)
+			{
+				MoveHandles[MoveCount++]=handle;
+			}
+			else
+			{
+				hid_close(handle);
+			}
+			cur_dev = cur_dev->next;
+		}
+		hid_free_enumeration(devs);
+
+		//MotionInJoy
+		devs = hid_enumerate(0x8888, 0x0508);
 		cur_dev = devs;	
 		while (cur_dev) {
 			handle = hid_open_path(cur_dev->path);
@@ -72,7 +90,8 @@ namespace MoveDevice
 			return false;
 	}
 
-	int PairMoves() {
+	int PairMoves() 
+	{
 		int numBtMacSet=0;
 		struct hid_device_info *devs, *cur_dev;
 
