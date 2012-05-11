@@ -2,12 +2,8 @@
 
 = Istructions =
 
- * Download the 7.0 version from here: [http://www.motioninjoy.com/download]
- * Install MotionInJoy, but don't load the drivers yet!
- * Download this file: [http://moveframework.googlecode.com/svn/wiki/0.7.0003_a.zip]
- * Unzip and replace the MijXfilt.sys (C:\Program Files\MotioninJoy\ds3\drivers)
- * Now load the drivers
- * Pair the devices with the MIJ built in pairing tool
+ * Download the 7.1 version from here: [http://www.motioninjoy.com/download]
+ * Follow instructions here (the last step you need is "Getting it working - Bluetooth mode"): [http://www.motioninjoy.com/wiki/en/install/latest]
  * Enjoy
 
-== This version of the MIJ driver is not officially released and may not be stable. Use it for your own risk or wait for the official version! ==
+= Please donate for MotionInJoy if you find the project useful! =
