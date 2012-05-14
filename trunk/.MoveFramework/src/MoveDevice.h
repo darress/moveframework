@@ -73,6 +73,7 @@ namespace MoveDevice
 
 	int OpenMoves();
 	int GetMoveCount();
+	int GetNavCount();
 	void CloseMoves();
 	int PairMoves();
 
@@ -81,4 +82,6 @@ namespace MoveDevice
 	bool ReadMove(int index, PMove data, PMove old=0);
 	bool ReadMoveCalibration(int index, PMoveCalib calib);
 	bool ReadMoveBluetoothSettings(int index, PMoveBluetooth bt);
+
+	bool ReadNav(int index, PNav data);
 }

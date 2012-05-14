@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="public_include\INavController.h" />
+    <ClInclude Include="src\NavController.h" />
+    <ClInclude Include="public_include\NavData.h" />
     <ClInclude Include="src\Functor.h" />
     <ClInclude Include="src\PredictionFilter.h" />
     <ClInclude Include="src\BallFitAlgorithm.h" />
@@ -50,6 +53,7 @@
     <ClInclude Include="public_include\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\NavController.cpp" />
     <ClCompile Include="src\PredictionFilter.cpp" />
     <ClCompile Include="src\BallFitAlgorithm.cpp" />
     <ClCompile Include="src\ContourFinder.cpp" />

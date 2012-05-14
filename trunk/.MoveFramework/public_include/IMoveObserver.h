@@ -3,6 +3,7 @@
 #include "MoveConfig.h"
 #include "MoveData.h"
 #include "MoveButton.h"
+#include "NavData.h"
 
 namespace Move
 {
@@ -27,5 +28,9 @@ namespace Move
 		virtual void moveKeyReleased(int moveId, MoveButton button){}
 		virtual void moveConnected(int numAllMoves){}
 		virtual void moveNotify(int moveId, MoveMessage message){}
+
+		virtual void navUpdated(int navId, NavData data){}
+		virtual void navKeyPressed(int navId, MoveButton button){}
+		virtual void navKeyReleased(int navId, MoveButton button){}
 	};
 }

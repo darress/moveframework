@@ -8,6 +8,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LocalDebuggerWorkingDirectory>$(OutDir)\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <ShowAllFiles>false</ShowAllFiles>
+    <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
 </Project>

@@ -5,6 +5,7 @@
 #include "MoveOrientation.h"
 #include "EyeController.h"
 #include "MoveController.h"
+#include "NavController.h"
 
 
 namespace Move
@@ -19,8 +20,10 @@ namespace Move
 
 		int moveCount;
 		std::vector<MoveController*> moves;
-
 		std::vector<MoveData> moveData;
+
+		int navCount;
+		std::vector<NavController*> navs;
 
 		std::list<IMoveObserver*> observers;
 
@@ -46,8 +49,8 @@ namespace Move
 		bool initCamera(int numMoves);
 		void closeCamera();
 
-		int getNumUsedMoves();
-		int getNumAllMoves();
+		int getMoveCount();
+		int getNavCount();
 
 		//observers
 		void subsribe(IMoveObserver* observer);
@@ -57,11 +60,16 @@ namespace Move
 		int pairMoves();
 
 		IMoveController* getMove(int moveId);
+		INavController* getNav(int navId);
 		IEyeController* getEye();
 
 		void moveUpdated(int moveId);
 		void moveKeyPressed(int moveId, MoveButton button);
 		void moveKeyReleased(int moveId, MoveButton button);
+
+		void navUpdated(int navId, NavData data);
+		void navKeyPressed(int navId, MoveButton button);
+		void navKeyReleased(int navId, MoveButton button);
 
 		void notify(int moveId, MoveMessage message);
 

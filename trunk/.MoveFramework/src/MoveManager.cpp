@@ -12,6 +12,7 @@ namespace Move
 		FPS=0;
 		eye=0;
 		moveCount=-1;
+		navCount=-1;
 	}
 
 
@@ -20,6 +21,10 @@ namespace Move
 		for (int i=0;i<moveCount;++i)
 		{
 			delete moves[i];
+		}
+		for (int i=0;i<navCount;++i)
+		{
+			delete navs[i];
 		}
 		if (eye)
 		{
@@ -36,11 +41,9 @@ namespace Move
 		{
 			return moveCount;
 		}
-		if (!MoveDevice::OpenMoves())
-		{
-			return 0;
-		}
+		MoveDevice::OpenMoves();
 		moveCount = MoveDevice::GetMoveCount();
+		navCount = MoveDevice::GetNavCount();
 
 		MoveLock::init(moveCount);
 
@@ -50,6 +53,12 @@ namespace Move
 		{
 			MoveController* ctrl=new MoveController(i);
 			moves.push_back(ctrl);
+		}
+
+		for (int i=0;i<navCount;++i)
+		{
+			NavController* ctrl=new NavController(i);
+			navs.push_back(ctrl);
 		}
 
 		return moveCount;
@@ -77,14 +86,14 @@ namespace Move
 
 	}
 
-	int MoveManager::getNumUsedMoves()
+	int MoveManager::getMoveCount()
 	{
 		return moveCount;
 	}
 
-	int MoveManager::getNumAllMoves()
+	int MoveManager::getNavCount()
 	{
-		return 0;
+		return navCount;
 	}
 
 	void MoveManager::notify(int moveId, MoveMessage message)
@@ -111,6 +120,11 @@ namespace Move
 		return moves[moveId];
 	}
 
+	INavController* MoveManager::getNav(int navId)
+	{
+		return navs[navId];
+	}
+
 	IEyeController* MoveManager::getEye()
 	{
 		return eye;
@@ -125,6 +139,7 @@ namespace Move
 		observers.remove(observer);
 	}
 
+	//PS MOVE
 	void MoveManager::moveUpdated(int moveId)
 	{
 		std::list<IMoveObserver*>::iterator it;
@@ -147,6 +162,31 @@ namespace Move
 		for ( it=observers.begin() ; it != observers.end(); it++ )
 		{
 			(*it)->moveKeyReleased(moveId, button);
+		}
+	}
+	//NAV
+	void MoveManager::navUpdated(int navId, NavData data)
+	{
+		std::list<IMoveObserver*>::iterator it;
+		for ( it=observers.begin() ; it != observers.end(); it++ )
+		{
+			(*it)->navUpdated(navId, data);
+		}
+	}
+	void MoveManager::navKeyPressed(int navId, MoveButton button)
+	{
+		std::list<IMoveObserver*>::iterator it;
+		for ( it=observers.begin() ; it != observers.end(); it++ )
+		{
+			(*it)->navKeyPressed(navId, button);
+		}
+	}
+	void MoveManager::navKeyReleased(int navId, MoveButton button)
+	{
+		std::list<IMoveObserver*>::iterator it;
+		for ( it=observers.begin() ; it != observers.end(); it++ )
+		{
+			(*it)->navKeyReleased(navId, button);
 		}
 	}
 }

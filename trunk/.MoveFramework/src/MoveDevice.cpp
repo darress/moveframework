@@ -21,8 +21,10 @@
 namespace MoveDevice
 {
 	hid_device* MoveHandles[MAXMOVES] = {0};
+	hid_device* NavHandles[MAXMOVES] = {0};
 	TMoveOutput MoveOutput[MAXMOVES] = {0};
 	int MoveCount = 0;
+	int NavCount = 0;
 
 	int OpenMoves() {
 		struct hid_device_info *devs, *cur_dev;
@@ -30,7 +32,7 @@ namespace MoveDevice
 		unsigned char buf[49];
 		hid_device *handle;
 
-		//standard bt stack
+		//PS Move standard bt stack
 		devs = hid_enumerate(0x054c, 0x03d5);
 		cur_dev = devs;	
 		while (cur_dev) {
@@ -47,7 +49,7 @@ namespace MoveDevice
 		}
 		hid_free_enumeration(devs);
 
-		//MotionInJoy
+		//PS Move MotionInJoy
 		devs = hid_enumerate(0x8888, 0x0508);
 		cur_dev = devs;	
 		while (cur_dev) {
@@ -55,6 +57,23 @@ namespace MoveDevice
 			if (hid_read_timeout(handle,buf,49,500)>0)
 			{
 				MoveHandles[MoveCount++]=handle;
+			}
+			else
+			{
+				hid_close(handle);
+			}
+			cur_dev = cur_dev->next;
+		}
+		hid_free_enumeration(devs);
+
+		//Navigation Controller MotionInJoy
+		devs = hid_enumerate(0x8888, 0x0408);
+		cur_dev = devs;	
+		while (cur_dev) {
+			handle = hid_open_path(cur_dev->path);
+			if (hid_read_timeout(handle,buf,49,500)>0)
+			{
+				NavHandles[NavCount++]=handle;
 			}
 			else
 			{
@@ -131,6 +150,10 @@ namespace MoveDevice
 
 	int GetMoveCount() {
 		return MoveCount;
+	}
+
+	int GetNavCount() {
+		return NavCount;
 	}
 
 	void CloseMoves() {
@@ -318,7 +341,8 @@ namespace MoveDevice
 		return true;
 	}
 
-	bool ReadMoveBluetoothSettings(int index, PMoveBluetooth bt) {
+	bool ReadMoveBluetoothSettings(int index, PMoveBluetooth bt) 
+	{
 		if (index>=MAXMOVES || index<0 || !bt) return false;
 		unsigned char report[49];
 		memset(report,0,49);
@@ -332,4 +356,27 @@ namespace MoveDevice
 		return true;
 	}
 
+	bool ReadNav(int index, PNav data)
+	{
+		if (!data) {
+			return false;
+		}
+
+		unsigned char report[49];
+		if (hid_read(NavHandles[index], report, 49)<1) {
+			return false;
+		}
+
+		data->Buttons=report[3] | (report[2] << 8) | (report[4] << 16);
+		data->LeftStickX=report[6];
+		data->LeftStickY=report[7];
+		data->UpAnalog=report[14];
+		data->RightAnalog=report[15];
+		data->DownAnalog=report[16];
+		data->LeftAnalog=report[17];
+		data->L2Analog=report[18];
+		data->L1Analog=report[20];
+
+		return true;
+	}
 }

@@ -32,7 +32,6 @@ namespace Move
 		MoveController(int moveId);
 		~MoveController(void);
 
-		void Update();
 		void useMagnetometers(bool value);
 		void setRumble(int value);
 		void setOrientationGain(float gain);
@@ -40,6 +39,7 @@ namespace Move
 		MoveData getMoveData();
 
 	private:
+		void Update();
 		static DWORD WINAPI controlThread(LPVOID instance);
 	};
 }
