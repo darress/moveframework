@@ -3,8 +3,6 @@
 *Please comment if you have a request. Also do so, if the request is already in the list, I want to add features, that are needed by more.*
 
 = Requests =
- * Navigation controller support
-   * I got a controller. :) Started the work with it, but it seems the same pairing process will not work with the navi controller. Anyone else could connect it? (You can pair the device with MotionInJoy, than remove MIJ and you can try to connect to the native BT stack just like the Move.)
  * Joystick and mouse emulation
    * You are not a programmer? No problem, just play your favorite games with the MoveFramework. ;)
 
@@ -14,6 +12,8 @@
  * Expose the the control of colors
  * MotionInJoy support
    * Works like a charm with version 3.1. Read the MotionInJoySetup for details.
+ * Navigation controller support
+   * Works only with MotionInJoy
 
 = Requests that will not be realized =
  * Support for other webcams
