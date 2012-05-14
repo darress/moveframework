@@ -5,6 +5,7 @@
 
 Move::IMoveManager* move;
 int numMoves;
+int numNavs;
 
 typedef struct tagVec3
 { 
@@ -23,10 +24,14 @@ typedef struct tagQuat
 
 typedef void (__stdcall *UPDATE_CALLBACK)(int id, Vec3 position, Quat orientation, int trigger);
 UPDATE_CALLBACK registered_callback;
+typedef void (__stdcall *UPDATE_NAVCALLBACK)(int id, int trigger1, int trigger2, int stickX, int stickY);
+UPDATE_NAVCALLBACK registered_navcallback;
 
 typedef void (__stdcall *KEY_CALLBACK)(int id, int keyCode);
 KEY_CALLBACK registered_keydown;
 KEY_CALLBACK registered_keyup;
+KEY_CALLBACK registered_navkeydown;
+KEY_CALLBACK registered_navkeyup;
 
 class MoveObserver : public Move::IMoveObserver
 {
@@ -38,6 +43,16 @@ class MoveObserver : public Move::IMoveObserver
 	void moveKeyReleased(int moveId, int keyCode)
 	{
 		(*registered_keyup)(moveId, keyCode);
+	}
+
+	void navKeyPressed(int navId, int keyCode)
+	{
+		(*registered_navkeydown)(navId, keyCode);
+	}
+
+	void navKeyReleased(int navId, int keyCode)
+	{
+		(*registered_navkeyup)(navId, keyCode);
 	}
 
 	void moveUpdated(int moveId, Move::MoveData data)
@@ -55,6 +70,11 @@ class MoveObserver : public Move::IMoveObserver
 
 		(*registered_callback)(moveId, pos, q, data.trigger);
 	}
+
+	void navUpdated(int navId, Move::NavData data)
+	{
+		(*registered_navcallback)(navId, data.trigger1, data.trigger2, data.stickX, data.stickY);
+	}
 };
 MoveObserver* observer=new MoveObserver;
 
@@ -62,7 +82,9 @@ extern "C" __declspec(dllexport) void __stdcall init()
 {
 		move = Move::createDevice();
 
-		numMoves=move->initMoves();
+		move->initMoves();
+		numMoves=move->getMoveCount();
+		numNavs=move->getNavCount();
 		move->initCamera(numMoves);
 }
 
@@ -71,11 +93,19 @@ extern "C" __declspec(dllexport) int __stdcall getMovesCount()
 	return numMoves;
 }
 
-extern "C" __declspec(dllexport) void __stdcall subscribeMove(UPDATE_CALLBACK updateCallback, KEY_CALLBACK keyDownCallback, KEY_CALLBACK keyUpCallback) 
+extern "C" __declspec(dllexport) int __stdcall getNavsCount() 
+{
+	return numNavs;
+}
+
+extern "C" __declspec(dllexport) void __stdcall subscribeMove(UPDATE_CALLBACK updateCallback, KEY_CALLBACK keyDownCallback, KEY_CALLBACK keyUpCallback, UPDATE_NAVCALLBACK navUpdateCallback, KEY_CALLBACK navkeyDownCallback, KEY_CALLBACK navkeyUpCallback) 
 {
 	registered_callback=updateCallback;
 	registered_keyup=keyUpCallback;
 	registered_keydown=keyDownCallback;
+	registered_navcallback=navUpdateCallback;
+	registered_navkeyup=navkeyUpCallback;
+	registered_keydown=navkeyDownCallback;
 	move->subsribe(observer);
 }
 
@@ -122,4 +152,30 @@ extern "C" __declspec(dllexport) int __stdcall getTriggerValue(int id)
 extern "C" __declspec(dllexport) void __stdcall setRumble(int id, int value) 
 {
 	move->getMove(id)->setRumble(value);
+}
+
+extern "C" __declspec(dllexport) bool __stdcall getNavButtonState(int id, int keyId) 
+{
+	Move::NavData data = move->getNav(id)->getNavData();
+	return data.isButtonPressed((Move::MoveButton)keyId);
+}
+
+extern "C" __declspec(dllexport) bool __stdcall getNavTrigger1(int id) 
+{
+	return move->getNav(id)->getNavData().trigger1;
+}
+
+extern "C" __declspec(dllexport) bool __stdcall getNavTrigger2(int id) 
+{
+	return move->getNav(id)->getNavData().trigger2;
+}
+
+extern "C" __declspec(dllexport) bool __stdcall getNavStickX(int id) 
+{
+	return move->getNav(id)->getNavData().stickX;
+}
+
+extern "C" __declspec(dllexport) bool __stdcall getNavStickY(int id) 
+{
+	return move->getNav(id)->getNavData().stickY;
 }

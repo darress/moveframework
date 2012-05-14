@@ -225,31 +225,6 @@ void Game::moveNotify(int moveId, Move::MoveMessage message)
 
 void Game::moveUpdated(int moveId, Move::MoveData data)
 {
-	if (!guiInitialized)
-		return;
-	std::stringstream ss;
-	ss.precision(2);
-	ss.setf(std::ios_base::fixed);
-	ss << numMoves << " devices connected.\n";
-	for (int i=0; i<numMoves; i++)
-	{
-		ss << std::endl << std::endl;
-
-		Move::Vec3 pos = data.position;
-		ss <<  "Position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
-
-		Move::Quat quat = data.orientation;
-		ss << "Orient.: " << quat.w << " " << quat.v.x << " " << quat.v.y << " " << quat.v.z << std::endl;
-
-		if (!magnetometerCalibrated[i])
-			ss << "The device' magnetometer is not calibrated.\n   Press START to calibrate it.";
-		else if (useMagnetometers[i])
-			ss << "The device uses magnetometers.\n   Press M to turn it off.\n";
-		else
-			ss << "The device doesnt use magnetometers.\n   Press M to turn it on.\n";
-	}
-	//mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
-	
 	if (!automaticColors)
 	{
 		if (data.isButtonPressed(Move::B_CIRCLE))
@@ -304,6 +279,44 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		//showing the camera image of the Eye
 		copyCameraImageToTexture();
 	}
+
+	//information
+	if (!guiInitialized)
+		return true;
+	std::stringstream ss;
+	ss.precision(2);
+	ss.setf(std::ios_base::fixed);
+	ss << numMoves << " Moves connected.\n";
+	ss << move->getNavCount() << " Navs connected.\n";
+	for (int i=0; i<numMoves; i++)
+	{
+		Move::MoveData data = move->getMove(i)->getMoveData();
+		ss << std::endl << std::endl;
+
+		ss << "Playstation Move, id: " << i << std::endl;
+		Move::Vec3 pos = data.position;
+		ss <<  "  Position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
+
+		Move::Quat quat = data.orientation;
+		ss << "  Orient.: " << quat.w << " " << quat.v.x << " " << quat.v.y << " " << quat.v.z << std::endl;
+
+		if (!magnetometerCalibrated[i])
+			ss << "  The device' magnetometer is not calibrated.\n     Press START to calibrate it.";
+		else if (useMagnetometers[i])
+			ss << "  The device uses magnetometers.\n     Press M to turn it off.\n";
+		else
+			ss << "  The device doesnt use magnetometers.\n     Press M to turn it on.\n";
+	}
+	for (int i=0; i<move->getNavCount(); i++)
+	{
+		Move::NavData data = move->getNav(i)->getNavData();
+		ss << std::endl << std::endl;
+		ss << "Playstation Navigation Controller, id: " << i << std::endl;
+		ss <<  "  Stick: " << data.stickX << " " << data.stickY << std::endl;
+		ss <<  "  Triggers: " << data.trigger1 << " " << data.trigger2 << std::endl;
+	}
+
+	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
 
     return true;
 }

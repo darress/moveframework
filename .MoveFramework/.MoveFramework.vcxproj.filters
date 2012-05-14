@@ -66,10 +66,8 @@
     <ClInclude Include="public_include\IMoveObserver.h">
       <Filter>Interface</Filter>
     </ClInclude>
-    <ClInclude Include="public_include\MoveButton.h" />
     <ClInclude Include="public_include\MoveFactory.h" />
     <ClInclude Include="public_include\MoveConfig.h" />
-    <ClInclude Include="public_include\MoveData.h" />
     <ClInclude Include="src\EyeController.h">
       <Filter>PS Move\Eye</Filter>
     </ClInclude>
@@ -99,6 +97,21 @@
     </ClInclude>
     <ClInclude Include="src\PredictionFilter.h">
       <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\MoveButton.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\MoveData.h">
+      <Filter>PS Move</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\INavController.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="public_include\NavData.h">
+      <Filter>PS Move\NavigationController</Filter>
+    </ClInclude>
+    <ClInclude Include="src\NavController.h">
+      <Filter>PS Move\NavigationController</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +176,9 @@
     <ClCompile Include="src\PredictionFilter.cpp">
       <Filter>Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="src\NavController.cpp">
+      <Filter>PS Move\NavigationController</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PS Move">
@@ -188,6 +204,9 @@
     </Filter>
     <Filter Include="Interface">
       <UniqueIdentifier>{86dd3feb-928e-4f05-90f7-1ec812dffc09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PS Move\NavigationController">
+      <UniqueIdentifier>{e1bd1d15-93f8-4244-9506-1bf15995b8d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
