@@ -1,6 +1,8 @@
 #summary Instructions to pair and connect the Moves without MotionInJoy
 
-*A played a bit around with a win7 x64 system, and I could manage it too. So it seems that all windows version will work. Also tested with internal BT adapter, and it worked too.)
+*A played a bit around with a win7 x64 system, and I could manage it too. So it seems that all windows version will work. Also tested with internal BT adapter, and it worked too.*
+
+*[http://code.google.com/p/moveframework/issues/detail?id=1 Please check this thread] for other people's experience with the pairing process!*
 
 =Instructions to pair and connect the Moves to a Windows based computer=
 
