@@ -3,8 +3,7 @@
 *Please comment if you have a request. Also do so, if the request is already in the list, I want to add features, that are needed by more.*
 
 = Requests =
- * Joystick and mouse emulation
-   * You are not a programmer? No problem, just play your favorite games with the MoveFramework. ;)
+ * Every request fulfilled. :)
 
 = Fulfilled requests =
  * C# support
@@ -14,6 +13,8 @@
    * Works like a charm with version 3.1. Read the MotionInJoySetup for details.
  * Navigation controller support
    * Works only with MotionInJoy
+ * Joystick and mouse emulation
+   * You are not a programmer? No problem, just play your favorite games with the MoveFramework. ;)
 
 = Requests that will not be realized =
  * Support for other webcams
