@@ -15,6 +15,9 @@
 = PS Move buttons =
 
  * Start: calibrate the magnetometers (follow the orders)
+ * PS Button: 
+   * Reset the orientation with the PS button while pointing to the monitor with the device, so the orientation will be tracked relative to your monitor
+   * Reset the position by pressing the PS button for 2 seconds
 
 The following buttons must be pressed, while you can set the value with the trigger:
  * Square: rumble
