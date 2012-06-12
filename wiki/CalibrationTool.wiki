@@ -1,7 +1,7 @@
 #summary Usage of the CalibrationTool.
 
 = Keyboard =
- * P: the program pairs all Moves that are connected via USB
+ * P: the program pairs all Moves that are connected via USB (doesn't work with the Navigation Controller, use MIJ for that)
  * M: turns the usage of magnetometers on or off
  * A: turns the automatic color control on or off
  * C: turns the camera control on or off
