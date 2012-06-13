@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F96DC88D-2713-47A8-A99F-9BAB26FB2A85}</ProjectGuid>
     <RootNamespace>CWrapper</RootNamespace>
+    <ProjectName>.CWrapper</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

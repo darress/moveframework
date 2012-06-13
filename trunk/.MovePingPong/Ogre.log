@@ -1,0 +1,61 @@
+13:35:05: Creating resource group General
+13:35:05: Creating resource group Internal
+13:35:05: Creating resource group Autodetect
+13:35:05: SceneManagerFactory for type 'DefaultSceneManager' registered.
+13:35:05: Registering ResourceManager for type Material
+13:35:05: Registering ResourceManager for type Mesh
+13:35:05: Registering ResourceManager for type Skeleton
+13:35:05: MovableObjectFactory for type 'ParticleSystem' registered.
+13:35:05: OverlayElementFactory for type Panel registered.
+13:35:05: OverlayElementFactory for type BorderPanel registered.
+13:35:05: OverlayElementFactory for type TextArea registered.
+13:35:05: Registering ResourceManager for type Font
+13:35:05: ArchiveFactory for archive type FileSystem registered.
+13:35:05: ArchiveFactory for archive type Zip registered.
+13:35:05: DDS codec registering
+13:35:05: FreeImage version: 3.15.1
+13:35:05: This program uses FreeImage, a free, open source image library supporting all common bitmap formats. See http://freeimage.sourceforge.net for details
+13:35:05: Supported formats: bmp,ico,jpg,jif,jpeg,jpe,jng,koa,iff,lbm,mng,pbm,pbm,pcd,pcx,pgm,pgm,png,ppm,ppm,ras,tga,targa,tif,tiff,wap,wbmp,wbm,psd,cut,xbm,xpm,gif,hdr,g3,sgi,exr,j2k,j2c,jp2,pfm,pct,pict,pic,3fr,arw,bay,bmq,cap,cine,cr2,crw,cs1,dc2,dcr,drf,dsc,dng,erf,fff,ia,iiq,k25,kc2,kdc,mdc,mef,mos,mrw,nef,nrw,orf,pef,ptx,pxn,qtk,raf,raw,rdc,rw2,rwl,rwz,sr2,srf,sti
+13:35:05: Registering ResourceManager for type HighLevelGpuProgram
+13:35:05: Registering ResourceManager for type Compositor
+13:35:05: MovableObjectFactory for type 'Entity' registered.
+13:35:05: MovableObjectFactory for type 'Light' registered.
+13:35:05: MovableObjectFactory for type 'BillboardSet' registered.
+13:35:05: MovableObjectFactory for type 'ManualObject' registered.
+13:35:05: MovableObjectFactory for type 'BillboardChain' registered.
+13:35:05: MovableObjectFactory for type 'RibbonTrail' registered.
+13:35:05: *-*-* OGRE Initialising
+13:35:05: *-*-* Version 1.7.4 (Cthugha)
+13:35:05: Loading library RenderSystem_Direct3D9
+13:35:05: Installing plugin: D3D9 RenderSystem
+13:35:05: D3D9 : Direct3D9 Rendering Subsystem created.
+13:35:05: D3D9: Driver Detection Starts
+13:35:05: D3D9: Driver Detection Ends
+13:35:05: Plugin successfully installed
+13:35:05: Loading library RenderSystem_GL
+13:35:05: Installing plugin: GL RenderSystem
+13:35:05: OpenGL Rendering Subsystem created.
+13:35:05: Plugin successfully installed
+13:35:05: Loading library Plugin_OctreeSceneManager
+13:35:05: Installing plugin: Octree & Terrain Scene Manager
+13:35:05: Plugin successfully installed
+13:35:05: OGRE EXCEPTION(7:InternalErrorException): media/packs/move.zip - error whilst opening archive: Unable to read zip file. in ZipArchive::checkZzipError at ..\..\..\..\OgreMain\src\OgreZip.cpp (line 280)
+13:35:08: *-*-* OGRE Shutdown
+13:35:08: Unregistering ResourceManager for type Compositor
+13:35:08: Unregistering ResourceManager for type Font
+13:35:08: Unregistering ResourceManager for type Skeleton
+13:35:08: Unregistering ResourceManager for type Mesh
+13:35:08: Unregistering ResourceManager for type HighLevelGpuProgram
+13:35:08: Uninstalling plugin: Octree & Terrain Scene Manager
+13:35:08: Plugin successfully uninstalled
+13:35:08: Unloading library Plugin_OctreeSceneManager
+13:35:08: Uninstalling plugin: GL RenderSystem
+13:35:08: *** Stopping Win32GL Subsystem ***
+13:35:08: Plugin successfully uninstalled
+13:35:08: Unloading library RenderSystem_GL
+13:35:08: Uninstalling plugin: D3D9 RenderSystem
+13:35:08: D3D9 : Shutting down cleanly.
+13:35:08: D3D9 : Direct3D9 Rendering Subsystem destroyed.
+13:35:08: Plugin successfully uninstalled
+13:35:08: Unloading library RenderSystem_Direct3D9
+13:35:08: Unregistering ResourceManager for type Material
