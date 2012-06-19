@@ -33,6 +33,8 @@ namespace Move
 	bool EyeController::initCamera(int numMoves)
 	{
 		this->numMoves=numMoves;
+		if (this->numMoves>2)
+			this->numMoves=2;
 
 		GUID _cameraGUID;
 
