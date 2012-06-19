@@ -14,7 +14,7 @@
 #include "MoveButton.h"
 
 // Maximum number of moves to support.
-#define MAXMOVES 4
+#define MAXMOVES 30
 
 #ifdef _MSC_VER 
 #define snprintf sprintf_s
