@@ -34,19 +34,23 @@ void Game::createScene()
 	MyGUI::LayoutManager::getInstance().loadLayout("main.layout");
 	initMove();
 
-	for (int i=0; i<numMoves; i++)
+	Ogre::Entity* tableEntity = mSceneMgr->createEntity("table", "table.mesh");
+	Ogre::SceneNode* tableNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	tableNode->attachObject(tableEntity);
+	tableNode->setOrientation(Ogre::Quaternion(-0.707107, 0, -0.707107, 0));
+
+	for (int i=0; i<2; i++)
 	{
 		// a demo to show how skeletal animation works if joints must be moved by piece
 		char tmp[20];
-		sprintf(tmp,"move%d",i);
-		Ogre::Entity* moveEntity = mSceneMgr->createEntity(tmp, "move.mesh");
-		moveNode[i] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-		moveNode[i]->attachObject(moveEntity);
-		moveNode[i]->scale(0.8f,0.8f,0.8f);
+		sprintf(tmp,"racket%d",i);
+		Ogre::Entity* racketEntity = mSceneMgr->createEntity(tmp, "racket.mesh");
+		racketNode[i] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+		racketNode[i]->attachObject(racketEntity);
 	}
 
     // Set ambient light
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
     // Create a light
     Ogre::Light* l = mSceneMgr->createLight("MainLight");
@@ -265,12 +269,12 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		{
 			mCamera->lookAt(Ogre::Vector3(0,0,0));
 
-			moveNode[i]->setOrientation(ori);
+			racketNode[i]->setOrientation(ori);
 
 			pos*=4.0f;
 			pos.z-=800.0f;
 	
-			moveNode[i]->setPosition(pos);
+			racketNode[i]->setPosition(pos);
 		}
 	}
 

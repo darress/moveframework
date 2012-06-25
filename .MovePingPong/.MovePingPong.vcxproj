@@ -78,7 +78,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)/.OgreMove.pdb</ProgramDatabaseFile>
-      <OutputFile>..\bin\CalibrationTool.exe</OutputFile>
+      <OutputFile>..\bin\MovePingPong.exe</OutputFile>
       <TargetMachine>MachineX86</TargetMachine>
       <AdditionalLibraryDirectories>..\.MoveFramework\lib\;..\libraries\mygui\lib\Debug\;$(OGRE_HOME)\lib\debug;$(OGRE_HOME)\boost_1_47\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>MyGUIEngine_d.lib;MyGUI.OgrePlatform_d.lib;OgreMain_d.lib;OIS_d.lib;MoveManager_d.lib;%(AdditionalDependencies)</AdditionalDependencies>

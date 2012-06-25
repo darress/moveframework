@@ -79,10 +79,10 @@ void BaseApplication::createCamera(void)
     mCamera = mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,0,100));
+    mCamera->setPosition(Ogre::Vector3(0,5,15));
     // Look back along -Z
     mCamera->lookAt(Ogre::Vector3(0,0,0));
-    mCamera->setNearClipDistance(5);
+    mCamera->setNearClipDistance(0.05);
 
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
@@ -133,7 +133,7 @@ void BaseApplication::createViewports(void)
 void BaseApplication::setupResources(void)
 {
     // Only add the minimally required resource locations to load up SDKTrays and the Ogre head mesh
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("media/packs/move.zip", "Zip", "General");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("media/packs/pingpong.zip", "Zip", "General");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("media/fonts", "FileSystem", "General");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation("media/MyGUI_Media", "FileSystem", "General");
 }
