@@ -9,7 +9,7 @@
 
 class Game : public BaseApplication, Move::IMoveObserver
 {
-	Ogre::SceneNode* moveNode[2];
+	Ogre::SceneNode* racketNode[2];
 
 	Ogre::TexturePtr camImage;
 	Ogre::TexturePtr maskImage;
