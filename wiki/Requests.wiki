@@ -1,9 +1,6 @@
 #summary Requests for new features
 
-*Please comment if you have a request. Also do so, if the request is already in the list, I want to add features, that are needed by more.*
-
-= Requests =
- * Every request fulfilled. :)
+*No more request will be accepted because the project is no more maintained.*
 
 = Fulfilled requests =
  * C# support
