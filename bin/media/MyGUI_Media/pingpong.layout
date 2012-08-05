@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="TextBox" skin="TextBox" position="300 10 700 40" layer="Back" name="Info">
+        <Property key="TextColour" value="1 1 1"/>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

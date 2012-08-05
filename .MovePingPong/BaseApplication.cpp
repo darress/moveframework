@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "BaseApplication.h"
+#include "Config.h"
 
 //-------------------------------------------------------------------------------------
 BaseApplication::BaseApplication(void)
@@ -79,9 +80,8 @@ void BaseApplication::createCamera(void)
     mCamera = mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,5,15));
-    // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,0));
+	mCamera->setPosition(g_Cameras[defaultCamera].pos);
+	mCamera->lookAt(g_Cameras[defaultCamera].lookAt);
     mCamera->setNearClipDistance(0.05);
 
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller

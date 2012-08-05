@@ -9,6 +9,9 @@
     <Filter Include="Ogre">
       <UniqueIdentifier>{cfb2d99c-3520-4f27-be6e-0bc2db0da7f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{d6774962-4042-431c-9df2-cb37e5842a97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="res\Resource.h">
@@ -21,6 +24,18 @@
     <ClInclude Include="Game.h">
       <Filter>Ogre</Filter>
     </ClInclude>
+    <ClInclude Include="RacketPhysics.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="BallPhysics.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="RacketPhysicsMove.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -31,6 +46,16 @@
     <ClCompile Include="Game.cpp">
       <Filter>Ogre</Filter>
     </ClCompile>
+    <ClCompile Include="RacketPhysics.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BallPhysics.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="RacketPhysicsMove.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\OgreMove.ico">
