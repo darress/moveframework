@@ -1,28 +1,32 @@
 #include "stdafx.h"
-#include "Game.h"
-#include "MoveButton.h"
-#include "MoveData.h"
 #include <iostream>
 #include <iomanip>
+
+#include "Game.h"
+#include "Config.h"
+#include "RacketPhysicsMove.h"
+
+void __cdecl odprintf(const char *format, ...);
 
 Game::Game()
 {
 	guiInitialized=false;
 	cameraWorks=false;
-	automaticColors=true;
-	r=g=b=0;
-	cameraControl=false;
-	showMask=-1;
+	cameraMode=defaultCamera;
+	racketPhysics[0] = NULL;
+	racketPhysics[1] = NULL;
 }
 
 Game::~Game()
 {
+	delete ballPhysics;
 }
 
 bool Game::configure()
 {
 	bool ret = BaseApplication::configure();
 	
+	srand(time(NULL));
 	int height = mWindow->getHeight();
 	int width = mWindow->getWidth();
 
@@ -31,23 +35,45 @@ bool Game::configure()
 
 void Game::createScene()
 {
-	MyGUI::LayoutManager::getInstance().loadLayout("main.layout");
+	MyGUI::LayoutManager::getInstance().loadLayout("pingpong.layout");
 	initMove();
 
+	// Table
 	Ogre::Entity* tableEntity = mSceneMgr->createEntity("table", "table.mesh");
 	Ogre::SceneNode* tableNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	tableNode->attachObject(tableEntity);
-	tableNode->setOrientation(Ogre::Quaternion(-0.707107, 0, -0.707107, 0));
+	tableNode->setOrientation(Ogre::Quaternion(0, 1, 0, 0) * Ogre::Quaternion(-0.707107, 0, -0.707107, 0));
+	//tableNode->setPosition(0.0f, 0.50f, 0.0f);
 
+	// Rackets
 	for (int i=0; i<2; i++)
 	{
 		// a demo to show how skeletal animation works if joints must be moved by piece
 		char tmp[20];
-		sprintf(tmp,"racket%d",i);
+		sprintf_s(tmp, sizeof(tmp), "racket%d", i);
 		Ogre::Entity* racketEntity = mSceneMgr->createEntity(tmp, "racket.mesh");
 		racketNode[i] = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		racketNode[i]->attachObject(racketEntity);
 	}
+
+	// Ball
+	Ogre::Entity* ballEntity = mSceneMgr->createEntity("ball", "ball.mesh");
+	ballNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+	ballNode->attachObject(ballEntity);
+
+	Ogre::AxisAlignedBox ballBB = ballEntity->getBoundingBox();
+
+	// Ball physics
+	ballPhysics = new BallPhysics;
+	//ballPhysics->setPosition(Ogre::Vector3(0.0f, 1.7f, 0.0f));
+	ballPhysics->setPosition(Ogre::Vector3(0.0f, 0.78f, 0.0f));
+
+	// Racket physics
+	if (move->getMoveCount() >= 1)
+	{
+		racketPhysics[0] = new RacketPhysicsMove(ballPhysics, move->getMove(0));
+	}
+	racketPhysics[1] = new RacketPhysics(ballPhysics);
 
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
@@ -62,47 +88,17 @@ void Game::createScene()
 
 void Game::initGui()
 {
-	if (cameraWorks)
+	if (numMoves<1)
 	{
-		int eyeX, eyeY;
-		move->getEye()->getEyeDimensions(eyeX,eyeY);
-
-		//create texture for camera image
-		camImage = Ogre::TextureManager::getSingleton().createManual(
-			"CameraImage", // name
-			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-			Ogre::TEX_TYPE_2D,      // type
-			eyeX, eyeY,         // width & height
-			0,                // number of mipmaps
-			Ogre::PF_X8R8G8B8,     // pixel format
-			Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-
-		//create texture for camera image
-		maskImage = Ogre::TextureManager::getSingleton().createManual(
-			"MaskImage", // name
-			Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-			Ogre::TEX_TYPE_2D,      // type
-			eyeX, eyeY,         // width & height
-			0,                // number of mipmaps
-			Ogre::PF_L16,     // pixel format
-			Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-
-		//set texture of eye image
-		mGUI->findWidget<MyGUI::ImageBox>("Eye Image")->setImageTexture("CameraImage");
-
-		//set texture of mask image
-		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setImageTexture("MaskImage");
-		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected. You can't control the racket.");
+	}
+	else if (!cameraWorks)
+	{
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No PS Eye found, you cant control the racket's position.");
 	}
 	else
 	{
-		mGUI->findWidget<MyGUI::TextBox>("CameraInfo")->setCaption("No PS Eye found.");
-	}
-	mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("To pair devices connected with USB, press P on your keyboard.\nTo calibrate the magnetometer of a device, press START on that device.");
-	if (numMoves<1)
-	{
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected via Bluetooth. Nothing to calibrate.");
-		mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption("No device is found.");
+		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("The PS Eye and Move are connected properly.");
 	}
 }
 
@@ -113,77 +109,36 @@ void Game::guiExitClick(MyGUI::Widget* _widget)
 
 bool Game::keyPressed( const OIS::KeyEvent &arg )
 {
-	if (arg.key == OIS::KC_P)
-    {
-
-		int num = move->pairMoves();
-		if (num==0)
-		{
-			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No new device has been paired, to try again, press P.");
-		}
-		else if (num==-1)
-		{
-			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption("No Bluetooth dongle found, please connect one!");
-		}
-		else
-		{
-			char tmp[100];
-			sprintf(tmp,"%d new devices has been paired, to pair again, press P.",num);
-			mGUI->findWidget<MyGUI::TextBox>("PairInfo")->setCaption(tmp);
-		}
-	}
-	else if (arg.key==OIS::KC_M)
-	{
-		bool use=true;
-		for (int i=0; i<numMoves; i++)
-		{
-			use=use && !useMagnetometers[i];
-		}
-		for (int i=0; i<numMoves; i++)
-		{
-			move->getMove(i)->useMagnetometers(use);
-		}
-	}
-	else if (arg.key==OIS::KC_A)
-	{
-		automaticColors=!automaticColors;
-		move->getEye()->useAutomaticColors(automaticColors);
-	}
-	else if (arg.key==OIS::KC_C)
-	{
-		cameraControl=!cameraControl;
-	}
-	else if (arg.key==OIS::KC_ESCAPE)
+	if (arg.key==OIS::KC_ESCAPE)
 	{
 		move->unsubsribe(this);
 		guiInitialized=false;
-	}
-	else if (arg.key==OIS::KC_0)
-	{
-		showMask=-1;
-		mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
-	}
-	else if (arg.key==OIS::KC_1 || arg.key==OIS::KC_2)
-	{
-		showMask=int(arg.key)-2;
-		if (showMask>=numMoves)
-		{
-			showMask=-1;
-			mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(false);
-		}
-		else
-		{
-			mGUI->findWidget<MyGUI::ImageBox>("Mask Image")->setVisible(true);
-		}
 	}
 	return BaseApplication::keyPressed(arg);
 }
 
 void Game::moveKeyPressed(int moveId, Move::MoveButton button)
 {
-	if (button==Move::B_START)
+	if (button==Move::B_MOVE)
 	{
-		move->getMove(moveId)->calibrateMagnetometer();
+		odprintf(">>>>>New service");
+		float speedRandX = ((float)(rand() % 800 - 400)) * 0.001f;
+		ballPhysics->setPosition(Ogre::Vector3(0.0f, 1.5f, -1.4f));
+		ballPhysics->setSpeed(Ogre::Vector3(speedRandX, 0.0f, 1.9f));
+		ballPhysics->setSpin(Ogre::Vector3(0.0f, 0.0f, 0.0f));
+	}
+	if (button==Move::B_SQUARE)
+	{
+		cameraMode++;
+		if (cameraMode >= sizeof(g_Cameras) / sizeof(g_Cameras[0]))
+			cameraMode = 0;
+
+		mCamera->setPosition(g_Cameras[cameraMode].pos);
+		mCamera->lookAt(g_Cameras[cameraMode].lookAt);
+	}
+	if (button==Move::B_CROSS)
+	{
+		odprintf(">>>>>CROSS");
 	}
 }
 
@@ -194,53 +149,12 @@ void Game::moveKeyReleased(int moveId, Move::MoveButton button)
 
 void Game::moveNotify(int moveId, Move::MoveMessage message)
 {
-	if (message==Move::M_UseMagnetometers)
-	{
-		useMagnetometers[moveId]=true;
-		return;
-	}
-	if (message==Move::M_DoesntUseMagnetometers)
-	{
-		useMagnetometers[moveId]=false;
-		return;
-	}
 
-	std::stringstream ss;
-	ss << "Device " << moveId << ": ";
-	ss.str();
-	if (message==Move::M_Calibrated)
-	{
-		magnetometerCalibrated[moveId]=true;
-		ss << "Magnetometers calibrated!";
-	}
-	if (message==Move::M_CalibrationProcessing)
-		ss << "Processing calibration data, please hold the device still!";
-	if (message==Move::M_InitialCalibratingDone)
-	{
-		magnetometerCalibrated[moveId]=false;
-		ss << "Acc, Gyro calibrated!";
-	}
-	if (message==Move::M_RotateMove)
-		ss << "Please rotate your device in every possible direction!";
-
-
-	mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption(ss.str());
 }
 
 void Game::moveUpdated(int moveId, Move::MoveData data)
 {
-	if (!automaticColors)
-	{
-		if (data.isButtonPressed(Move::B_CIRCLE))
-			r=data.trigger;
-		if (data.isButtonPressed(Move::B_TRIANGLE))
-			g=data.trigger;
-		if (data.isButtonPressed(Move::B_CROSS))
-			b=data.trigger;
-		move->getEye()->setColor(moveId,r,g,b);
-	}
-	if (data.isButtonPressed(Move::B_SQUARE))
-		move->getMove(moveId)->setRumble(data.trigger);
+
 }
 
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
@@ -248,112 +162,30 @@ bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	if(!BaseApplication::frameRenderingQueued(evt))
 		return false;
 	
+	ballPhysics->update(evt.timeSinceLastFrame);
 
-
-	//TODO: testing the move orientation
-	for (int i=0; i<numMoves; i++)
+	for (int i=0; i<2; i++)
 	{
-		Move::MoveData data = move->getMove(i)->getMoveData();
+		if (racketPhysics[i] == NULL)
+			continue;
 
-		Move::Quat moveOri = data.orientation;
-		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
+		Ogre::Vector3 pos;
+		Ogre::Quaternion ori;
 
-		Move::Vec3 movePos = data.position;
-		Ogre::Vector3 pos = Ogre::Vector3(movePos.x, movePos.y, movePos.z);
+		racketPhysics[i]->update(evt.timeSinceLastFrame);
+		racketPhysics[i]->getPosAndOri(pos, ori);
 
-		if (cameraControl && i==0)
-		{
-			mCamera->setOrientation(ori);
-		}
-		else
-		{
-			mCamera->lookAt(Ogre::Vector3(0,0,0));
-
-			racketNode[i]->setOrientation(ori);
-
-			pos*=4.0f;
-			pos.z-=800.0f;
-	
-			racketNode[i]->setPosition(pos);
-		}
+		racketNode[i]->setOrientation(ori);
+		racketNode[i]->setPosition(pos);
 	}
 
-	if (cameraWorks)
-	{
-		//showing the camera image of the Eye
-		copyCameraImageToTexture();
-	}
+	ballNode->setPosition(ballPhysics->getPosition());
 
-	//information
 	if (!guiInitialized)
 		return true;
-	std::stringstream ss;
-	ss.precision(2);
-	ss.setf(std::ios_base::fixed);
-	ss << numMoves << " Moves connected.\n";
-	ss << move->getNavCount() << " Navs connected.\n";
-	for (int i=0; i<numMoves; i++)
-	{
-		Move::MoveData data = move->getMove(i)->getMoveData();
-		ss << std::endl << std::endl;
-
-		ss << "Playstation Move, id: " << i << std::endl;
-		Move::Vec3 pos = data.position;
-		ss <<  "  Position: " << pos.x << " " << pos.y << " " << pos.z << std::endl;
-
-		Move::Quat quat = data.orientation;
-		ss << "  Orient.: " << quat.w << " " << quat.v.x << " " << quat.v.y << " " << quat.v.z << std::endl;
-
-		if (!magnetometerCalibrated[i])
-			ss << "  The device' magnetometer is not calibrated.\n     Press START to calibrate it.";
-		else if (useMagnetometers[i])
-			ss << "  The device uses magnetometers.\n     Press M to turn it off.\n";
-		else
-			ss << "  The device doesnt use magnetometers.\n     Press M to turn it on.\n";
-	}
-	for (int i=0; i<move->getNavCount(); i++)
-	{
-		Move::NavData data = move->getNav(i)->getNavData();
-		ss << std::endl << std::endl;
-		ss << "Playstation Navigation Controller, id: " << i << std::endl;
-		ss <<  "  Stick: " << data.stickX << " " << data.stickY << std::endl;
-		ss <<  "  Triggers: " << data.trigger1 << " " << data.trigger2 << std::endl;
-	}
-
-	mGUI->findWidget<MyGUI::TextBox>("Moves")->setCaption(ss.str().c_str());
+	// Refresh GUI
 
     return true;
-}
-
-void Game::copyCameraImageToTexture()
-{
-	int eyeX, eyeY;
-	move->getEye()->getEyeDimensions(eyeX,eyeY);
-
-	PBYTE eyeBuffer=move->getEye()->getEyeBuffer();
-	if (eyeBuffer)
-	{
-		Ogre::HardwarePixelBufferSharedPtr buffer = camImage->getBuffer();
-		buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-		const Ogre::PixelBox &pb = buffer->getCurrentLock();
-		PBYTE data = static_cast<PBYTE>(pb.data);
-		memcpy(data,eyeBuffer,eyeX*eyeY*4);
-		buffer->unlock();
-	}
-
-	if (showMask>=0)
-	{
-		PBYTE maskBuffer=move->getEye()->getMaskBuffer(showMask);
-		if (maskBuffer)
-		{
-			Ogre::HardwarePixelBufferSharedPtr buffer = maskImage->getBuffer();
-			buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-			const Ogre::PixelBox &pb = buffer->getCurrentLock();
-			PBYTE data = static_cast<PBYTE>(pb.data);
-			memcpy(data,maskBuffer,eyeX*eyeY*2);
-			buffer->unlock();
-		}
-	}
 }
 
 bool Game::initMove()
@@ -364,7 +196,6 @@ bool Game::initMove()
 
 	numMoves=move->initMoves();
 	cameraWorks=move->initCamera(numMoves);
-	
 
 	return true;
 }

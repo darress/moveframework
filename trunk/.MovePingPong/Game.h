@@ -1,35 +1,24 @@
 #pragma once
 #include "BaseApplication.h"
-#include "IMoveManager.h"
-#include "IMoveObserver.h"
-#include "MoveFactory.h"
-#include "MoveData.h"
+#include "BallPhysics.h"
+#include "RacketPhysics.h"
 
 #include "stdafx.h"
 
 class Game : public BaseApplication, Move::IMoveObserver
 {
 	Ogre::SceneNode* racketNode[2];
+	Ogre::SceneNode* ballNode;
 
-	Ogre::TexturePtr camImage;
-	Ogre::TexturePtr maskImage;
-
-	// if -1, show none, otherwise it stores the moveId
-	int showMask;
-
-	int calibratingMove;
+	BallPhysics* ballPhysics;
+	RacketPhysics* racketPhysics[2];
 
 	Move::IMoveManager* move;
 	int numMoves;
-	bool useMagnetometers[2];
-	bool magnetometerCalibrated[2];
 
 	bool cameraWorks;
 
-	bool automaticColors;
-	int r,g,b;
-
-	bool cameraControl;
+	int cameraMode;
 
 	bool guiInitialized;
 
@@ -44,7 +33,6 @@ protected:
 	bool keyPressed( const OIS::KeyEvent &arg );
 
 	bool initMove();
-	void copyCameraImageToTexture();
 
 private:
 	void initGui();
