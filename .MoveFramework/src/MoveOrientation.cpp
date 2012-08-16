@@ -41,7 +41,7 @@ namespace Move
 
 		try
 		{
-			useMagnetometer = IniFile::GetInt("UseMagnetometers", "Tracking", "settings.cfg")!=0;
+			UseMagnetometer( IniFile::GetInt("UseMagnetometers", "Tracking", "settings.cfg")!=0);
 		}
 		catch(MoveConfigFileRecordNotFoundException)
 		{}
