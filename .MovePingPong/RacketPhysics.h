@@ -1,9 +1,18 @@
 #pragma once
 #include "StdAfx.h"
 #include "BallPhysics.h"
+#include "GameLogic.h"
+
+class GameLogic;
+class BallPhysics;
 
 class RacketPhysics
 {
+protected:
+	GameLogic* gameLogic;
+	
+	int playerId;
+
 	Ogre::Vector3 pos;
 	Ogre::Vector3 speed;
 	Ogre::Quaternion ori;
@@ -13,10 +22,12 @@ class RacketPhysics
 	float timeSinceLastHit;
 
 public:
-	RacketPhysics(BallPhysics* ball);
+	RacketPhysics(BallPhysics* ball, GameLogic* gameLogic, int playerId);
 	virtual ~RacketPhysics();
 	
 	virtual void update(float deltaT);
+	virtual void makeService() = 0;
+
 	void getPosAndOri(Ogre::Vector3& pos, Ogre::Quaternion& ori);
 
 protected:

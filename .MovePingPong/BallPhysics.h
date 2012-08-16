@@ -1,6 +1,13 @@
 #pragma once
+
+#include "GameLogic.h"
+
+class GameLogic;
+
 class BallPhysics
 {
+	GameLogic* gameLogic;
+
 	Ogre::Vector3 position;
 	Ogre::Vector3 speed;
 	Ogre::Vector3 spin;
@@ -9,7 +16,7 @@ class BallPhysics
 	bool out;
 
 public:
-	BallPhysics();
+	BallPhysics(GameLogic* gameLogic);
 	~BallPhysics();
 
 	void update(float deltaT);
@@ -18,5 +25,7 @@ public:
 	void setSpin(Ogre::Vector3 spin);
 	Ogre::Vector3 getPosition();
 	Ogre::Vector3 getSpeed();
+
+	bool isOverTable();
 };
 

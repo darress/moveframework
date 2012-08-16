@@ -14,7 +14,8 @@ const float g_GroundY = 0.0f;
 // Factors
 const float g_SpinFactor = 0.2f;
 const float g_AirResistance = 0.0f;
-const float g_HitStrength = 1.0f;
+const float g_HitStrength = 1.5f;
+const float g_Gravity = 9.81f;
 
 struct CameraConfig
 {

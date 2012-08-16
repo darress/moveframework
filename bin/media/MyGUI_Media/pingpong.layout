@@ -1,7 +1,43 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="TextBox" skin="TextBox" position="300 10 700 40" layer="Back" name="Info">
-        <Property key="TextColour" value="1 1 1"/>
+    <Widget type="TextBox" skin="TextBox" position_real="0 0.117188 1 0.0527344" layer="Back" name="Info">
+        <Property key="TextColour" value="0.953216 0.784505 0.122636"/>
+        <Property key="FontHeight" value="40"/>
+        <Property key="Caption" value="information"/>
+        <Property key="TextAlign" value="Center"/>
+        <Property key="TextShadow" value="true"/>
+    </Widget>
+    <Widget type="Canvas" skin="Canvas" position_real="0.299805 0.199219 0.398438 0.598633" layer="Modal" name="Main Menu">
+        <Widget type="Button" skin="Button" position_real="0.0465686 0.0375204 0.89951 0.14845" name="Menu Tutorial">
+            <Property key="Caption" value="Tutorial Game"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position_real="0.0465686 0.228385 0.89951 0.14845" name="Menu Beginner">
+            <Property key="Caption" value="Beginner"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position_real="0.0465686 0.417618 0.89951 0.14845" name="Menu Intermediate">
+            <Property key="FontHeight" value="40"/>
+            <Property key="Caption" value="Intermediate"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position_real="0.0465686 0.608483 0.89951 0.14845" name="Menu Expert">
+            <Property key="Caption" value="Expert"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position_real="0.0465686 0.799347 0.89951 0.14845" name="Menu Exit">
+            <Property key="Caption" value="Exit Game"/>
+            <Property key="FontHeight" value="40"/>
+        </Widget>
+    </Widget>
+    <Widget type="TextBox" skin="TextBox" position_real="0.0234375 0.0195313 0.484375 0.0820313" layer="Back" name="Game Type">
+        <Property key="Caption" value="Intermediate game"/>
+        <Property key="FontHeight" value="50"/>
+        <Property key="TextColour" value="0.959064 0.23556 0.23556"/>
+    </Widget>
+    <Widget type="TextBox" skin="TextBox" position_real="0.527344 0.0195313 0.449219 0.0683594" layer="Back" name="Score">
+        <Property key="TextAlign" value="Right Top"/>
+        <Property key="Caption" value="Score: 0 : 5"/>
+        <Property key="FontHeight" value="50"/>
     </Widget>
     <CodeGeneratorSettings/>
 </MyGUI>

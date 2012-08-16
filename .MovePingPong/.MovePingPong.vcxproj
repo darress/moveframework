@@ -121,22 +121,28 @@
     <ClInclude Include="BaseApplication.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameLogic.h" />
     <ClInclude Include="RacketPhysics.h" />
+    <ClInclude Include="RacketPhysicsAI.h" />
     <ClInclude Include="RacketPhysicsMove.h" />
     <ClInclude Include="res\Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="UIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BallPhysics.cpp" />
     <ClCompile Include="BaseApplication.cpp" />
+    <ClCompile Include="GameLogic.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="RacketPhysics.cpp" />
+    <ClCompile Include="RacketPhysicsAI.cpp" />
     <ClCompile Include="RacketPhysicsMove.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\OgreMove.ico" />

@@ -2,8 +2,8 @@
 #include "RacketPhysicsMove.h"
 
 
-RacketPhysicsMove::RacketPhysicsMove(BallPhysics* ball, Move::IMoveController* move)
-	:RacketPhysics(ball), move(move)
+RacketPhysicsMove::RacketPhysicsMove(BallPhysics* ball, GameLogic* gameLogic, int playerId, Move::IMoveController* move)
+	:RacketPhysics(ball, gameLogic, playerId), move(move)
 {
 
 }
@@ -24,10 +24,15 @@ void RacketPhysicsMove::update(float deltaT)
 	Ogre::Vector3 pos = Ogre::Vector3(movePos.x, movePos.y, movePos.z);
 
 	pos*=0.01f;
-	pos.z*=3.0f;
-	pos.z+=1.7f;
+	pos.z*=1.0f;
+	pos.z+=1.5f;
 	pos.y+=1.1f;
 
 	setPosAndOri(pos, ori, deltaT);
 	RacketPhysics::update(deltaT);
+}
+
+void RacketPhysicsMove::makeService()
+{
+
 }
