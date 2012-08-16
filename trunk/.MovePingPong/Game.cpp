@@ -4,7 +4,6 @@
 
 #include "Game.h"
 #include "Config.h"
-#include "RacketPhysicsMove.h"
 
 void __cdecl odprintf(const char *format, ...);
 
@@ -13,13 +12,17 @@ Game::Game()
 	guiInitialized=false;
 	cameraWorks=false;
 	cameraMode=defaultCamera;
-	racketPhysics[0] = NULL;
-	racketPhysics[1] = NULL;
+	gameLogic = NULL;
+	uiManager = NULL;
+	menuMode = false;
 }
 
 Game::~Game()
 {
-	delete ballPhysics;
+	if (gameLogic != NULL)
+		delete gameLogic;
+	if (uiManager != NULL)
+		delete uiManager;
 }
 
 bool Game::configure()
@@ -36,6 +39,15 @@ bool Game::configure()
 void Game::createScene()
 {
 	MyGUI::LayoutManager::getInstance().loadLayout("pingpong.layout");
+	mGUI->findWidget<MyGUI::Button>("Menu Tutorial")->eventMouseButtonClick = MyGUI::newDelegate(this, &Game::onMenuClicked); 
+	mGUI->findWidget<MyGUI::Button>("Menu Beginner")->eventMouseButtonClick = MyGUI::newDelegate(this, &Game::onMenuClicked); 
+	mGUI->findWidget<MyGUI::Button>("Menu Intermediate")->eventMouseButtonClick = MyGUI::newDelegate(this, &Game::onMenuClicked); 
+	mGUI->findWidget<MyGUI::Button>("Menu Expert")->eventMouseButtonClick = MyGUI::newDelegate(this, &Game::onMenuClicked); 
+	mGUI->findWidget<MyGUI::Button>("Menu Exit")->eventMouseButtonClick = MyGUI::newDelegate(this, &Game::onMenuClicked); 
+	mGUI->findWidget<MyGUI::Canvas>("Main Menu")->setVisible(false);
+	mGUI->findWidget<MyGUI::TextBox>("Score")->setCaption("");
+	mGUI->findWidget<MyGUI::TextBox>("Game Type")->setCaption("Press Triangle for Menu");
+	MyGUI::PointerManager::getInstance().setVisible(false);
 	initMove();
 
 	// Table
@@ -43,7 +55,6 @@ void Game::createScene()
 	Ogre::SceneNode* tableNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	tableNode->attachObject(tableEntity);
 	tableNode->setOrientation(Ogre::Quaternion(0, 1, 0, 0) * Ogre::Quaternion(-0.707107, 0, -0.707107, 0));
-	//tableNode->setPosition(0.0f, 0.50f, 0.0f);
 
 	// Rackets
 	for (int i=0; i<2; i++)
@@ -61,20 +72,6 @@ void Game::createScene()
 	ballNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 	ballNode->attachObject(ballEntity);
 
-	Ogre::AxisAlignedBox ballBB = ballEntity->getBoundingBox();
-
-	// Ball physics
-	ballPhysics = new BallPhysics;
-	//ballPhysics->setPosition(Ogre::Vector3(0.0f, 1.7f, 0.0f));
-	ballPhysics->setPosition(Ogre::Vector3(0.0f, 0.78f, 0.0f));
-
-	// Racket physics
-	if (move->getMoveCount() >= 1)
-	{
-		racketPhysics[0] = new RacketPhysicsMove(ballPhysics, move->getMove(0));
-	}
-	racketPhysics[1] = new RacketPhysics(ballPhysics);
-
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
 
@@ -84,21 +81,24 @@ void Game::createScene()
 
 	initGui();
 	guiInitialized=true;
+
+	gameLogic = new GameLogic(move, uiManager);
 }
 
 void Game::initGui()
 {
+	uiManager = new UIManager(mGUI);
 	if (numMoves<1)
 	{
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No device is connected. You can't control the racket.");
+		uiManager->showInfo("No device is connected.", 10.0f);
 	}
 	else if (!cameraWorks)
 	{
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("No PS Eye found, you cant control the racket's position.");
+		uiManager->showInfo("No PS Eye found.", 10.0f);
 	}
 	else
 	{
-		mGUI->findWidget<MyGUI::TextBox>("Info")->setCaption("The PS Eye and Move are connected properly.");
+		uiManager->showInfo("All controls connected.", 10.0f);
 	}
 }
 
@@ -121,11 +121,7 @@ void Game::moveKeyPressed(int moveId, Move::MoveButton button)
 {
 	if (button==Move::B_MOVE)
 	{
-		odprintf(">>>>>New service");
-		float speedRandX = ((float)(rand() % 800 - 400)) * 0.001f;
-		ballPhysics->setPosition(Ogre::Vector3(0.0f, 1.5f, -1.4f));
-		ballPhysics->setSpeed(Ogre::Vector3(speedRandX, 0.0f, 1.9f));
-		ballPhysics->setSpin(Ogre::Vector3(0.0f, 0.0f, 0.0f));
+		gameLogic->newService();
 	}
 	if (button==Move::B_SQUARE)
 	{
@@ -136,6 +132,18 @@ void Game::moveKeyPressed(int moveId, Move::MoveButton button)
 		mCamera->setPosition(g_Cameras[cameraMode].pos);
 		mCamera->lookAt(g_Cameras[cameraMode].lookAt);
 	}
+	if (button==Move::B_TRIANGLE)
+	{
+		menuMode = true;
+
+		Move::MoveData data = move->getMove(0)->getMoveData();
+
+		Move::Quat moveOri = data.orientation;
+		initOri = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
+
+		mGUI->findWidget<MyGUI::Canvas>("Main Menu")->setVisible(true);
+		MyGUI::PointerManager::getInstance().setVisible(true);
+	}
 	if (button==Move::B_CROSS)
 	{
 		odprintf(">>>>>CROSS");
@@ -144,7 +152,26 @@ void Game::moveKeyPressed(int moveId, Move::MoveButton button)
 
 void Game::moveKeyReleased(int moveId, Move::MoveButton button)
 {
+	if (button==Move::B_TRIANGLE)
+	{
+		Move::MoveData data = move->getMove(0)->getMoveData();
 
+		Move::Quat moveOri = data.orientation;
+		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
+
+		if (ori.Dot(initOri))
+			ori = Ogre::Quaternion(-ori.w, -ori.x, -ori.y, -ori.z);
+
+		Ogre::Quaternion relOriQ = (ori.Inverse() * initOri);
+		Ogre::Vector3 relOri(relOriQ.x, relOriQ.y, relOriQ.z);
+		relOri *= 1500.0f;
+
+		MyGUI::InputManager::getInstance().injectMouseRelease(-relOri.y + mWindow->getWidth()*0.5f, -relOri.x + mWindow->getHeight()*0.5f, MyGUI::MouseButton::Enum(0));
+		menuMode = false;
+
+		mGUI->findWidget<MyGUI::Canvas>("Main Menu")->setVisible(false);
+		MyGUI::PointerManager::getInstance().setVisible(false);
+	}
 }
 
 void Game::moveNotify(int moveId, Move::MoveMessage message)
@@ -157,33 +184,71 @@ void Game::moveUpdated(int moveId, Move::MoveData data)
 
 }
 
+void Game::onMenuClicked(MyGUI::Widget* widget)
+{
+	if (widget->getName().compare("Menu Tutorial") == 0)
+	{
+		gameLogic->initGame(GameLogic::GAMETYPE_TUTORIAL);
+	}
+	else if (widget->getName().compare("Menu Beginner") == 0)
+	{
+		gameLogic->initGame(GameLogic::GAMETYPE_BEGINNER);
+	}
+	else if (widget->getName().compare("Menu Intermediate") == 0)
+	{
+		gameLogic->initGame(GameLogic::GAMETYPE_INTERMEDIATE);
+	}
+	else if (widget->getName().compare("Menu Expert") == 0)
+	{
+		gameLogic->initGame(GameLogic::GAMETYPE_EXPERT);
+	}
+	else if (widget->getName().compare("Menu Exit") == 0)
+	{
+		mShutDown = true;
+	}
+}
+
 bool Game::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
 	if(!BaseApplication::frameRenderingQueued(evt))
 		return false;
 	
-	ballPhysics->update(evt.timeSinceLastFrame);
+	gameLogic->update(evt.timeSinceLastFrame);
+	uiManager->update(evt.timeSinceLastFrame);
+
+	ballNode->setPosition(gameLogic->getBallPosition());
 
 	for (int i=0; i<2; i++)
 	{
-		if (racketPhysics[i] == NULL)
-			continue;
-
 		Ogre::Vector3 pos;
 		Ogre::Quaternion ori;
 
-		racketPhysics[i]->update(evt.timeSinceLastFrame);
-		racketPhysics[i]->getPosAndOri(pos, ori);
+		gameLogic->getRacketPosAndOri(i, pos, ori);
 
 		racketNode[i]->setOrientation(ori);
 		racketNode[i]->setPosition(pos);
 	}
 
-	ballNode->setPosition(ballPhysics->getPosition());
-
 	if (!guiInitialized)
 		return true;
 	// Refresh GUI
+	if (menuMode)
+	{
+		Move::MoveData data = move->getMove(0)->getMoveData();
+
+		Move::Quat moveOri = data.orientation;
+		Ogre::Quaternion ori = Ogre::Quaternion(moveOri.w, moveOri.v.x, moveOri.v.y, moveOri.v.z);
+
+		if (ori.Dot(initOri))
+			ori = Ogre::Quaternion(-ori.w, -ori.x, -ori.y, -ori.z);
+
+		Ogre::Quaternion relOriQ = (ori.Inverse() * initOri);
+		Ogre::Vector3 relOri(relOriQ.x, relOriQ.y, relOriQ.z);
+		relOri *= 1500.0f;
+
+		MyGUI::InputManager::getInstance().injectMouseMove(-relOri.y + mWindow->getWidth()*0.5f, -relOri.x + mWindow->getHeight()*0.5f, 0.0f);
+
+	}
 
     return true;
 }

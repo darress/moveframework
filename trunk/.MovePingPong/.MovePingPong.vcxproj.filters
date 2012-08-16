@@ -36,6 +36,15 @@
     <ClInclude Include="Config.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="GameLogic.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="RacketPhysicsAI.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>Ogre</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -56,6 +65,15 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="GameLogic.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="RacketPhysicsAI.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Ogre</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\OgreMove.ico">

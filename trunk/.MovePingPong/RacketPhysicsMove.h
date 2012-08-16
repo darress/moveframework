@@ -8,9 +8,10 @@ class RacketPhysicsMove :
 	Move::IMoveController* move;
 
 public:
-	RacketPhysicsMove(BallPhysics* ball, Move::IMoveController* move);
+	RacketPhysicsMove(BallPhysics* ball, GameLogic* gameLogic, int playerId, Move::IMoveController* move);
 	virtual ~RacketPhysicsMove();
 
 	void update(float deltaT);
+	void makeService();
 };
 

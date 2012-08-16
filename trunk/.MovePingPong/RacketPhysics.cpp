@@ -4,8 +4,8 @@
 
 void __cdecl odprintf(const char *format, ...);
 
-RacketPhysics::RacketPhysics(BallPhysics* ball)
-	:ball(ball)
+RacketPhysics::RacketPhysics(BallPhysics* ball, GameLogic* gameLogic, int playerId)
+	: ball(ball), gameLogic(gameLogic), playerId(playerId)
 {
 	pos = Ogre::Vector3::ZERO;
 	speed = Ogre::Vector3::ZERO;
@@ -67,12 +67,12 @@ void RacketPhysics::testCollisionWithBall()
 		Ogre::Vector3 distanceVector = racketNormal * distanceFromPlane;
 		Ogre::Vector3 nearestPointOnPlane = ballPos - distanceVector;
 		Ogre::Vector3 distanceOnPlane = nearestPointOnPlane - pos;
-		odprintf("dist before: %f, %f, %f", distanceOnPlane.x, distanceOnPlane.y, distanceOnPlane.z);
+		//odprintf("dist before: %f, %f, %f", distanceOnPlane.x, distanceOnPlane.y, distanceOnPlane.z);
 		distanceOnPlane.z *= 0.5f;
 		distanceOnPlane.y *= 0.5f;
-		odprintf("dist after: %f, %f, %f", distanceOnPlane.x, distanceOnPlane.y, distanceOnPlane.z);
+		//odprintf("dist after: %f, %f, %f", distanceOnPlane.x, distanceOnPlane.y, distanceOnPlane.z);
 		float projectedDistance = distanceOnPlane.length();
-		odprintf("dist sum: %f", projectedDistance);
+		//odprintf("dist sum: %f", projectedDistance);
 		//if (projectedDistance < g_RacketRadiusB)
 		if (projectedDistance < 0.3f)
 		{
@@ -82,7 +82,7 @@ void RacketPhysics::testCollisionWithBall()
 			ballPos += distanceVector * (0.03f/abs(distanceFromPlane));
 			ball->setPosition(ballPos);
 			Ogre::Vector3 ballSpeed = ball->getSpeed();
-			ballSpeed = ballSpeed.reflect(racketNormal) * g_HitStrength;
+			ballSpeed = ballSpeed.reflect(racketNormal);
 			// Perpendicular element, used for spin
 			Ogre::Vector3 speedPerp = racketPlane.projectVector(speed);
 			ball->setSpin(speedPerp.crossProduct(racketNormal));
@@ -90,9 +90,12 @@ void RacketPhysics::testCollisionWithBall()
 			Ogre::Vector3 speedPara = speed - speedPerp;
 			ballSpeed += speedPara * g_HitStrength;
 			ball->setSpeed(ballSpeed);
+			gameLogic->onTouchRacket(playerId);
 		}
 		else
-			odprintf("no hit, time sinc last hit: %f", timeSinceLastHit);
+		{
+			//odprintf("no hit, time sinc last hit: %f", timeSinceLastHit);
+		}
 	}
 
 }

@@ -1,17 +1,16 @@
 #pragma once
 #include "BaseApplication.h"
-#include "BallPhysics.h"
-#include "RacketPhysics.h"
-
 #include "stdafx.h"
+#include "GameLogic.h"
+#include "UIManager.h"
 
 class Game : public BaseApplication, Move::IMoveObserver
 {
 	Ogre::SceneNode* racketNode[2];
 	Ogre::SceneNode* ballNode;
 
-	BallPhysics* ballPhysics;
-	RacketPhysics* racketPhysics[2];
+	GameLogic* gameLogic;
+	UIManager* uiManager;
 
 	Move::IMoveManager* move;
 	int numMoves;
@@ -19,6 +18,9 @@ class Game : public BaseApplication, Move::IMoveObserver
 	bool cameraWorks;
 
 	int cameraMode;
+
+	bool menuMode;
+	Ogre::Quaternion initOri;
 
 	bool guiInitialized;
 
@@ -45,6 +47,8 @@ public:
 	void moveKeyReleased(int moveId, Move::MoveButton button);
 	void moveUpdated(int moveId, Move::MoveData data);
 	void moveNotify(int moveId, Move::MoveMessage message);
+
+	void onMenuClicked(MyGUI::Widget* _widget);
 };
 
 
