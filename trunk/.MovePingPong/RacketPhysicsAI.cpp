@@ -23,6 +23,7 @@ void RacketPhysicsAI::update(float deltaT)
 	Ogre::Vector3 ballPos = ball->getPosition();
 	Ogre::Vector3 newPos(ballPos.x, 1.5f, -1.5f);
 	pos = Ogre::Vector3(newPos);
+	ori = Ogre::Quaternion(0.6,0.7,0,0);
 
 	// if it's a tutorial game
 	if (gameType == GameLogic::GAMETYPE_BEGINNER)
