@@ -29,7 +29,7 @@
             <Property key="FontHeight" value="40"/>
         </Widget>
     </Widget>
-    <Widget type="TextBox" skin="TextBox" position_real="0.0234375 0.0195313 0.484375 0.0820313" layer="Back" name="Game Type">
+    <Widget type="TextBox" skin="TextBox" position_real="0.0234375 0.0195313 0.684375 0.0820313" layer="Back" name="Game Type">
         <Property key="Caption" value="Intermediate game"/>
         <Property key="FontHeight" value="50"/>
         <Property key="TextColour" value="0.959064 0.23556 0.23556"/>
