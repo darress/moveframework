@@ -137,6 +137,17 @@ extern "C" __declspec(dllexport) Vec3 __stdcall getPosition(int id)
 	return v;
 }
 
+extern "C" __declspec(dllexport) Vec3 __stdcall getAngularAcceleration(int id)
+{
+	Move::MoveData data = move->getMove(id)->getMoveData();
+	Move::Vec3 acc = data.angularAcceleration;
+	Vec3 v;
+	v.x = acc.x;
+	v.y = acc.y;
+	v.z = acc.z;
+	return v;
+}
+
 extern "C" __declspec(dllexport) bool __stdcall getButtonState(int id, int keyId) 
 {
 	Move::MoveData data = move->getMove(id)->getMoveData();
