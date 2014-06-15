@@ -35,24 +35,24 @@ KEY_CALLBACK registered_navkeyup;
 
 class MoveObserver : public Move::IMoveObserver
 {
-	void moveKeyPressed(int moveId, int keyCode)
+	void moveKeyPressed(int moveId, Move::MoveButton button)
 	{
-		(*registered_keydown)(moveId, keyCode);
+		(*registered_keydown)(moveId, button);
 	}
 
-	void moveKeyReleased(int moveId, int keyCode)
+	void moveKeyReleased(int moveId, Move::MoveButton button)
 	{
-		(*registered_keyup)(moveId, keyCode);
+		(*registered_keyup)(moveId, button);
 	}
 
-	void navKeyPressed(int navId, int keyCode)
+	void navKeyPressed(int navId, Move::MoveButton button)
 	{
-		(*registered_navkeydown)(navId, keyCode);
+		(*registered_navkeydown)(navId, button);
 	}
 
-	void navKeyReleased(int navId, int keyCode)
+	void navKeyReleased(int navId, Move::MoveButton button)
 	{
-		(*registered_navkeyup)(navId, keyCode);
+		(*registered_navkeyup)(navId, button);
 	}
 
 	void moveUpdated(int moveId, Move::MoveData data)
@@ -98,14 +98,14 @@ extern "C" __declspec(dllexport) int __stdcall getNavsCount()
 	return numNavs;
 }
 
-extern "C" __declspec(dllexport) void __stdcall subscribeMove(UPDATE_CALLBACK updateCallback, KEY_CALLBACK keyDownCallback, KEY_CALLBACK keyUpCallback, UPDATE_NAVCALLBACK navUpdateCallback, KEY_CALLBACK navkeyDownCallback, KEY_CALLBACK navkeyUpCallback) 
+extern "C" __declspec(dllexport) void __stdcall subscribeMove(UPDATE_CALLBACK updateCallback, KEY_CALLBACK keyDownCallback, KEY_CALLBACK keyUpCallback, UPDATE_NAVCALLBACK navUpdateCallback, KEY_CALLBACK navkeyDownCallback, KEY_CALLBACK navkeyUpCallback)
 {
-	registered_callback=updateCallback;
-	registered_keyup=keyUpCallback;
-	registered_keydown=keyDownCallback;
-	registered_navcallback=navUpdateCallback;
-	registered_navkeyup=navkeyUpCallback;
-	registered_keydown=navkeyDownCallback;
+	registered_callback = updateCallback;
+	registered_keyup = keyUpCallback;
+	registered_keydown = keyDownCallback;
+	registered_navcallback = navUpdateCallback;
+	registered_navkeyup = navkeyUpCallback;
+	registered_navkeydown = navkeyDownCallback;
 	move->subsribe(observer);
 }
 
