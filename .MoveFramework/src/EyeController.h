@@ -31,6 +31,7 @@ namespace Move
 		~EyeController();
 
 		bool initCamera(int numMoves);
+		void closeCamera();
 
 		unsigned char* getEyeBuffer();
 		unsigned char* getMaskBuffer(int moveId);

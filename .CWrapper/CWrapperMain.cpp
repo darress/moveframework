@@ -86,6 +86,18 @@ extern "C" __declspec(dllexport) void __stdcall init()
 		numMoves=move->getMoveCount();
 		numNavs=move->getNavCount();
 		move->initCamera(numMoves);
+
+		move->pairMoves();
+}
+
+extern "C" __declspec(dllexport) void __stdcall close()
+{
+	 
+	move->closeCamera();
+	move->closeMoves();
+
+	numMoves = 0;
+	numNavs = 0; 
 }
 
 extern "C" __declspec(dllexport) int __stdcall getMovesCount() 
