@@ -27,6 +27,10 @@ namespace MoveDevice
 	int NavCount = 0;
 
 	int OpenMoves() {
+
+		MoveCount = 0;
+		NavCount = 0;
+
 		struct hid_device_info *devs, *cur_dev;
 
 		unsigned char buf[49];

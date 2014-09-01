@@ -15,19 +15,32 @@ namespace Move
 
 	EyeController::~EyeController()
 	{
-		TerminateThread(_hThread,0);
+		closeCamera();
+	}
+
+
+	void EyeController::closeCamera()
+	{
+		TerminateThread(_hThread, 0);
 
 		if (img)
+		{
 			delete(img);
+			img = 0;
+		}
 
 		if (_cam)
 		{
 			CLEyeCameraStop(_cam);
 			CLEyeDestroyCamera(_cam);
+			_cam = 0;
 		}
 
 		if (ballManager)
+		{
 			delete ballManager;
+			ballManager = 0;
+		}
 	}
 
 	bool EyeController::initCamera(int numMoves)

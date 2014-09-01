@@ -18,20 +18,8 @@ namespace Move
 
 	MoveManager::~MoveManager()
 	{
-		for (int i=0;i<moveCount;++i)
-		{
-			delete moves[i];
-		}
-		for (int i=0;i<navCount;++i)
-		{
-			delete navs[i];
-		}
-		if (eye)
-		{
-			delete eye;
-		}
-		MoveLock::deinit();
-		MoveDevice::CloseMoves();
+		closeMoves();
+		closeCamera();
 	}
 
 	int MoveManager::initMoves()
@@ -41,6 +29,7 @@ namespace Move
 		{
 			return moveCount;
 		}
+
 		MoveDevice::OpenMoves();
 		moveCount = MoveDevice::GetMoveCount();
 		navCount = MoveDevice::GetNavCount();
@@ -66,7 +55,29 @@ namespace Move
 
 	void MoveManager::closeMoves(void)
 	{
-	
+
+		for (int i = 0; i<moveCount; ++i)
+		{
+			delete moves[i];
+		}
+		for (int i = 0; i<navCount; ++i)
+		{
+			delete navs[i];
+		}
+		if (eye)
+		{
+			delete eye;
+		}
+		moves.clear();
+		navs.clear();
+		moveData.clear();
+
+		MoveLock::deinit();
+
+		MoveDevice::CloseMoves();
+
+		moveCount = -1;
+		navCount = -1;
 	}
 
 	bool MoveManager::initCamera(int numMoves)
@@ -83,7 +94,8 @@ namespace Move
 
 	void MoveManager::closeCamera()
 	{
-
+		if (eye) eye->closeCamera();
+		eye = 0;
 	}
 
 	int MoveManager::getMoveCount()
