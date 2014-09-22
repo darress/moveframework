@@ -24,7 +24,7 @@ namespace Move
 
 		float similarity(ColorHsv other)
 		{
-			if (other.v<0.7f)
+			if (other.v<0.6f)
 				return 0.0f;
 			float sim;
 			sim = abs(h-other.h);
