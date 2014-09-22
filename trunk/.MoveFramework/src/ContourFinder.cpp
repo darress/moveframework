@@ -191,7 +191,7 @@ namespace Move
 						pCol=img->getPixel(currentPos);
 						sim+=ballOut.similarity(ColorHsv(pCol));
 					}
-					if (sim>300)
+					if (sim>400)
 					{
 						balls[i]->ballFound=true;
 						searchEdge(balls[i]);
