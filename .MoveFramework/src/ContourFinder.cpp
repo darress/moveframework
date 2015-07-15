@@ -7,12 +7,18 @@ namespace Move
 
 	ContourFinder::ContourFinder(EyeImage* img, int combInterval):img(img)
 	{
-		myCombInterval = std::chrono::duration<long, std::ratio<1, 1000>>(combInterval);
+		myCombInterval = std::chrono::duration<long, std::ratio<1, 1000>>(combInterval >= 0 ? combInterval : COMB_INTERVAL_DEFAULT);
+		lastComb = steady_clock::now() - myCombInterval;
 	}
 
 
 	ContourFinder::~ContourFinder()
 	{
+	}
+
+	void ContourFinder::setCombInterval(int combInterval) {
+		if (combInterval >= 0)
+			myCombInterval = std::chrono::duration<long, std::ratio<1, 1000>>(combInterval);
 	}
 
 	void ContourFinder::findBalls(std::vector<MoveBall*>& balls, int numBalls)

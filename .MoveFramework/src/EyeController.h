@@ -41,6 +41,8 @@ namespace Move
 		void setColor(int moveId, int r, int g, int b);
 		void resetPosition(int moveId);
 
+		void setCombInterval(int combInterval);									//Minimum duration between each full comb by the camera
+
 	private:
 		void Run();
 		static DWORD WINAPI CaptureThread(LPVOID instance);

@@ -26,6 +26,7 @@ namespace Move
 		virtual void unsubsribe(IMoveObserver* observer)=0;
 
 		virtual int pairMoves()=0;
+		void setCombInterval(int combInterval);
 
 		virtual IMoveController* getMove(int moveId)=0;
 		virtual INavController* getNav(int navId)=0;

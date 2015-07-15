@@ -4,7 +4,7 @@
 #include "MoveBall.h"
 #include "MoveColors.h"
 #include "EyeImage.h"
-#include <chrono>
+#include <chrono>			//C++11 feature; requires VC++2012 or above 
 
 using namespace std::chrono;
 
@@ -24,7 +24,7 @@ namespace Move
 		steady_clock::time_point lastComb;
 
 	public:
-		ContourFinder(EyeImage* img);
+		ContourFinder(EyeImage* img, int combInterval = 100);
 		~ContourFinder();
 
 		/**
@@ -33,6 +33,7 @@ namespace Move
 		 * @param numBalls Number of balls.
 		 */
 		void findBalls(std::vector<MoveBall*>& balls, int numBalls);
+		void setCombInterval(int combInterval);											//Minimum duration between each full comb by the camera
 
 	private:
 		/**

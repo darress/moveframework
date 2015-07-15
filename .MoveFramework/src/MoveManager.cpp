@@ -136,6 +136,12 @@ namespace Move
 		return MoveDevice::PairMoves();
 	}
 
+	void MoveManager::setCombInterval(int combInterval) {
+		if (eye) {
+			eye->setCombInterval(combInterval);
+		}
+	}
+
 	IMoveController* MoveManager::getMove(int moveId)
 	{
 		return moves[moveId];

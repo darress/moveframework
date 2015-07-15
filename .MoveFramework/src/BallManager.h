@@ -46,6 +46,7 @@ namespace Move
 
 		void useAutomaticColors(bool use);
 		void setColor(int moveId, int r, int g, int b);
+		void setCombInterval(int combInterval);									//Minimum duration between each full comb by the camera
 
 	private:
 		Vec3 calculateRealWorldPosition(MoveBall* ball, Kalman& filter);

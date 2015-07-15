@@ -59,6 +59,9 @@ namespace Move
 		//move calibration
 		int pairMoves();
 
+		//Minimum duration between each full comb by the camera
+		void setCombInterval(int combInterval);
+
 		IMoveController* getMove(int moveId);
 		INavController* getNav(int navId);
 		IEyeController* getEye();
