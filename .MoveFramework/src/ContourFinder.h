@@ -24,7 +24,7 @@ namespace Move
 		steady_clock::time_point lastComb;
 
 	public:
-		ContourFinder(EyeImage* img, int combInterval = 100);
+		ContourFinder(EyeImage* img, int combInterval = COMB_INTERVAL_DEFAULT);
 		~ContourFinder();
 
 		/**
