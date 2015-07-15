@@ -4,16 +4,24 @@
 #include "MoveBall.h"
 #include "MoveColors.h"
 #include "EyeImage.h"
+#include <chrono>
+
+using namespace std::chrono;
 
 namespace Move
 {
 	//ball algorithm constants
 	const float BALL_MARGIN=0.3f;
+	const int COMB_INTERVAL_DEFAULT = 100;	
 
 	class ContourFinder
 	{
 	private:
 		EyeImage* img;
+
+		//2015-7-13: interval between combing whole image
+		duration<long, std::ratio<1, 1000>> myCombInterval;
+		steady_clock::time_point lastComb;
 
 	public:
 		ContourFinder(EyeImage* img);

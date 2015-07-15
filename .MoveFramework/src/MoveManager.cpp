@@ -94,8 +94,17 @@ namespace Move
 
 	void MoveManager::closeCamera()
 	{
-		if (eye) eye->closeCamera();
+		if (eye) {
+			eye->closeCamera();
+			delete eye;								//2015-7-13: This wasn't included in original SDK. Not sure why since a new EyeController will be created with initCamera().
+		}
 		eye = 0;
+
+		for (int i = 0; i < moveCount; i++)
+		{
+			MoveDevice::SetMoveColour(i,0,0,0);		//2015-7-13: Turn off the ball LEDs when the camera is closed.
+		}
+
 	}
 
 	int MoveManager::getMoveCount()
