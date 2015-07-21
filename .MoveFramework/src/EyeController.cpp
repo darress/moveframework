@@ -149,5 +149,9 @@ namespace Move
 		ballManager->resetPosition=moveId;
 	}
 
+	void EyeController::setCombInterval(int combInterval) {
+		ballManager->setCombInterval(combInterval);
+	}
+
 }
 

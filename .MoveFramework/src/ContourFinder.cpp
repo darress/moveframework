@@ -5,8 +5,10 @@
 namespace Move
 {
 
-	ContourFinder::ContourFinder(EyeImage* img):img(img)
+	ContourFinder::ContourFinder(EyeImage* img, int combInterval):img(img)
 	{
+		myCombInterval = std::chrono::duration<long, std::ratio<1, 1000>>(combInterval >= 0 ? combInterval : COMB_INTERVAL_DEFAULT);
+		lastComb = steady_clock::now() - myCombInterval;
 	}
 
 
@@ -14,9 +16,16 @@ namespace Move
 	{
 	}
 
+	void ContourFinder::setCombInterval(int combInterval) {
+		if (combInterval >= 0)
+			myCombInterval = std::chrono::duration<long, std::ratio<1, 1000>>(combInterval);
+	}
+
 	void ContourFinder::findBalls(std::vector<MoveBall*>& balls, int numBalls)
 	{
 		bool needToComb = false;
+		std::chrono::milliseconds mSec;
+
 		for (int i=0; i<numBalls; i++)
 		{
 			// if the center of the previous ball is in the new ball, don't search for it
@@ -36,7 +45,18 @@ namespace Move
 		// comb image if needed
 		if (needToComb)
 		{
-			combImage(balls, numBalls);
+			/*2015-7-13:
+			If the previous ball isn't overlapping with the current ball, there is a good chance
+			that the ball is outside the camera's view. In this case allowing the camera to comb 
+			through the whole image area continuously would result in very high CPU usage. 
+			Slowing a bit mitigates this issue. When the duration is over 100 milliseconds the tracking
+			starts to lag, without much gain in efficiency.
+			*/
+			mSec = duration_cast<milliseconds>(steady_clock::now() - lastComb);
+			if (mSec > myCombInterval) {
+				combImage(balls, numBalls);
+				lastComb = steady_clock::now();
+			}
 		}
 
 		for (int i=0; i<numBalls; i++)

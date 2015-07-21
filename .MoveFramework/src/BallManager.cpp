@@ -157,4 +157,8 @@ namespace Move
 		colorManager->setColor(balls[moveId], r, g, b);
 	}
 
+	void BallManager::setCombInterval(int combInterval) {
+		contourFinder->setCombInterval(combInterval);
+	}
+
 }
